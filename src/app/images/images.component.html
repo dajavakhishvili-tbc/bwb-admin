@@ -1,0 +1,57 @@
+<div class="images-container">
+  <div class="header">
+    <h1>Images Management</h1>
+    <label class="custom-upload-label">
+      Upload Image
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" class="upload-input" />
+    </label>
+  </div>
+  
+  <div class="filters">
+    <input 
+      type="text" 
+      placeholder="Search images..." 
+      [value]="searchTerm()"
+      (input)="updateSearch($event)"
+      class="search-input"
+    >
+    <select [value]="sortBy()" (change)="updateSort($event)" class="sort-select">
+      <option value="name">Sort by Name</option>
+      <option value="date">Sort by Date</option>
+      <option value="size">Sort by Size</option>
+    </select>
+  </div>
+  
+  <div class="images-grid">
+    @for (image of filteredImages(); track image.id) {
+      <div class="image-card" (click)="selectImage(image)">
+        <div class="image-preview">
+          <img [src]="image.url" [alt]="image.name">
+        </div>
+        <div class="image-info">
+          <h3>{{ image.name }}</h3>
+          <p>{{ image.size }}</p>
+          <p class="date">{{ image.uploadedAt }}</p>
+        </div>
+      </div>
+    }
+  </div>
+  
+  <div class="pagination">
+    <button 
+      [disabled]="currentPage() === 1"
+      (click)="previousPage()"
+      class="page-btn"
+    >
+      Previous
+    </button>
+    <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+    <button 
+      [disabled]="currentPage() === totalPages()"
+      (click)="nextPage()"
+      class="page-btn"
+    >
+      Next
+    </button>
+  </div>
+</div> 

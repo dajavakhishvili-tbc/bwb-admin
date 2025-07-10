@@ -1,0 +1,45 @@
+<div class="business-loan-container">
+  <h1>Business Loan Management</h1>
+  <p>This is the business loan page.</p>
+  <div class="applications-table">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Applicant Name</th>
+          <th>Business Type</th>
+          <th>Amount</th>
+          <th>Credit Score</th>
+          <th>Status</th>
+          <th>Submitted Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (application of filteredApplications(); track application.id) {
+          <tr>
+            <td>#{{ application.id }}</td>
+            <td>{{ application.applicantName }}</td>
+            <td>{{ application.businessType }}</td>
+            <td>${{ application.amount | number:'1.0-0' }}</td>
+            <td>
+              <span class="credit-score" [class]="getCreditScoreClass(application.creditScore)">
+                {{ application.creditScore }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge" [class]="application.status">
+                {{ application.status | titlecase }}
+              </span>
+            </td>
+            <td>{{ application.submittedDate }}</td>
+            <td>
+              <button class="action-btn view" (click)="viewApplication(application)">View</button>
+              <button class="action-btn edit" (click)="editApplication(application)">Edit</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div> 

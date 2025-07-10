@@ -1,0 +1,16 @@
+.ib-app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.ib-navigation {
+  flex-shrink: 0;
+}
+
+.ib-app-content {
+  flex: 1;
+  padding: 2rem;
+  background: #fafbfc;
+  min-height: 100vh;
+  overflow-x: auto;
+}
