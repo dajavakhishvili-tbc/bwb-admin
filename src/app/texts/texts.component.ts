@@ -15,11 +15,11 @@ interface TextItem {
 })
 export class TextsComponent {
   readonly texts = signal<TextItem[]>([
-    { id: 1, english: 'Welcome to our website', georgian: 'მოგესალმებათ ჩვენი ვებსაიტი', createdAt: '2024-01-15' },
-    { id: 2, english: 'About Us', georgian: 'ჩვენს შესახებ', createdAt: '2024-01-14' },
-    { id: 3, english: 'Contact Information', georgian: 'საკონტაქტო ინფორმაცია', createdAt: '2024-01-13' },
-    { id: 4, english: 'Services', georgian: 'სერვისები', createdAt: '2024-01-12' },
-    { id: 5, english: 'Home', georgian: 'მთავარი', createdAt: '2024-01-11' },
+    { id: 1, english: 'Welcome to our website', georgian: 'მოგესალმებათ ჩვენი ვებსაიტი', createdAt: '2024-01-15 14:30' },
+    { id: 2, english: 'About Us', georgian: 'ჩვენს შესახებ', createdAt: '2024-01-14 09:15' },
+    { id: 3, english: 'Contact Information', georgian: 'საკონტაქტო ინფორმაცია', createdAt: '2024-01-13 16:45' },
+    { id: 4, english: 'Services', georgian: 'სერვისები', createdAt: '2024-01-12 11:20' },
+    { id: 5, english: 'Home', georgian: 'მთავარი', createdAt: '2024-01-11 13:55' },
   ]);
   
   readonly searchTerm = signal('');
@@ -90,11 +90,16 @@ export class TextsComponent {
   
   submitNewText() {
     if (this.newEnglishText().trim() && this.newGeorgianText().trim()) {
+      const now = new Date();
+      const formattedDate = now.toISOString().slice(0, 10);
+      const formattedTime = now.toTimeString().slice(0, 5);
+      const createdAt = `${formattedDate} ${formattedTime}`;
+      
       const newText: TextItem = {
         id: this.generateNextId(),
         english: this.newEnglishText().trim(),
         georgian: this.newGeorgianText().trim(),
-        createdAt: new Date().toISOString().slice(0, 10),
+        createdAt,
       };
       
       this.texts.set([newText, ...this.texts()]);

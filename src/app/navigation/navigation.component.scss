@@ -1,12 +1,61 @@
 .side-nav {
   width: 220px;
   background: #f5f5f5;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.side-nav.collapsed {
+  width: 60px;
+}
+
+.side-nav.collapsed a {
+  padding: 1rem 0;
+  justify-content: center;
+}
+
+.nav-header {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.side-nav.collapsed .nav-header {
+  padding: 1rem 0;
+  justify-content: center;
+}
+
+.toggle-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.toggle-btn:hover {
+  background: #0056b3;
 }
 
 .side-nav ul {
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .side-nav li {
@@ -23,7 +72,24 @@
 .side-nav a {
   padding: 1rem 2rem;
   text-decoration: none;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   width: 100%;
   height: 100%;
+  white-space: nowrap;
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+.nav-label {
+  transition: opacity 0.2s ease;
+}
+
+.nav-label.hidden {
+  display: none;
 } 

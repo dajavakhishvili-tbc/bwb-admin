@@ -1,8 +1,17 @@
-<nav class="side-nav">
+<nav class="side-nav" [class.collapsed]="isCollapsed()">
+  <div class="nav-header">
+    <button class="toggle-btn" (click)="toggleNavigation()">
+      {{ isCollapsed() ? '→' : '←' }}
+    </button>
+  </div>
+  
   <ul>
     @for (item of navItems; track item.route) {
       <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <a [routerLink]="item.route">{{ item.label }}</a>
+        <a [routerLink]="item.route">
+          <span class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-label" [class.hidden]="isCollapsed()">{{ item.label }}</span>
+        </a>
       </li>
     }
   </ul>
