@@ -10,7 +10,17 @@
 
   <div class="pages-grid">
     @for (page of pages(); track page.id) {
-      <div class="page-card">
+      <div 
+        class="page-card"
+        draggable="true"
+        (dragstart)="onDragStart($event, page)"
+        (dragover)="onDragOver($event)"
+        (dragenter)="onDragEnter($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event, page)"
+        (dragend)="onDragEnd($event)"
+        [class.dragging]="draggedPage()?.id === page.id"
+      >
         <div class="page-header">
           <h3>{{ page.title }}</h3>
           <div class="page-actions">
@@ -96,6 +106,37 @@
               </button>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Delete Confirmation Dialog -->
+  @if (showDeleteDialog()) {
+    <div class="dialog-overlay" (click)="closeDeleteDialog()">
+      <div class="dialog delete-dialog" (click)="$event.stopPropagation()">
+        <div class="dialog-header">
+          <h2>Delete Page</h2>
+          <button class="close-btn" (click)="closeDeleteDialog()">×</button>
+        </div>
+        <div class="dialog-content">
+          <div class="delete-warning">
+            <div class="warning-icon">⚠️</div>
+            <h3>Are you sure you want to delete this page?</h3>
+            <p class="page-title">{{ selectedPage()?.title }}</p>
+            <p class="warning-text">
+              This action cannot be undone. The page and all its configurations will be permanently removed.
+            </p>
+          </div>
+          
+          <div class="dialog-actions">
+            <button type="button" class="btn-secondary" (click)="closeDeleteDialog()">
+              Cancel
+            </button>
+            <button type="button" class="btn-danger" (click)="confirmDelete()">
+              Delete Page
+            </button>
+          </div>
         </div>
       </div>
     </div>

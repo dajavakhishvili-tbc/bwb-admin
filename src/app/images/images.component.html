@@ -1,7 +1,9 @@
 <div class="images-container">
   <div class="header">
     <h1>Images Management</h1>
+    <p>Manage and organize your image assets with search and filtering capabilities.</p>
     <label class="custom-upload-label">
+      <span class="icon">📁</span>
       Upload Image
       <input type="file" accept="image/*" (change)="onFileSelected($event)" class="upload-input" />
     </label>
@@ -49,7 +51,7 @@
           </div>
           <div class="image-info">
             <h3>{{ image.name }}</h3>
-            <p>{{ image.size }}</p>
+            <p class="size">{{ image.size }}</p>
             <p class="date">{{ image.uploadedAt }}</p>
           </div>
         </div>

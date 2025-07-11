@@ -37,7 +37,9 @@ export class BusinessLoanComponent {
 
   readonly showAddDialog = signal(false);
   readonly showEditDialog = signal(false);
+  readonly showDeleteDialog = signal(false);
   readonly selectedPage = signal<PageConfig | null>(null);
+  readonly draggedPage = signal<PageConfig | null>(null);
 
   // Form data for dialog
   readonly dialogForm = signal({
@@ -64,6 +66,20 @@ export class BusinessLoanComponent {
     });
     this.selectedPage.set(page);
     this.showEditDialog.set(true);
+  }
+
+  deletePage(page: PageConfig) {
+    this.selectedPage.set(page);
+    this.showDeleteDialog.set(true);
+  }
+
+  confirmDelete() {
+    const selectedPage = this.selectedPage();
+    if (selectedPage) {
+      const updatedPages = this.pages().filter(p => p.id !== selectedPage.id);
+      this.pages.set(updatedPages);
+    }
+    this.closeDeleteDialog();
   }
 
   savePage() {
@@ -93,13 +109,6 @@ export class BusinessLoanComponent {
     this.closeDialog();
   }
 
-  deletePage(page: PageConfig) {
-    if (confirm(`Are you sure you want to delete "${page.title}"?`)) {
-      const updatedPages = this.pages().filter(p => p.id !== page.id);
-      this.pages.set(updatedPages);
-    }
-  }
-
   closeDialog() {
     this.showAddDialog.set(false);
     this.showEditDialog.set(false);
@@ -109,6 +118,69 @@ export class BusinessLoanComponent {
       description: '',
       posthogEvent: ''
     });
+  }
+
+  closeDeleteDialog() {
+    this.showDeleteDialog.set(false);
+    this.selectedPage.set(null);
+  }
+
+  // Drag and Drop functionality
+  onDragStart(event: DragEvent, page: PageConfig) {
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', page.id);
+      this.draggedPage.set(page);
+    }
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  onDragEnter(event: DragEvent) {
+    event.preventDefault();
+    const target = event.currentTarget as HTMLElement;
+    target.classList.add('drag-over');
+  }
+
+  onDragLeave(event: DragEvent) {
+    const target = event.currentTarget as HTMLElement;
+    target.classList.remove('drag-over');
+  }
+
+  onDrop(event: DragEvent, targetPage: PageConfig) {
+    event.preventDefault();
+    const target = event.currentTarget as HTMLElement;
+    target.classList.remove('drag-over');
+    
+    const draggedPage = this.draggedPage();
+    if (!draggedPage || draggedPage.id === targetPage.id) {
+      this.draggedPage.set(null);
+      return;
+    }
+
+    const currentPages = this.pages();
+    const draggedIndex = currentPages.findIndex(p => p.id === draggedPage.id);
+    const targetIndex = currentPages.findIndex(p => p.id === targetPage.id);
+
+    if (draggedIndex !== -1 && targetIndex !== -1) {
+      const reorderedPages = [...currentPages];
+      const [removed] = reorderedPages.splice(draggedIndex, 1);
+      reorderedPages.splice(targetIndex, 0, removed);
+      this.pages.set(reorderedPages);
+    }
+
+    this.draggedPage.set(null);
+  }
+
+  onDragEnd(event: DragEvent) {
+    this.draggedPage.set(null);
+    const target = event.currentTarget as HTMLElement;
+    target.classList.remove('drag-over');
   }
 
   private generatePageId(title: string): string {
