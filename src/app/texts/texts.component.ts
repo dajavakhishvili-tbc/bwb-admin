@@ -33,6 +33,8 @@ export class TextsComponent {
   
   // Dialog state
   readonly showDialog = signal(false);
+  readonly isEditing = signal(false);
+  readonly editingId = signal<number | null>(null);
   readonly newKey = signal('');
   readonly newEnglishText = signal('');
   readonly newGeorgianText = signal('');
@@ -83,13 +85,26 @@ export class TextsComponent {
   
   openAddDialog() {
     this.showDialog.set(true);
+    this.isEditing.set(false);
+    this.editingId.set(null);
     this.newKey.set('');
     this.newEnglishText.set('');
     this.newGeorgianText.set('');
   }
   
+  openEditDialog(text: TextItem) {
+    this.showDialog.set(true);
+    this.isEditing.set(true);
+    this.editingId.set(text.id);
+    this.newKey.set(text.key);
+    this.newEnglishText.set(text.english);
+    this.newGeorgianText.set(text.georgian);
+  }
+  
   closeDialog() {
     this.showDialog.set(false);
+    this.isEditing.set(false);
+    this.editingId.set(null);
     this.newKey.set('');
     this.newEnglishText.set('');
     this.newGeorgianText.set('');
@@ -97,20 +112,34 @@ export class TextsComponent {
   
   submitNewText() {
     if (this.newKey().trim() && this.newEnglishText().trim() && this.newGeorgianText().trim()) {
-      const now = new Date();
-      const formattedDate = now.toISOString().slice(0, 10);
-      const formattedTime = now.toTimeString().slice(0, 5);
-      const createdAt = `${formattedDate} ${formattedTime}`;
+      if (this.isEditing()) {
+        // Update existing text
+        const editingId = this.editingId();
+        if (editingId) {
+          this.texts.set(this.texts().map(text => 
+            text.id === editingId 
+              ? { ...text, key: this.newKey().trim(), english: this.newEnglishText().trim(), georgian: this.newGeorgianText().trim() }
+              : text
+          ));
+        }
+      } else {
+        // Add new text
+        const now = new Date();
+        const formattedDate = now.toISOString().slice(0, 10);
+        const formattedTime = now.toTimeString().slice(0, 5);
+        const createdAt = `${formattedDate} ${formattedTime}`;
+        
+        const newText: TextItem = {
+          id: this.generateNextId(),
+          key: this.newKey().trim(),
+          english: this.newEnglishText().trim(),
+          georgian: this.newGeorgianText().trim(),
+          createdAt,
+        };
+        
+        this.texts.set([newText, ...this.texts()]);
+      }
       
-      const newText: TextItem = {
-        id: this.generateNextId(),
-        key: this.newKey().trim(),
-        english: this.newEnglishText().trim(),
-        georgian: this.newGeorgianText().trim(),
-        createdAt,
-      };
-      
-      this.texts.set([newText, ...this.texts()]);
       this.updateFilteredTexts();
       this.closeDialog();
     }

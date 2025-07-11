@@ -14,7 +14,7 @@
 .ib-app-content {
   flex: 1;
   padding: 2rem;
-  background: #fafbfc;
+  background: var(--bg-primary);
   min-height: 100vh;
   overflow-x: auto;
   margin-left: var(--nav-width);

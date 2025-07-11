@@ -20,38 +20,78 @@
       <option value="date">Sort by Date</option>
       <option value="size">Sort by Size</option>
     </select>
+    <select [value]="sortOrder()" (change)="updateSortOrder($event)" class="sort-select">
+      <option value="desc">Descending</option>
+      <option value="asc">Ascending</option>
+    </select>
   </div>
   
-  <div class="images-grid">
-    @for (image of filteredImages(); track image.id) {
-      <div class="image-card" (click)="selectImage(image)">
-        <div class="image-preview">
-          <img [src]="image.url" [alt]="image.name">
+  @defer (on viewport) {
+    <div class="images-grid">
+      @for (image of paginatedImages(); track image.id) {
+        <div class="image-card" (click)="selectImage(image)">
+          <div class="image-preview">
+            <img 
+              ngSrc="{{ image.url }}"
+              [alt]="image.name"
+              [priority]="image.id <= 3"
+              (load)="onImageLoad(image)"
+              (error)="onImageError(image)"
+              class="image-content"
+              fill
+            >
+            @if (image.error) {
+              <div class="image-error-placeholder">
+                <div class="error-icon">⚠️</div>
+                <span>Failed to load</span>
+              </div>
+            }
+          </div>
+          <div class="image-info">
+            <h3>{{ image.name }}</h3>
+            <p>{{ image.size }}</p>
+            <p class="date">{{ image.uploadedAt }}</p>
+          </div>
         </div>
-        <div class="image-info">
-          <h3>{{ image.name }}</h3>
-          <p>{{ image.size }}</p>
-          <p class="date">{{ image.uploadedAt }}</p>
-        </div>
+      }
+    </div>
+  } @placeholder {
+    <div class="loading-placeholder">
+      <div class="placeholder-grid">
+        @for (item of [1,2,3,4,5,6]; track item) {
+          <div class="placeholder-card">
+            <div class="placeholder-image"></div>
+            <div class="placeholder-content">
+              <div class="placeholder-line"></div>
+              <div class="placeholder-line short"></div>
+            </div>
+          </div>
+        }
       </div>
-    }
-  </div>
+    </div>
+  }
   
-  <div class="pagination">
-    <button 
-      [disabled]="currentPage() === 1"
-      (click)="previousPage()"
-      class="page-btn"
-    >
-      Previous
-    </button>
-    <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
-    <button 
-      [disabled]="currentPage() === totalPages()"
-      (click)="nextPage()"
-      class="page-btn"
-    >
-      Next
-    </button>
-  </div>
+  @defer (on viewport) {
+    <div class="pagination">
+      <button 
+        [disabled]="currentPage() === 1"
+        (click)="previousPage()"
+        class="page-btn"
+      >
+        Previous
+      </button>
+      <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+      <button 
+        [disabled]="currentPage() === totalPages()"
+        (click)="nextPage()"
+        class="page-btn"
+      >
+        Next
+      </button>
+    </div>
+  } @placeholder {
+    <div class="pagination-placeholder">
+      <div class="placeholder-line"></div>
+    </div>
+  }
 </div> 

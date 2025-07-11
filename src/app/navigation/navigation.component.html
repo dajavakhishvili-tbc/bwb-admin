@@ -1,18 +1,86 @@
-<nav class="side-nav" [class.collapsed]="isCollapsed()">
+<nav class="navigation" [class.collapsed]="isCollapsed()">
   <div class="nav-header">
-    <button class="toggle-btn" (click)="toggleNavigation()">
-      {{ isCollapsed() ? '→' : '←' }}
-    </button>
+    <div class="logo-section">
+      <div class="logo">
+        @if (!isCollapsed()) {
+          <span class="logo-text">Admin Panel</span>
+        }
+      </div>
+    </div>
+    
+    <div class="nav-controls">
+      <button class="collapse-btn" (click)="toggleCollapse()" title="Toggle navigation">
+        <span class="collapse-icon">☰</span>
+      </button>
+    </div>
   </div>
   
-  <ul>
-    @for (item of navItems; track item.route) {
-      <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <a [routerLink]="item.route">
-          <span class="nav-icon">{{ item.icon }}</span>
-          <span class="nav-label" [class.hidden]="isCollapsed()">{{ item.label }}</span>
-        </a>
-      </li>
-    }
+  <ul class="nav-menu">
+    <li class="nav-item">
+      <a routerLink="/home" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">🏠</span>
+        @if (!isCollapsed()) {
+          <span class="nav-text">Home</span>
+        }
+      </a>
+    </li>
+    <li class="nav-item">
+      <a routerLink="/images" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">🖼️</span>
+        @if (!isCollapsed()) {
+          <span class="nav-text">Images</span>
+        }
+      </a>
+    </li>
+    <li class="nav-item">
+      <a routerLink="/texts" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">📝</span>
+        @if (!isCollapsed()) {
+          <span class="nav-text">Texts</span>
+        }
+      </a>
+    </li>
+    <li class="nav-item">
+      <a routerLink="/events" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">📊</span>
+        @if (!isCollapsed()) {
+          <span class="nav-text">Events</span>
+        }
+      </a>
+    </li>
+    <li class="nav-item">
+      <a routerLink="/business-loan" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">💰</span>
+        @if (!isCollapsed()) {
+          <span class="nav-text">Business Loan</span>
+        }
+      </a>
+    </li>
   </ul>
+  
+  @if (authService.getCurrentUser()) {
+    <div class="nav-footer">
+      <div class="user-info">
+        <div class="user-avatar">
+          <span class="avatar-icon">👤</span>
+        </div>
+        @if (!isCollapsed()) {
+          <div class="user-details">
+            <span class="user-name">{{ authService.getCurrentUser()?.username }}</span>
+            <span class="user-role">Administrator</span>
+          </div>
+        }
+      </div>
+      
+      <div class="footer-controls">
+        <ib-theme-toggle></ib-theme-toggle>
+        <button class="logout-btn" (click)="logout()" title="Logout">
+          <span class="logout-icon">🚪</span>
+          @if (!isCollapsed()) {
+            <span class="logout-text">Logout</span>
+          }
+        </button>
+      </div>
+    </div>
+  }
 </nav> 

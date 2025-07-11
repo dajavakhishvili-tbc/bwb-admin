@@ -19,55 +19,82 @@
     </select>
   </div>
   
-  <div class="events-list">
-    @for (event of filteredEvents(); track event.id) {
-      <div class="event-card">
-        <div class="event-content">
-          <div class="event-row">
-            <span class="label">Posthog Key:</span>
-            <span class="event-key">{{ event.posthogKey }}</span>
+  @defer (on viewport) {
+    <div class="events-list">
+      @for (event of filteredEvents(); track event.id) {
+        <div class="event-card">
+          <div class="event-content">
+            <div class="event-row">
+              <span class="label">Posthog Key:</span>
+              <span class="event-key">{{ event.posthogKey }}</span>
+            </div>
+            <div class="event-row">
+              <span class="label">Posthog Event:</span>
+              <span class="event-name">{{ event.posthogEvent }}</span>
+            </div>
+            <div class="event-row">
+              <span class="label">Created:</span>
+              <span class="date">{{ event.createdAt }}</span>
+            </div>
           </div>
-          <div class="event-row">
-            <span class="label">Posthog Event:</span>
-            <span class="event-name">{{ event.posthogEvent }}</span>
-          </div>
-          <div class="event-row">
-            <span class="label">Created:</span>
-            <span class="date">{{ event.createdAt }}</span>
+          <div class="event-actions">
+            <button class="edit-btn" (click)="openEditDialog(event)">Edit</button>
+            <button class="delete-btn" (click)="deleteEvent(event)">Delete</button>
           </div>
         </div>
-        <div class="event-actions">
-          <button class="delete-btn" (click)="deleteEvent(event)">Delete</button>
-        </div>
+      }
+    </div>
+  } @placeholder {
+    <div class="loading-placeholder">
+      <div class="placeholder-list">
+        @for (item of [1,2,3,4,5]; track item) {
+          <div class="placeholder-event-card">
+            <div class="placeholder-content">
+              <div class="placeholder-line"></div>
+              <div class="placeholder-line"></div>
+              <div class="placeholder-line short"></div>
+            </div>
+            <div class="placeholder-actions">
+              <div class="placeholder-btn"></div>
+              <div class="placeholder-btn"></div>
+            </div>
+          </div>
+        }
       </div>
-    }
-  </div>
+    </div>
+  }
   
-  <div class="pagination">
-    <button 
-      [disabled]="currentPage() === 1"
-      (click)="previousPage()"
-      class="page-btn"
-    >
-      Previous
-    </button>
-    <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
-    <button 
-      [disabled]="currentPage() === totalPages()"
-      (click)="nextPage()"
-      class="page-btn"
-    >
-      Next
-    </button>
-  </div>
+  @defer (on viewport) {
+    <div class="pagination">
+      <button 
+        [disabled]="currentPage() === 1"
+        (click)="previousPage()"
+        class="page-btn"
+      >
+        Previous
+      </button>
+      <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+      <button 
+        [disabled]="currentPage() === totalPages()"
+        (click)="nextPage()"
+        class="page-btn"
+      >
+        Next
+      </button>
+    </div>
+  } @placeholder {
+    <div class="pagination-placeholder">
+      <div class="placeholder-line"></div>
+    </div>
+  }
 </div>
 
-<!-- Add Event Dialog -->
+<!-- Add/Edit Event Dialog -->
 @if (showDialog()) {
   <div class="dialog-overlay" (click)="closeDialog()">
     <div class="dialog-content" (click)="$event.stopPropagation()">
       <div class="dialog-header">
-        <h2>Add New Posthog Event</h2>
+        <h2>{{ isEditing() ? 'Edit Posthog Event' : 'Add New Posthog Event' }}</h2>
         <button class="close-btn" (click)="closeDialog()">&times;</button>
       </div>
       
@@ -99,7 +126,7 @@
       
       <div class="dialog-footer">
         <button class="cancel-btn" (click)="closeDialog()">Cancel</button>
-        <button class="submit-btn" (click)="submitNewEvent()">Add Event</button>
+        <button class="submit-btn" (click)="submitNewEvent()">{{ isEditing() ? 'Update Event' : 'Add Event' }}</button>
       </div>
     </div>
   </div>

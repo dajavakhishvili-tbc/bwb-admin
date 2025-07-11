@@ -1,0 +1,63 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Admin Login</h1>
+      <p>Please sign in to access the admin panel</p>
+    </div>
+    
+    <form class="login-form" (submit)="$event.preventDefault(); onSubmit()">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username"
+          [value]="username()"
+          (input)="updateUsername($event)"
+          placeholder="Enter your username"
+          class="form-input"
+          [disabled]="isLoading()"
+        />
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password"
+          [value]="password()"
+          (input)="updatePassword($event)"
+          placeholder="Enter your password"
+          class="form-input"
+          [disabled]="isLoading()"
+        />
+      </div>
+      
+      @if (errorMessage()) {
+        <div class="error-message">
+          {{ errorMessage() }}
+        </div>
+      }
+      
+      <button 
+        type="submit" 
+        class="login-btn"
+        [disabled]="isLoading()"
+      >
+        @if (isLoading()) {
+          <span class="loading-spinner"></span>
+          Signing in...
+        } @else {
+          Sign In
+        }
+      </button>
+    </form>
+    
+    <div class="login-footer">
+      <p class="demo-info">
+        <strong>Demo Credentials:</strong><br>
+        Username: <code>admin</code><br>
+        Password: <code>password</code>
+      </p>
+    </div>
+  </div>
+</div> 

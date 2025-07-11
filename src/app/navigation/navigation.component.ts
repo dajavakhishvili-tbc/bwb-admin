@@ -1,39 +1,30 @@
-import { Component, ChangeDetectionStrategy, signal, effect } from '@angular/core';
-import { RouterModule } from '@angular/router';
-
-interface NavItem {
-  label: string;
-  route: string;
-  icon: string;
-}
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
+import { ThemeToggleComponent } from '../components/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'ib-navigation',
-  imports: [RouterModule],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ThemeToggleComponent, RouterModule],
+  standalone: true
 })
 export class NavigationComponent {
   readonly isCollapsed = signal(false);
   
-  readonly navItems: NavItem[] = [
-    { label: 'Home', route: '/home', icon: '🏠' },
-    { label: 'Images', route: '/images', icon: '🖼️' },
-    { label: 'Texts', route: '/texts', icon: '📝' },
-    { label: 'Posthog Events', route: '/events', icon: '📊' },
-    { label: 'Business Loan', route: '/business-loan', icon: '💰' },
-  ];
+  constructor(
+    public authService: AuthService,
+    private router: Router
+  ) {}
   
-  constructor() {
-    // Update CSS custom property when navigation state changes
-    effect(() => {
-      const navWidth = this.isCollapsed() ? '60px' : '220px';
-      document.documentElement.style.setProperty('--nav-width', navWidth);
-    });
+  toggleCollapse(): void {
+    this.isCollapsed.set(!this.isCollapsed());
   }
   
-  toggleNavigation() {
-    this.isCollapsed.set(!this.isCollapsed());
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 } 

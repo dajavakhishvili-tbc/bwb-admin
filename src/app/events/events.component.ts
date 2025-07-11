@@ -32,6 +32,8 @@ export class EventsComponent {
   
   // Dialog state
   readonly showDialog = signal(false);
+  readonly isEditing = signal(false);
+  readonly editingId = signal<number | null>(null);
   readonly newPosthogKey = signal('');
   readonly newPosthogEvent = signal('');
   
@@ -78,31 +80,57 @@ export class EventsComponent {
   
   openAddDialog() {
     this.showDialog.set(true);
+    this.isEditing.set(false);
+    this.editingId.set(null);
     this.newPosthogKey.set('');
     this.newPosthogEvent.set('');
   }
   
+  openEditDialog(event: EventItem) {
+    this.showDialog.set(true);
+    this.isEditing.set(true);
+    this.editingId.set(event.id);
+    this.newPosthogKey.set(event.posthogKey);
+    this.newPosthogEvent.set(event.posthogEvent);
+  }
+  
   closeDialog() {
     this.showDialog.set(false);
+    this.isEditing.set(false);
+    this.editingId.set(null);
     this.newPosthogKey.set('');
     this.newPosthogEvent.set('');
   }
   
   submitNewEvent() {
     if (this.newPosthogKey().trim() && this.newPosthogEvent().trim()) {
-      const now = new Date();
-      const formattedDate = now.toISOString().slice(0, 10);
-      const formattedTime = now.toTimeString().slice(0, 5);
-      const createdAt = `${formattedDate} ${formattedTime}`;
+      if (this.isEditing()) {
+        // Update existing event
+        const editingId = this.editingId();
+        if (editingId) {
+          this.events.set(this.events().map(event => 
+            event.id === editingId 
+              ? { ...event, posthogKey: this.newPosthogKey().trim(), posthogEvent: this.newPosthogEvent().trim() }
+              : event
+          ));
+        }
+      } else {
+        // Add new event
+        const now = new Date();
+        const formattedDate = now.toISOString().slice(0, 10);
+        const formattedTime = now.toTimeString().slice(0, 5);
+        const createdAt = `${formattedDate} ${formattedTime}`;
+        
+        const newEvent: EventItem = {
+          id: this.generateNextId(),
+          posthogKey: this.newPosthogKey().trim(),
+          posthogEvent: this.newPosthogEvent().trim(),
+          createdAt,
+        };
+        
+        this.events.set([newEvent, ...this.events()]);
+      }
       
-      const newEvent: EventItem = {
-        id: this.generateNextId(),
-        posthogKey: this.newPosthogKey().trim(),
-        posthogEvent: this.newPosthogEvent().trim(),
-        createdAt,
-      };
-      
-      this.events.set([newEvent, ...this.events()]);
       this.updateFilteredEvents();
       this.closeDialog();
     }

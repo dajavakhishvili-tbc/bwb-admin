@@ -20,59 +20,86 @@
     </select>
   </div>
   
-  <div class="texts-list">
-    @for (text of filteredTexts(); track text.id) {
-      <div class="text-card">
-        <div class="text-content">
-          <div class="text-row">
-            <span class="label">Key:</span>
-            <span class="text-key">{{ text.key }}</span>
+  @defer (on viewport) {
+    <div class="texts-list">
+      @for (text of filteredTexts(); track text.id) {
+        <div class="text-card">
+          <div class="text-content">
+            <div class="text-row">
+              <span class="label">Key:</span>
+              <span class="text-key">{{ text.key }}</span>
+            </div>
+            <div class="text-row">
+              <span class="label">English:</span>
+              <span class="text">{{ text.english }}</span>
+            </div>
+            <div class="text-row">
+              <span class="label">Georgian:</span>
+              <span class="text">{{ text.georgian }}</span>
+            </div>
+            <div class="text-row">
+              <span class="label">Created:</span>
+              <span class="date">{{ text.createdAt }}</span>
+            </div>
           </div>
-          <div class="text-row">
-            <span class="label">English:</span>
-            <span class="text">{{ text.english }}</span>
-          </div>
-          <div class="text-row">
-            <span class="label">Georgian:</span>
-            <span class="text">{{ text.georgian }}</span>
-          </div>
-          <div class="text-row">
-            <span class="label">Created:</span>
-            <span class="date">{{ text.createdAt }}</span>
+          <div class="text-actions">
+            <button class="edit-btn" (click)="openEditDialog(text)">Edit</button>
+            <button class="delete-btn" (click)="deleteText(text)">Delete</button>
           </div>
         </div>
-        <div class="text-actions">
-          <button class="delete-btn" (click)="deleteText(text)">Delete</button>
-        </div>
+      }
+    </div>
+  } @placeholder {
+    <div class="loading-placeholder">
+      <div class="placeholder-list">
+        @for (item of [1,2,3,4,5]; track item) {
+          <div class="placeholder-text-card">
+            <div class="placeholder-content">
+              <div class="placeholder-line"></div>
+              <div class="placeholder-line"></div>
+              <div class="placeholder-line short"></div>
+            </div>
+            <div class="placeholder-actions">
+              <div class="placeholder-btn"></div>
+              <div class="placeholder-btn"></div>
+            </div>
+          </div>
+        }
       </div>
-    }
-  </div>
+    </div>
+  }
   
-  <div class="pagination">
-    <button 
-      [disabled]="currentPage() === 1"
-      (click)="previousPage()"
-      class="page-btn"
-    >
-      Previous
-    </button>
-    <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
-    <button 
-      [disabled]="currentPage() === totalPages()"
-      (click)="nextPage()"
-      class="page-btn"
-    >
-      Next
-    </button>
-  </div>
+  @defer (on viewport) {
+    <div class="pagination">
+      <button 
+        [disabled]="currentPage() === 1"
+        (click)="previousPage()"
+        class="page-btn"
+      >
+        Previous
+      </button>
+      <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+      <button 
+        [disabled]="currentPage() === totalPages()"
+        (click)="nextPage()"
+        class="page-btn"
+      >
+        Next
+      </button>
+    </div>
+  } @placeholder {
+    <div class="pagination-placeholder">
+      <div class="placeholder-line"></div>
+    </div>
+  }
 </div>
 
-<!-- Add Text Dialog -->
+<!-- Add/Edit Text Dialog -->
 @if (showDialog()) {
   <div class="dialog-overlay" (click)="closeDialog()">
     <div class="dialog-content" (click)="$event.stopPropagation()">
       <div class="dialog-header">
-        <h2>Add New Text</h2>
+        <h2>{{ isEditing() ? 'Edit Text' : 'Add New Text' }}</h2>
         <button class="close-btn" (click)="closeDialog()">&times;</button>
       </div>
       
@@ -114,7 +141,7 @@
       
       <div class="dialog-footer">
         <button class="cancel-btn" (click)="closeDialog()">Cancel</button>
-        <button class="submit-btn" (click)="submitNewText()">Add Text</button>
+        <button class="submit-btn" (click)="submitNewText()">{{ isEditing() ? 'Update Text' : 'Add Text' }}</button>
       </div>
     </div>
   </div>
