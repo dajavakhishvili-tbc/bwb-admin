@@ -1,45 +1,103 @@
 <div class="business-loan-container">
-  <h1>Business Loan Management</h1>
-  <p>This is the business loan page.</p>
-  <div class="applications-table">
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Applicant Name</th>
-          <th>Business Type</th>
-          <th>Amount</th>
-          <th>Credit Score</th>
-          <th>Status</th>
-          <th>Submitted Date</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (application of filteredApplications(); track application.id) {
-          <tr>
-            <td>#{{ application.id }}</td>
-            <td>{{ application.applicantName }}</td>
-            <td>{{ application.businessType }}</td>
-            <td>${{ application.amount | number:'1.0-0' }}</td>
-            <td>
-              <span class="credit-score" [class]="getCreditScoreClass(application.creditScore)">
-                {{ application.creditScore }}
-              </span>
-            </td>
-            <td>
-              <span class="status-badge" [class]="application.status">
-                {{ application.status | titlecase }}
-              </span>
-            </td>
-            <td>{{ application.submittedDate }}</td>
-            <td>
-              <button class="action-btn view" (click)="viewApplication(application)">View</button>
-              <button class="action-btn edit" (click)="editApplication(application)">Edit</button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+  <div class="header">
+    <h1>Business Loan Pages</h1>
+    <p>Manage pages and their configurations for the business loan section.</p>
+    <button class="add-page-btn" (click)="addNewPage()">
+      <span class="icon">+</span>
+      Add New Page
+    </button>
   </div>
+
+  <div class="pages-grid">
+    @for (page of pages(); track page.id) {
+      <div class="page-card">
+        <div class="page-header">
+          <h3>{{ page.title }}</h3>
+          <div class="page-actions">
+            <button class="action-btn edit" (click)="editPage(page)" title="Edit page">
+              <span class="icon">✏️</span>
+            </button>
+            <button class="action-btn delete" (click)="deletePage(page)" title="Delete page">
+              <span class="icon">🗑️</span>
+            </button>
+          </div>
+        </div>
+        <div class="page-content">
+          <p class="description">{{ page.description }}</p>
+          <div class="page-meta">
+            <span class="posthog-event">
+              <strong>PostHog Event:</strong> {{ page.posthogEvent }}
+            </span>
+            <span class="created-date">
+              Created: {{ page.createdAt | date:'shortDate' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Add/Edit Dialog -->
+  @if (showAddDialog() || showEditDialog()) {
+    <div class="dialog-overlay" (click)="closeDialog()">
+      <div class="dialog" (click)="$event.stopPropagation()">
+        <div class="dialog-header">
+          <h2>{{ getDialogTitle() }}</h2>
+          <button class="close-btn" (click)="closeDialog()">×</button>
+        </div>
+        <div class="dialog-content">
+          <form (ngSubmit)="savePage()" #pageForm="ngForm">
+            <div class="form-group">
+              <label for="title">Page Title</label>
+              <input 
+                type="text" 
+                id="title" 
+                name="title"
+                [(ngModel)]="dialogForm().title"
+                required
+                placeholder="Enter page title"
+                class="form-input"
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea 
+                id="description" 
+                name="description"
+                [(ngModel)]="dialogForm().description"
+                required
+                placeholder="Enter page description"
+                rows="3"
+                class="form-textarea"
+              ></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="posthogEvent">PostHog Event Name</label>
+              <input 
+                type="text" 
+                id="posthogEvent" 
+                name="posthogEvent"
+                [(ngModel)]="dialogForm().posthogEvent"
+                required
+                placeholder="e.g., business_loan_conditions_viewed"
+                class="form-input"
+              >
+              <small class="form-hint">Use snake_case format for event names</small>
+            </div>
+            
+            <div class="dialog-actions">
+              <button type="button" class="btn-secondary" (click)="closeDialog()">
+                Cancel
+              </button>
+              <button type="submit" class="btn-primary" [disabled]="!pageForm.form.valid">
+                {{ getSaveButtonText() }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
 </div> 

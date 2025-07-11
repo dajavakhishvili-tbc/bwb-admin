@@ -1,14 +1,13 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { DecimalPipe, TitleCasePipe } from '@angular/common';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
-interface LoanApplication {
-  id: number;
-  applicantName: string;
-  amount: number;
-  status: 'pending' | 'approved' | 'rejected' | 'processing';
-  submittedDate: string;
-  businessType: string;
-  creditScore: number;
+interface PageConfig {
+  id: string;
+  title: string;
+  description: string;
+  posthogEvent: string;
+  createdAt: Date;
 }
 
 @Component({
@@ -16,34 +15,116 @@ interface LoanApplication {
   templateUrl: './business-loan.component.html',
   styleUrl: './business-loan.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, TitleCasePipe],
+  imports: [CommonModule, FormsModule],
 })
 export class BusinessLoanComponent {
-  applications: LoanApplication[] = [
-    { id: 1001, applicantName: 'John Smith', amount: 50000, status: 'pending', submittedDate: '2024-01-15', businessType: 'Restaurant', creditScore: 720 },
-    { id: 1002, applicantName: 'Sarah Johnson', amount: 75000, status: 'approved', submittedDate: '2024-01-14', businessType: 'Retail', creditScore: 780 },
-    { id: 1003, applicantName: 'Mike Davis', amount: 120000, status: 'processing', submittedDate: '2024-01-13', businessType: 'Manufacturing', creditScore: 650 },
-    { id: 1004, applicantName: 'Lisa Wilson', amount: 35000, status: 'rejected', submittedDate: '2024-01-12', businessType: 'Consulting', creditScore: 580 },
-    { id: 1005, applicantName: 'David Brown', amount: 90000, status: 'pending', submittedDate: '2024-01-11', businessType: 'Technology', creditScore: 810 },
-    { id: 1006, applicantName: 'Emma Taylor', amount: 60000, status: 'approved', submittedDate: '2024-01-10', businessType: 'Healthcare', creditScore: 750 },
-  ];
+  readonly pages = signal<PageConfig[]>([
+    {
+      id: 'business-loan-conditions',
+      title: 'Business Loan Conditions',
+      description: 'Terms and conditions for business loans',
+      posthogEvent: 'business_loan_conditions_viewed',
+      createdAt: new Date('2024-01-15')
+    },
+    {
+      id: 'loan-application-process',
+      title: 'Loan Application Process',
+      description: 'Step-by-step guide for loan applications',
+      posthogEvent: 'loan_application_process_viewed',
+      createdAt: new Date('2024-01-14')
+    }
+  ]);
 
-  filteredApplications(): LoanApplication[] {
-    return this.applications;
+  readonly showAddDialog = signal(false);
+  readonly showEditDialog = signal(false);
+  readonly selectedPage = signal<PageConfig | null>(null);
+
+  // Form data for dialog
+  readonly dialogForm = signal({
+    title: '',
+    description: '',
+    posthogEvent: ''
+  });
+
+  addNewPage() {
+    this.dialogForm.set({
+      title: '',
+      description: '',
+      posthogEvent: ''
+    });
+    this.selectedPage.set(null);
+    this.showAddDialog.set(true);
   }
 
-  getCreditScoreClass(score: number): string {
-    if (score >= 750) return 'excellent';
-    if (score >= 700) return 'good';
-    if (score >= 650) return 'fair';
-    return 'poor';
+  editPage(page: PageConfig) {
+    this.dialogForm.set({
+      title: page.title,
+      description: page.description,
+      posthogEvent: page.posthogEvent
+    });
+    this.selectedPage.set(page);
+    this.showEditDialog.set(true);
   }
 
-  viewApplication(application: LoanApplication) {
-    console.log('View application:', application);
+  savePage() {
+    const form = this.dialogForm();
+    const selectedPage = this.selectedPage();
+
+    if (selectedPage) {
+      // Edit existing page
+      const updatedPages = this.pages().map(page => 
+        page.id === selectedPage.id 
+          ? { ...page, ...form }
+          : page
+      );
+      this.pages.set(updatedPages);
+    } else {
+      // Add new page
+      const newPage: PageConfig = {
+        id: this.generatePageId(form.title),
+        title: form.title,
+        description: form.description,
+        posthogEvent: form.posthogEvent,
+        createdAt: new Date()
+      };
+      this.pages.set([newPage, ...this.pages()]);
+    }
+
+    this.closeDialog();
   }
 
-  editApplication(application: LoanApplication) {
-    console.log('Edit application:', application);
+  deletePage(page: PageConfig) {
+    if (confirm(`Are you sure you want to delete "${page.title}"?`)) {
+      const updatedPages = this.pages().filter(p => p.id !== page.id);
+      this.pages.set(updatedPages);
+    }
+  }
+
+  closeDialog() {
+    this.showAddDialog.set(false);
+    this.showEditDialog.set(false);
+    this.selectedPage.set(null);
+    this.dialogForm.set({
+      title: '',
+      description: '',
+      posthogEvent: ''
+    });
+  }
+
+  private generatePageId(title: string): string {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  }
+
+  getDialogTitle(): string {
+    return this.selectedPage() ? 'Edit Page' : 'Add New Page';
+  }
+
+  getSaveButtonText(): string {
+    return this.selectedPage() ? 'Update Page' : 'Add Page';
   }
 } 
