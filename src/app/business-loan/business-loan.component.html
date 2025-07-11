@@ -47,98 +47,15 @@
     }
   </div>
 
-  <!-- Add/Edit Dialog -->
-  @if (showAddDialog() || showEditDialog()) {
-    <div class="dialog-overlay" (click)="closeDialog()">
-      <div class="dialog" (click)="$event.stopPropagation()">
-        <div class="dialog-header">
-          <h2>{{ getDialogTitle() }}</h2>
-          <button class="close-btn" (click)="closeDialog()">×</button>
-        </div>
-        <div class="dialog-content">
-          <form (ngSubmit)="savePage()" #pageForm="ngForm">
-            <div class="form-group">
-              <label for="title">Page Title</label>
-              <input 
-                type="text" 
-                id="title" 
-                name="title"
-                [(ngModel)]="dialogForm().title"
-                required
-                placeholder="Enter page title"
-                class="form-input"
-              >
-            </div>
-            
-            <div class="form-group">
-              <label for="description">Description</label>
-              <textarea 
-                id="description" 
-                name="description"
-                [(ngModel)]="dialogForm().description"
-                required
-                placeholder="Enter page description"
-                rows="3"
-                class="form-textarea"
-              ></textarea>
-            </div>
-            
-            <div class="form-group">
-              <label for="posthogEvent">PostHog Event Name</label>
-              <input 
-                type="text" 
-                id="posthogEvent" 
-                name="posthogEvent"
-                [(ngModel)]="dialogForm().posthogEvent"
-                required
-                placeholder="e.g., business_loan_conditions_viewed"
-                class="form-input"
-              >
-              <small class="form-hint">Use snake_case format for event names</small>
-            </div>
-            
-            <div class="dialog-actions">
-              <button type="button" class="btn-secondary" (click)="closeDialog()">
-                Cancel
-              </button>
-              <button type="submit" class="btn-primary" [disabled]="!pageForm.form.valid">
-                {{ getSaveButtonText() }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  }
-
-  <!-- Delete Confirmation Dialog -->
-  @if (showDeleteDialog()) {
-    <div class="dialog-overlay" (click)="closeDeleteDialog()">
-      <div class="dialog delete-dialog" (click)="$event.stopPropagation()">
-        <div class="dialog-header">
-          <h2>Delete Page</h2>
-          <button class="close-btn" (click)="closeDeleteDialog()">×</button>
-        </div>
-        <div class="dialog-content">
-          <div class="delete-warning">
-            <div class="warning-icon">⚠️</div>
-            <h3>Are you sure you want to delete this page?</h3>
-            <p class="page-title">{{ selectedPage()?.title }}</p>
-            <p class="warning-text">
-              This action cannot be undone. The page and all its configurations will be permanently removed.
-            </p>
-          </div>
-          
-          <div class="dialog-actions">
-            <button type="button" class="btn-secondary" (click)="closeDeleteDialog()">
-              Cancel
-            </button>
-            <button type="button" class="btn-danger" (click)="confirmDelete()">
-              Delete Page
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
+  <!-- Page Dialog Component -->
+  <ib-page-dialog
+    [dialogType]="dialogType()"
+    [selectedPage]="selectedPage()"
+    [dialogForm]="dialogForm()"
+    [isOpen]="showDialog()"
+    (close)="closeDialog()"
+    (save)="onDialogSave($event)"
+    (delete)="onDialogDelete()"
+    (formChange)="dialogForm.set($event)"
+  />
 </div> 

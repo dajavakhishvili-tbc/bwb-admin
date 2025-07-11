@@ -1,0 +1,1 @@
+export { ImageUploadComponent, type UploadedImage } from './image-upload.component'; 

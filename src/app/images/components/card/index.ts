@@ -1,0 +1,1 @@
+export { ImageCardComponent, type ImageItem } from './image-card.component'; 

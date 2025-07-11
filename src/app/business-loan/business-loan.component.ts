@@ -1,21 +1,14 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface PageConfig {
-  id: string;
-  title: string;
-  description: string;
-  posthogEvent: string;
-  createdAt: Date;
-}
+import { PageDialogComponent, type PageConfig, type DialogForm, type DialogType } from './page-dialog.component';
 
 @Component({
   selector: 'ib-business-loan',
   templateUrl: './business-loan.component.html',
   styleUrl: './business-loan.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageDialogComponent],
 })
 export class BusinessLoanComponent {
   readonly pages = signal<PageConfig[]>([
@@ -84,14 +77,13 @@ export class BusinessLoanComponent {
     },
   ]);
 
-  readonly showAddDialog = signal(false);
-  readonly showEditDialog = signal(false);
-  readonly showDeleteDialog = signal(false);
+  readonly showDialog = signal(false);
+  readonly dialogType = signal<DialogType>('add');
   readonly selectedPage = signal<PageConfig | null>(null);
   readonly draggedPage = signal<PageConfig | null>(null);
 
   // Form data for dialog
-  readonly dialogForm = signal({
+  readonly dialogForm = signal<DialogForm>({
     title: '',
     description: '',
     posthogEvent: ''
@@ -104,7 +96,8 @@ export class BusinessLoanComponent {
       posthogEvent: ''
     });
     this.selectedPage.set(null);
-    this.showAddDialog.set(true);
+    this.dialogType.set('add');
+    this.showDialog.set(true);
   }
 
   editPage(page: PageConfig) {
@@ -114,25 +107,17 @@ export class BusinessLoanComponent {
       posthogEvent: page.posthogEvent
     });
     this.selectedPage.set(page);
-    this.showEditDialog.set(true);
+    this.dialogType.set('edit');
+    this.showDialog.set(true);
   }
 
   deletePage(page: PageConfig) {
     this.selectedPage.set(page);
-    this.showDeleteDialog.set(true);
+    this.dialogType.set('delete');
+    this.showDialog.set(true);
   }
 
-  confirmDelete() {
-    const selectedPage = this.selectedPage();
-    if (selectedPage) {
-      const updatedPages = this.pages().filter(p => p.id !== selectedPage.id);
-      this.pages.set(updatedPages);
-    }
-    this.closeDeleteDialog();
-  }
-
-  savePage() {
-    const form = this.dialogForm();
+  onDialogSave(form: DialogForm) {
     const selectedPage = this.selectedPage();
 
     if (selectedPage) {
@@ -158,20 +143,23 @@ export class BusinessLoanComponent {
     this.closeDialog();
   }
 
+  onDialogDelete() {
+    const selectedPage = this.selectedPage();
+    if (selectedPage) {
+      const updatedPages = this.pages().filter(p => p.id !== selectedPage.id);
+      this.pages.set(updatedPages);
+    }
+    this.closeDialog();
+  }
+
   closeDialog() {
-    this.showAddDialog.set(false);
-    this.showEditDialog.set(false);
+    this.showDialog.set(false);
     this.selectedPage.set(null);
     this.dialogForm.set({
       title: '',
       description: '',
       posthogEvent: ''
     });
-  }
-
-  closeDeleteDialog() {
-    this.showDeleteDialog.set(false);
-    this.selectedPage.set(null);
   }
 
   // Drag and Drop functionality
@@ -239,13 +227,5 @@ export class BusinessLoanComponent {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .trim();
-  }
-
-  getDialogTitle(): string {
-    return this.selectedPage() ? 'Edit Page' : 'Add New Page';
-  }
-
-  getSaveButtonText(): string {
-    return this.selectedPage() ? 'Update Page' : 'Add Page';
   }
 } 

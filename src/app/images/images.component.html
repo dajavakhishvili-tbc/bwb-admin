@@ -2,59 +2,27 @@
   <div class="header">
     <h1>Images Management</h1>
     <p>Manage and organize your image assets with search and filtering capabilities.</p>
-    <label class="custom-upload-label">
-      <span class="icon">📁</span>
-      Upload Image
-      <input type="file" accept="image/*" (change)="onFileSelected($event)" class="upload-input" />
-    </label>
+    <ib-image-upload (fileSelected)="onFileSelected($event)" />
   </div>
   
-  <div class="filters">
-    <input 
-      type="text" 
-      placeholder="Search images..." 
-      [value]="searchTerm()"
-      (input)="updateSearch($event)"
-      class="search-input"
-    >
-    <select [value]="sortBy()" (change)="updateSort($event)" class="sort-select">
-      <option value="name">Sort by Name</option>
-      <option value="date">Sort by Date</option>
-      <option value="size">Sort by Size</option>
-    </select>
-    <select [value]="sortOrder()" (change)="updateSortOrder($event)" class="sort-select">
-      <option value="desc">Descending</option>
-      <option value="asc">Ascending</option>
-    </select>
-  </div>
+  <ib-image-filters
+    [searchTerm]="searchTerm()"
+    [sortBy]="sortBy()"
+    [sortOrder]="sortOrder()"
+    (searchChange)="updateSearch($event)"
+    (sortByChange)="updateSort($event)"
+    (sortOrderChange)="updateSortOrder($event)"
+  />
   
   @defer (on viewport) {
     <div class="images-grid">
       @for (image of paginatedImages(); track image.id) {
-        <div class="image-card" (click)="selectImage(image)">
-          <div class="image-preview">
-            <img 
-              ngSrc="{{ image.url }}"
-              [alt]="image.name"
-              [priority]="image.id <= 3"
-              (load)="onImageLoad(image)"
-              (error)="onImageError(image)"
-              class="image-content"
-              fill
-            >
-            @if (image.error) {
-              <div class="image-error-placeholder">
-                <div class="error-icon">⚠️</div>
-                <span>Failed to load</span>
-              </div>
-            }
-          </div>
-          <div class="image-info">
-            <h3>{{ image.name }}</h3>
-            <p class="size">{{ image.size }}</p>
-            <p class="date">{{ image.uploadedAt }}</p>
-          </div>
-        </div>
+        <ib-image-card
+          [image]="image"
+          (imageLoad)="onImageLoad($event)"
+          (imageError)="onImageError($event)"
+          (imageSelect)="selectImage($event)"
+        />
       }
     </div>
   } @placeholder {
@@ -74,23 +42,12 @@
   }
   
   @defer (on viewport) {
-    <div class="pagination">
-      <button 
-        [disabled]="currentPage() === 1"
-        (click)="previousPage()"
-        class="page-btn"
-      >
-        Previous
-      </button>
-      <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
-      <button 
-        [disabled]="currentPage() === totalPages()"
-        (click)="nextPage()"
-        class="page-btn"
-      >
-        Next
-      </button>
-    </div>
+    <ib-image-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      (previousPage)="previousPage()"
+      (nextPage)="nextPage()"
+    />
   } @placeholder {
     <div class="pagination-placeholder">
       <div class="placeholder-line"></div>

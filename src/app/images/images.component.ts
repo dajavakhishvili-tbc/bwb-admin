@@ -1,15 +1,9 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
-
-interface ImageItem {
-  id: number;
-  name: string;
-  url: string;
-  size: string;
-  uploadedAt: string;
-  loaded?: boolean;
-  error?: boolean;
-}
+import { ImageCardComponent, type ImageItem } from './components/card';
+import { ImageFiltersComponent } from './components/filters';
+import { ImagePaginationComponent } from './components/pagination';
+import { ImageUploadComponent, type UploadedImage } from './components/upload';
 
 @Component({
   selector: 'ib-images',
@@ -17,7 +11,7 @@ interface ImageItem {
   styleUrl: './images.component.scss',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgOptimizedImage]
+  imports: [NgOptimizedImage, ImageCardComponent, ImageFiltersComponent, ImagePaginationComponent, ImageUploadComponent]
 })
 export class ImagesComponent {
   readonly images = signal<ImageItem[]>([
@@ -48,22 +42,19 @@ export class ImagesComponent {
     this.updateFilteredImages();
   }
   
-  updateSearch(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.searchTerm.set(target.value);
+  updateSearch(searchTerm: string) {
+    this.searchTerm.set(searchTerm);
     this.currentPage.set(1);
     this.updateFilteredImages();
   }
   
-  updateSort(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    this.sortBy.set(target.value);
+  updateSort(sortBy: string) {
+    this.sortBy.set(sortBy);
     this.updateFilteredImages();
   }
   
-  updateSortOrder(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    this.sortOrder.set(target.value);
+  updateSortOrder(sortOrder: string) {
+    this.sortOrder.set(sortOrder);
     this.updateFilteredImages();
   }
   
@@ -110,13 +101,11 @@ export class ImagesComponent {
   }
   
   onImageLoad(image: ImageItem) {
-    image.loaded = true;
-    image.error = false;
+    // Image load is now handled by the ImageCardComponent
   }
   
   onImageError(image: ImageItem) {
-    image.error = true;
-    image.loaded = false;
+    // Image error is now handled by the ImageCardComponent
   }
   
   parseSize(size: string): number {
@@ -138,47 +127,26 @@ export class ImagesComponent {
     }
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result as string;
-      const newImage: ImageItem = {
-        id: this.generateNextId(),
-        name: file.name,
-        url,
-        size: this.formatFileSize(file.size),
-        uploadedAt: new Date().toISOString().slice(0, 10),
-        loaded: true, // Local files are immediately loaded
-        error: false
-      };
-      this.images.set([newImage, ...this.images()]);
-      this.updateFilteredImages();
+  onFileSelected(uploadedImage: UploadedImage) {
+    const newImage: ImageItem = {
+      id: this.generateNextId(),
+      name: uploadedImage.name,
+      url: uploadedImage.url,
+      size: uploadedImage.size,
+      uploadedAt: uploadedImage.uploadedAt,
+      loaded: uploadedImage.loaded,
+      error: uploadedImage.error
     };
-    reader.readAsDataURL(file);
-    // Reset input value so same file can be uploaded again if needed
-    input.value = '';
+    this.images.set([newImage, ...this.images()]);
+    this.updateFilteredImages();
   }
 
   private generateNextId(): number {
     const current = this.images();
     return current.length > 0 ? Math.max(...current.map(img => img.id)) + 1 : 1;
   }
-
-  private formatFileSize(bytes: number): string {
-    if (bytes >= 1024 * 1024) {
-      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-    } else if (bytes >= 1024) {
-      return (bytes / 1024).toFixed(0) + ' KB';
-    } else {
-      return bytes + ' B';
-    }
-  }
   
   selectImage(image: ImageItem) {
     // Implementation for image selection
-    console.log('Selected image:', image);
   }
 } 
