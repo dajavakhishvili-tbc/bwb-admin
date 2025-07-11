@@ -21,6 +21,7 @@ export class NavigationComponent {
     { label: 'Home', route: '/home', icon: '🏠' },
     { label: 'Images', route: '/images', icon: '🖼️' },
     { label: 'Texts', route: '/texts', icon: '📝' },
+    { label: 'Posthog Events', route: '/events', icon: '📊' },
     { label: 'Business Loan', route: '/business-loan', icon: '💰' },
   ];
   

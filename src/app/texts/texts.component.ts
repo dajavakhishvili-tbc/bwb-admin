@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 
 interface TextItem {
   id: number;
+  key: string;
   english: string;
   georgian: string;
   createdAt: string;
@@ -15,11 +16,11 @@ interface TextItem {
 })
 export class TextsComponent {
   readonly texts = signal<TextItem[]>([
-    { id: 1, english: 'Welcome to our website', georgian: 'მოგესალმებათ ჩვენი ვებსაიტი', createdAt: '2024-01-15 14:30' },
-    { id: 2, english: 'About Us', georgian: 'ჩვენს შესახებ', createdAt: '2024-01-14 09:15' },
-    { id: 3, english: 'Contact Information', georgian: 'საკონტაქტო ინფორმაცია', createdAt: '2024-01-13 16:45' },
-    { id: 4, english: 'Services', georgian: 'სერვისები', createdAt: '2024-01-12 11:20' },
-    { id: 5, english: 'Home', georgian: 'მთავარი', createdAt: '2024-01-11 13:55' },
+    { id: 1, key: 'welcome', english: 'Welcome to our website', georgian: 'მოგესალმებათ ჩვენი ვებსაიტი', createdAt: '2024-01-15 14:30' },
+    { id: 2, key: 'about', english: 'About Us', georgian: 'ჩვენს შესახებ', createdAt: '2024-01-14 09:15' },
+    { id: 3, key: 'contact', english: 'Contact Information', georgian: 'საკონტაქტო ინფორმაცია', createdAt: '2024-01-13 16:45' },
+    { id: 4, key: 'services', english: 'Services', georgian: 'სერვისები', createdAt: '2024-01-12 11:20' },
+    { id: 5, key: 'home', english: 'Home', georgian: 'მთავარი', createdAt: '2024-01-11 13:55' },
   ]);
   
   readonly searchTerm = signal('');
@@ -32,6 +33,7 @@ export class TextsComponent {
   
   // Dialog state
   readonly showDialog = signal(false);
+  readonly newKey = signal('');
   readonly newEnglishText = signal('');
   readonly newGeorgianText = signal('');
   
@@ -54,6 +56,7 @@ export class TextsComponent {
   
   updateFilteredTexts() {
     let filtered = this.texts().filter(text => 
+      text.key.toLowerCase().includes(this.searchTerm().toLowerCase()) ||
       text.english.toLowerCase().includes(this.searchTerm().toLowerCase()) ||
       text.georgian.toLowerCase().includes(this.searchTerm().toLowerCase())
     );
@@ -61,6 +64,8 @@ export class TextsComponent {
     // Sort texts
     filtered.sort((a, b) => {
       switch (this.sortBy()) {
+        case 'key':
+          return a.key.localeCompare(b.key);
         case 'english':
           return a.english.localeCompare(b.english);
         case 'georgian':
@@ -78,18 +83,20 @@ export class TextsComponent {
   
   openAddDialog() {
     this.showDialog.set(true);
+    this.newKey.set('');
     this.newEnglishText.set('');
     this.newGeorgianText.set('');
   }
   
   closeDialog() {
     this.showDialog.set(false);
+    this.newKey.set('');
     this.newEnglishText.set('');
     this.newGeorgianText.set('');
   }
   
   submitNewText() {
-    if (this.newEnglishText().trim() && this.newGeorgianText().trim()) {
+    if (this.newKey().trim() && this.newEnglishText().trim() && this.newGeorgianText().trim()) {
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
       const formattedTime = now.toTimeString().slice(0, 5);
@@ -97,6 +104,7 @@ export class TextsComponent {
       
       const newText: TextItem = {
         id: this.generateNextId(),
+        key: this.newKey().trim(),
         english: this.newEnglishText().trim(),
         georgian: this.newGeorgianText().trim(),
         createdAt,

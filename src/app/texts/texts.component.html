@@ -14,6 +14,7 @@
     >
     <select [value]="sortBy()" (change)="updateSort($event)" class="sort-select">
       <option value="createdAt">Sort by Date</option>
+      <option value="key">Sort by Key</option>
       <option value="english">Sort by English</option>
       <option value="georgian">Sort by Georgian</option>
     </select>
@@ -23,6 +24,10 @@
     @for (text of filteredTexts(); track text.id) {
       <div class="text-card">
         <div class="text-content">
+          <div class="text-row">
+            <span class="label">Key:</span>
+            <span class="text-key">{{ text.key }}</span>
+          </div>
           <div class="text-row">
             <span class="label">English:</span>
             <span class="text">{{ text.english }}</span>
@@ -72,6 +77,18 @@
       </div>
       
       <div class="dialog-body">
+        <div class="form-group">
+          <label for="text-key">Key:</label>
+          <input 
+            type="text"
+            id="text-key"
+            [value]="newKey()"
+            (input)="newKey.set($any($event.target).value)"
+            placeholder="Enter key..."
+            class="form-input"
+          />
+        </div>
+        
         <div class="form-group">
           <label for="english-text">English Text:</label>
           <textarea 
