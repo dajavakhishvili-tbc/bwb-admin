@@ -20,6 +20,48 @@ interface PageConfig {
 export class BusinessLoanComponent {
   readonly pages = signal<PageConfig[]>([
     {
+      id: 'business-loan-offer-details',
+      title: 'Business Loan Offer Details',
+      description: 'Detailed information about business loan offers',
+      posthogEvent: 'business_loan_offer_details_viewed',
+      createdAt: new Date('2024-01-16')
+    },
+    {
+      id: 'business-loan-offer-request',
+      title: 'Business Loan Offer Request',
+      description: 'Request form for business loan offers',
+      posthogEvent: 'business_loan_offer_request_viewed',
+      createdAt: new Date('2024-01-16')
+    },
+    {
+      id: 'business-loan-request-loader',
+      title: 'Business Loan Request Loader',
+      description: 'Loading interface for business loan requests',
+      posthogEvent: 'business_loan_request_loader_viewed',
+      createdAt: new Date('2024-01-16')
+    },
+    {
+      id: 'business-loan-details',
+      title: 'Business Loan Application Details',
+      description: 'Comprehensive details about business loans',
+      posthogEvent: 'business_loan_details_viewed',
+      createdAt: new Date('2024-01-15')
+    },
+    {
+      id: 'business-loan-signatures',
+      title: 'Business Loan Signatures',
+      description: 'Digital signature interface for business loans',
+      posthogEvent: 'business_loan_signatures_viewed',
+      createdAt: new Date('2024-01-15')
+    },
+    {
+      id: 'business-loan-insurance',
+      title: 'Business Loan Insurance',
+      description: 'Insurance options and coverage for business loans',
+      posthogEvent: 'business_loan_insurance_viewed',
+      createdAt: new Date('2024-01-15')
+    },
+    {
       id: 'business-loan-conditions',
       title: 'Business Loan Conditions',
       description: 'Terms and conditions for business loans',
@@ -27,12 +69,19 @@ export class BusinessLoanComponent {
       createdAt: new Date('2024-01-15')
     },
     {
-      id: 'loan-application-process',
-      title: 'Loan Application Process',
-      description: 'Step-by-step guide for loan applications',
-      posthogEvent: 'loan_application_process_viewed',
-      createdAt: new Date('2024-01-14')
-    }
+      id: 'business-loan-agreements',
+      title: 'Business Loan Agreements',
+      description: 'Legal agreements and contracts for business loans',
+      posthogEvent: 'business_loan_agreements_viewed',
+      createdAt: new Date('2024-01-15')
+    },
+    {
+      id: 'business-loan-authorization',
+      title: 'Business Loan Authorization',
+      description: 'Authorization for business loans',
+      posthogEvent: 'business_loan_auth_view',
+      createdAt: new Date('2024-01-15')
+    },
   ]);
 
   readonly showAddDialog = signal(false);
