@@ -41,14 +41,6 @@
       </a>
     </li>
     <li class="nav-item">
-      <a routerLink="/events" routerLinkActive="active" class="nav-link">
-        <span class="nav-icon">📊</span>
-        @if (!isCollapsed()) {
-          <span class="nav-text">Events</span>
-        }
-      </a>
-    </li>
-    <li class="nav-item">
       <a routerLink="/offers" routerLinkActive="active" class="nav-link">
         <span class="nav-icon">🎁</span>
         @if (!isCollapsed()) {
@@ -90,16 +82,14 @@
               <span class="sub-nav-text">Maintenance</span>
             </a>
           </li>
+          <li class="sub-nav-item">
+            <a routerLink="/business-loan/stats" routerLinkActive="active" class="sub-nav-link">
+              <span class="sub-nav-icon">📊</span>
+              <span class="sub-nav-text">Stats</span>
+            </a>
+          </li>
         </ul>
       }
-    </li>
-    <li class="nav-item">
-      <a routerLink="/admin-settings" routerLinkActive="active" class="nav-link">
-        <span class="nav-icon">⚙️</span>
-        @if (!isCollapsed()) {
-          <span class="nav-text">Admin Settings</span>
-        }
-      </a>
     </li>
   </ul>
   

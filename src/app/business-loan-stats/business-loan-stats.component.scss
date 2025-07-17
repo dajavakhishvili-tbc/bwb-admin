@@ -1,0 +1,282 @@
+.stats-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+  
+  h1 {
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+  }
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.summary-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 16px var(--shadow-color);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 24px var(--shadow-color);
+  }
+  
+  .card-icon {
+    font-size: 2.5rem;
+    min-width: 60px;
+    height: 60px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .card-content {
+    flex: 1;
+    
+    h3 {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin: 0 0 0.5rem 0;
+      font-weight: 500;
+    }
+    
+    .card-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 0.25rem 0;
+    }
+    
+    .card-count {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+  }
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  
+  .search-input,
+  .sort-select,
+  .order-select {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: var(--button-primary);
+    }
+  }
+  
+  .search-input {
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .sort-select,
+  .order-select {
+    min-width: 150px;
+  }
+}
+
+.table-container {
+  background: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px var(--shadow-color);
+  margin-bottom: 2rem;
+}
+
+.loans-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  thead {
+    background: var(--bg-secondary);
+    
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+  
+  tbody {
+    tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+        background: var(--bg-secondary);
+      }
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    
+    td {
+      padding: 1rem;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+  }
+  
+  .loan-id {
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  
+  .username {
+    font-weight: 500;
+  }
+  
+  .loan-type {
+    color: var(--text-secondary);
+  }
+  
+  .amount {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  
+  .date {
+    color: var(--text-secondary);
+  }
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  &.status-approved {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+  }
+  
+  &.status-pending {
+    background: rgba(251, 191, 36, 0.1);
+    color: #fbbf24;
+  }
+  
+  &.status-rejected {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+  }
+  
+  &.status-completed {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  
+  .page-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--button-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    
+    &:hover:not(:disabled) {
+      background: var(--button-hover);
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+  
+  .page-info {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .stats-container {
+    padding: 1rem;
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .summary-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .filters {
+    flex-direction: column;
+    
+    .search-input,
+    .sort-select,
+    .order-select {
+      width: 100%;
+    }
+  }
+  
+  .loans-table {
+    font-size: 0.75rem;
+    
+    thead th,
+    tbody td {
+      padding: 0.75rem 0.5rem;
+    }
+  }
+} 

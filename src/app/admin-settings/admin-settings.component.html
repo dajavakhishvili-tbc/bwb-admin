@@ -8,19 +8,19 @@
     <h2>Application Creation Control</h2>
     <div class="toggle-container">
       <label class="toggle-label">
-        <span>Enable Application Creation</span>
+        <span>Enable Maintenance</span>
         <div class="toggle-switch">
           <input 
             type="checkbox" 
-            [checked]="isApplicationCreationEnabled()"
-            (change)="toggleApplicationCreation()"
-            id="app-creation-toggle"
+            [checked]="isMaintenanceMode()"
+            (change)="toggleMaintenanceMode()"
+            id="maintenance-toggle"
           >
           <span class="slider"></span>
         </div>
       </label>
       <p class="toggle-description">
-        {{ isApplicationCreationEnabled() ? 'Applications can be created by users' : 'Application creation is disabled' }}
+        {{ isMaintenanceMode() ? 'Maintenance mode enabled - Application creation disabled' : 'Normal mode - Application creation enabled' }}
       </p>
     </div>
   </div>
@@ -58,12 +58,6 @@
     <div class="preview-container">
       <h3>{{ pageTitle() }}</h3>
       <p>{{ pageDescription() }}</p>
-      <div class="status-indicator">
-        <span class="status-label">Application Creation:</span>
-        <span class="status-value" [class.enabled]="isApplicationCreationEnabled()">
-          {{ isApplicationCreationEnabled() ? 'Enabled' : 'Disabled' }}
-        </span>
-      </div>
     </div>
   </div>
 </div> 

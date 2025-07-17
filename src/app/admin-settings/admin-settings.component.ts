@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 
 @Component({
   selector: 'ib-admin-settings',
@@ -7,12 +7,15 @@ import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminSettingsComponent {
-  readonly isApplicationCreationEnabled = signal(false);
-  readonly pageTitle = signal('Welcome to Our Platform');
-  readonly pageDescription = signal('Manage your applications and settings here');
+  readonly isMaintenanceMode = signal(false);
+  readonly pageTitle = signal('Application cannot be created at this moment');
+  readonly pageDescription = signal('Please try again later');
   
-  toggleApplicationCreation() {
-    this.isApplicationCreationEnabled.set(!this.isApplicationCreationEnabled());
+  // Computed signal to determine if application creation is enabled
+  readonly isApplicationCreationEnabled = computed(() => !this.isMaintenanceMode());
+  
+  toggleMaintenanceMode() {
+    this.isMaintenanceMode.set(!this.isMaintenanceMode());
   }
   
   updateTitle(event: Event) {

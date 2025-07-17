@@ -1,0 +1,110 @@
+<div class="stats-container">
+  <div class="header">
+    <h1>Business Loan Statistics</h1>
+    <p>Track and analyze business loan applications and their status.</p>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <div class="card-icon">💰</div>
+      <div class="card-content">
+        <h3>Total Loans</h3>
+        <p class="card-value">{{ formatCurrency(getTotalAmount(), 'USD') }}</p>
+        <p class="card-count">{{ loans().length }} applications</p>
+      </div>
+    </div>
+    
+    <div class="summary-card">
+      <div class="card-icon">✅</div>
+      <div class="card-content">
+        <h3>Approved/Completed</h3>
+        <p class="card-value">{{ formatCurrency(getApprovedAmount(), 'USD') }}</p>
+        <p class="card-count">{{ approvedCompletedCount() }} loans</p>
+      </div>
+    </div>
+    
+    <div class="summary-card">
+      <div class="card-icon">⏳</div>
+      <div class="card-content">
+        <h3>Pending</h3>
+        <p class="card-value">{{ formatCurrency(getPendingAmount(), 'USD') }}</p>
+        <p class="card-count">{{ pendingCount() }} loans</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="filters">
+    <input 
+      type="text" 
+      placeholder="Search by username, loan type, or status..." 
+      [value]="searchTerm()"
+      (input)="updateSearch($event)"
+      class="search-input"
+    >
+    <select [value]="sortBy()" (change)="updateSort($event)" class="sort-select">
+      <option value="applicationDate">Sort by Date</option>
+      <option value="username">Sort by Username</option>
+      <option value="amount">Sort by Amount</option>
+      <option value="status">Sort by Status</option>
+    </select>
+    <select [value]="sortOrder()" (change)="updateSortOrder($event)" class="order-select">
+      <option value="desc">Descending</option>
+      <option value="asc">Ascending</option>
+    </select>
+  </div>
+
+  <!-- Loans Table -->
+  <div class="table-container">
+    <table class="loans-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Loan Type</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Application Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (loan of paginatedLoans(); track loan.id) {
+          <tr>
+            <td class="loan-id">#{{ loan.id }}</td>
+            <td class="username">{{ loan.username }}</td>
+            <td class="loan-type">{{ loan.loanType }}</td>
+            <td class="amount">{{ formatCurrency(loan.amount, loan.currency) }}</td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(loan.status)">
+                {{ loan.status.charAt(0).toUpperCase() + loan.status.slice(1) }}
+              </span>
+            </td>
+            <td class="date">{{ formatDate(loan.applicationDate) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  @if (totalPages() > 1) {
+    <div class="pagination">
+      <button 
+        [disabled]="currentPage() === 1"
+        (click)="previousPage()"
+        class="page-btn"
+      >
+        Previous
+      </button>
+      <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+      <button 
+        [disabled]="currentPage() === totalPages()"
+        (click)="nextPage()"
+        class="page-btn"
+      >
+        Next
+      </button>
+    </div>
+  }
+</div> 

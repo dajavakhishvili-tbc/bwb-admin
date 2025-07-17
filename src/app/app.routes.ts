@@ -25,11 +25,6 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   { 
-    path: 'events', 
-    loadComponent: () => import('./events/events.component').then(m => m.EventsComponent),
-    canActivate: [authGuard]
-  },
-  { 
     path: 'offers', 
     loadComponent: () => import('./offers/offers.component').then(m => m.OffersComponent),
     canActivate: [authGuard]
@@ -37,6 +32,31 @@ export const routes: Routes = [
   { 
     path: 'business-loan', 
     loadComponent: () => import('./business-loan/business-loan.component').then(m => m.BusinessLoanComponent),
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'business-loan/texts', 
+    loadComponent: () => import('./texts/texts.component').then(m => m.TextsComponent),
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'business-loan/images', 
+    loadComponent: () => import('./images/images.component').then(m => m.ImagesComponent),
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'business-loan/structure', 
+    loadComponent: () => import('./business-loan/business-loan.component').then(m => m.BusinessLoanComponent),
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'business-loan/maintenance', 
+    loadComponent: () => import('./admin-settings/admin-settings.component').then(m => m.AdminSettingsComponent),
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'business-loan/stats', 
+    loadComponent: () => import('./business-loan-stats/business-loan-stats.component').then(m => m.BusinessLoanStatsComponent),
     canActivate: [authGuard]
   },
   { 
