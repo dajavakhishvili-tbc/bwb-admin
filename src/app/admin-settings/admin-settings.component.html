@@ -12,15 +12,14 @@
         <div class="toggle-switch">
           <input 
             type="checkbox" 
-            [checked]="isMaintenanceMode()"
-            (change)="toggleMaintenanceMode()"
+            [(ngModel)]="isMaintenanceMode"
             id="maintenance-toggle"
           >
           <span class="slider"></span>
         </div>
       </label>
       <p class="toggle-description">
-        {{ isMaintenanceMode() ? 'Maintenance mode enabled - Application creation disabled' : 'Normal mode - Application creation enabled' }}
+        {{ maintenanceDescription() }}
       </p>
     </div>
   </div>
@@ -33,8 +32,7 @@
       <input 
         type="text" 
         id="page-title"
-        [value]="pageTitle()"
-        (input)="updateTitle($event)"
+        [(ngModel)]="pageTitle"
         placeholder="Enter page title"
         class="form-input"
       >
@@ -44,8 +42,7 @@
       <label for="page-description">Page Description</label>
       <textarea 
         id="page-description"
-        [value]="pageDescription()"
-        (input)="updateDescription($event)"
+        [(ngModel)]="pageDescription"
         placeholder="Enter page description"
         class="form-textarea"
         rows="4"

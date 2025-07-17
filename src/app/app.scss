@@ -1,7 +1,3 @@
-:root {
-  --nav-width: 220px;
-}
-
 .ib-app-layout {
   display: flex;
   min-height: 100vh;
@@ -17,11 +13,10 @@
   background: var(--bg-primary);
   min-height: 100vh;
   overflow-x: auto;
-  margin-left: var(--nav-width);
+  margin-left: 250px;
   transition: margin-left 0.3s ease;
 }
 
-/* When navigation is collapsed, adjust content margin */
 .ib-app-content.nav-collapsed {
   margin-left: 60px;
 }

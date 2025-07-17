@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
@@ -14,10 +14,8 @@ export class LoginComponent {
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
   
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
   
   updateUsername(event: Event) {
     const target = event.target as HTMLInputElement;

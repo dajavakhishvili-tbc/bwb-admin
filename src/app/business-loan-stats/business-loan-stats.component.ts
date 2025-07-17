@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface BusinessLoan {
@@ -34,7 +34,7 @@ export class BusinessLoanStatsComponent {
       id: 2,
       username: 'sarah_smith',
       amount: 75000,
-      currency: 'USD',
+      currency: 'EUR',
       status: 'pending',
       applicationDate: new Date('2024-01-14'),
       loanType: 'Equipment Financing'
@@ -52,7 +52,7 @@ export class BusinessLoanStatsComponent {
       id: 4,
       username: 'lisa_wilson',
       amount: 35000,
-      currency: 'USD',
+      currency: 'GEL',
       status: 'rejected',
       applicationDate: new Date('2024-01-12'),
       loanType: 'Inventory Financing'
@@ -61,7 +61,7 @@ export class BusinessLoanStatsComponent {
       id: 5,
       username: 'david_brown',
       amount: 90000,
-      currency: 'USD',
+      currency: 'EUR',
       status: 'approved',
       applicationDate: new Date('2024-01-13'),
       loanType: 'Business Expansion'
@@ -79,7 +79,7 @@ export class BusinessLoanStatsComponent {
       id: 7,
       username: 'alex_garcia',
       amount: 180000,
-      currency: 'USD',
+      currency: 'GEL',
       status: 'completed',
       applicationDate: new Date('2024-01-08'),
       loanType: 'Commercial Real Estate'
@@ -97,7 +97,7 @@ export class BusinessLoanStatsComponent {
       id: 9,
       username: 'james_miller',
       amount: 85000,
-      currency: 'USD',
+      currency: 'EUR',
       status: 'pending',
       applicationDate: new Date('2024-01-07'),
       loanType: 'Equipment Financing'
@@ -106,18 +106,30 @@ export class BusinessLoanStatsComponent {
       id: 10,
       username: 'anna_taylor',
       amount: 55000,
-      currency: 'USD',
+      currency: 'GEL',
       status: 'completed',
       applicationDate: new Date('2024-01-06'),
       loanType: 'Business Expansion'
     }
   ]);
 
+  // Filter signals
   readonly searchTerm = signal('');
+  readonly statusFilter = signal<string>('');
+  readonly currencyFilter = signal<string>('');
+  readonly minAmount = signal<number | null>(null);
+  readonly maxAmount = signal<number | null>(null);
+  
+  // Sort signals
   readonly sortBy = signal('applicationDate');
   readonly sortOrder = signal('desc');
+  
+  // Pagination signals
   readonly currentPage = signal(1);
   readonly itemsPerPage = signal(5);
+
+  // UI state signals
+  readonly isFiltersExpanded = signal(false);
 
   readonly filteredLoans = signal<BusinessLoan[]>([]);
   readonly totalPages = signal(1);
@@ -135,6 +147,10 @@ export class BusinessLoanStatsComponent {
     this.updateFilteredLoans();
   }
 
+  toggleFilters() {
+    this.isFiltersExpanded.set(!this.isFiltersExpanded());
+  }
+
   updateSearch(event: Event) {
     const target = event.target as HTMLInputElement;
     this.searchTerm.set(target.value);
@@ -142,24 +158,75 @@ export class BusinessLoanStatsComponent {
     this.updateFilteredLoans();
   }
 
-  updateSort(event: Event) {
+  updateStatusFilter(event: Event) {
     const target = event.target as HTMLSelectElement;
-    this.sortBy.set(target.value);
+    this.statusFilter.set(target.value);
+    this.currentPage.set(1);
     this.updateFilteredLoans();
   }
 
-  updateSortOrder(event: Event) {
+  updateCurrencyFilter(event: Event) {
     const target = event.target as HTMLSelectElement;
-    this.sortOrder.set(target.value);
+    this.currencyFilter.set(target.value);
+    this.currentPage.set(1);
     this.updateFilteredLoans();
+  }
+
+  updateMinAmount(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const value = target.value ? Number(target.value) : null;
+    this.minAmount.set(value);
+    this.currentPage.set(1);
+    this.updateFilteredLoans();
+  }
+
+  updateMaxAmount(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const value = target.value ? Number(target.value) : null;
+    this.maxAmount.set(value);
+    this.currentPage.set(1);
+    this.updateFilteredLoans();
+  }
+
+  sortByColumn(column: string) {
+    if (this.sortBy() === column) {
+      // If already sorting by this column, toggle order
+      this.sortOrder.set(this.sortOrder() === 'asc' ? 'desc' : 'asc');
+    } else {
+      // If sorting by a new column, set it and default to ascending
+      this.sortBy.set(column);
+      this.sortOrder.set('asc');
+    }
+    this.updateFilteredLoans();
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortBy() !== column) {
+      return '↕️'; // Neutral arrow
+    }
+    return this.sortOrder() === 'asc' ? '↑' : '↓'; // Up or down arrow
   }
 
   updateFilteredLoans() {
-    let filtered = this.loans().filter(loan => 
-      loan.username.toLowerCase().includes(this.searchTerm().toLowerCase()) ||
-      loan.loanType.toLowerCase().includes(this.searchTerm().toLowerCase()) ||
-      loan.status.toLowerCase().includes(this.searchTerm().toLowerCase())
-    );
+    let filtered = this.loans().filter(loan => {
+      // Name search filter
+      const nameMatch = !this.searchTerm() || 
+        loan.username.toLowerCase().includes(this.searchTerm().toLowerCase());
+      
+      // Status filter
+      const statusMatch = !this.statusFilter() || 
+        loan.status === this.statusFilter();
+      
+      // Currency filter
+      const currencyMatch = !this.currencyFilter() || 
+        loan.currency === this.currencyFilter();
+      
+      // Amount range filter
+      const amountMatch = (!this.minAmount() || loan.amount >= this.minAmount()!) &&
+                         (!this.maxAmount() || loan.amount <= this.maxAmount()!);
+      
+      return nameMatch && statusMatch && currencyMatch && amountMatch;
+    });
     
     // Sort filtered loans
     filtered.sort((a, b) => {

@@ -7,6 +7,7 @@
   flex-direction: column;
   transition: width 0.3s ease;
   box-shadow: 2px 0 8px var(--shadow-color);
+  position: fixed;
   
   &.collapsed {
     width: 70px;
@@ -20,10 +21,6 @@
     }
     
     .dropdown-arrow {
-      display: none;
-    }
-    
-    .sub-nav {
       display: none;
     }
     
@@ -261,6 +258,35 @@
   animation: slideDown 0.3s ease;
   border-radius: 0 0 8px 8px;
   margin-top: 2px;
+  
+  &.collapsed {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: auto;
+    background: var(--bg-tertiary);
+    border: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: none;
+    z-index: auto;
+    margin-top: 2px;
+    max-height: none;
+    overflow: visible;
+    
+    .sub-nav-link {
+      padding: 10px 0;
+      justify-content: center;
+      white-space: nowrap;
+      
+      .sub-nav-text {
+        display: none;
+      }
+    }
+  }
+  
+  .sub-nav-text {
+    display: block;
+  }
 }
 
 @keyframes slideDown {

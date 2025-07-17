@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'ib-home',
@@ -6,8 +6,4 @@ import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent {
-  readonly totalUsers = signal(1250);
-  readonly activeLoans = signal(89);
-  readonly totalImages = signal(456);
-} 
+export class HomeComponent {} 

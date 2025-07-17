@@ -34,25 +34,70 @@
     </div>
   </div>
 
-  <!-- Filters and Search -->
-  <div class="filters">
-    <input 
-      type="text" 
-      placeholder="Search by username, loan type, or status..." 
-      [value]="searchTerm()"
-      (input)="updateSearch($event)"
-      class="search-input"
-    >
-    <select [value]="sortBy()" (change)="updateSort($event)" class="sort-select">
-      <option value="applicationDate">Sort by Date</option>
-      <option value="username">Sort by Username</option>
-      <option value="amount">Sort by Amount</option>
-      <option value="status">Sort by Status</option>
-    </select>
-    <select [value]="sortOrder()" (change)="updateSortOrder($event)" class="order-select">
-      <option value="desc">Descending</option>
-      <option value="asc">Ascending</option>
-    </select>
+  <!-- Filters -->
+  <div class="filters-container">
+    <button class="filters-toggle" (click)="toggleFilters()" [class.expanded]="isFiltersExpanded()">
+      <span class="toggle-text">Filters</span>
+      <span class="toggle-arrow" [class.expanded]="isFiltersExpanded()">▼</span>
+    </button>
+    
+    <div class="filters" [class.expanded]="isFiltersExpanded()">
+      <div class="filter-group">
+        <label for="name-search">Search by Name</label>
+        <input 
+          type="text" 
+          id="name-search"
+          placeholder="Enter full name..." 
+          [value]="searchTerm()"
+          (input)="updateSearch($event)"
+          class="search-input"
+        >
+      </div>
+      
+      <div class="filter-group">
+        <label for="status-filter">Status</label>
+        <select id="status-filter" [value]="statusFilter()" (change)="updateStatusFilter($event)" class="filter-select">
+          <option value="">All Statuses</option>
+          <option value="approved">Approved</option>
+          <option value="pending">Pending</option>
+          <option value="rejected">Rejected</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="currency-filter">Currency</label>
+        <select id="currency-filter" [value]="currencyFilter()" (change)="updateCurrencyFilter($event)" class="filter-select">
+          <option value="">All Currencies</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="GEL">GEL</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="min-amount">Amount Range</label>
+        <div class="amount-range">
+          <input 
+            type="number" 
+            id="min-amount"
+            placeholder="Min amount" 
+            [value]="minAmount() || ''"
+            (input)="updateMinAmount($event)"
+            class="amount-input"
+          >
+          <span class="range-separator">to</span>
+          <input 
+            type="number" 
+            id="max-amount"
+            placeholder="Max amount" 
+            [value]="maxAmount() || ''"
+            (input)="updateMaxAmount($event)"
+            class="amount-input"
+          >
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Loans Table -->
@@ -60,12 +105,22 @@
     <table class="loans-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Username</th>
+          <th class="sortable-header" (click)="sortByColumn('id')">
+            ID {{ getSortIcon('id') }}
+          </th>
+          <th class="sortable-header" (click)="sortByColumn('username')">
+            Username {{ getSortIcon('username') }}
+          </th>
           <th>Loan Type</th>
-          <th>Amount</th>
-          <th>Status</th>
-          <th>Application Date</th>
+          <th class="sortable-header" (click)="sortByColumn('amount')">
+            Amount {{ getSortIcon('amount') }}
+          </th>
+          <th class="sortable-header" (click)="sortByColumn('status')">
+            Status {{ getSortIcon('status') }}
+          </th>
+          <th class="sortable-header" (click)="sortByColumn('applicationDate')">
+            Application Date {{ getSortIcon('applicationDate') }}
+          </th>
         </tr>
       </thead>
       <tbody>

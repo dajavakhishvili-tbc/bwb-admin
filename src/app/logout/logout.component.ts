@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../login/auth.service';
 
@@ -71,10 +71,8 @@ import { AuthService } from '../login/auth.service';
 })
 export class LogoutComponent implements OnInit {
   
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     // Clear any existing session

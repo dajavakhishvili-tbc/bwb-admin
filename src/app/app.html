@@ -1,6 +1,10 @@
-<div class="ib-app-layout">
-  <ib-navigation />
-  <div class="ib-app-content">
-    <router-outlet />
+@if (authService.isAuthenticated()) {
+  <div class="ib-app-layout">
+    <ib-navigation />
+    <div class="ib-app-content" [ngClass]="{'nav-collapsed': isNavCollapsed()}">
+      <router-outlet />
+    </div>
   </div>
-</div>
+} @else {
+  <router-outlet />
+}

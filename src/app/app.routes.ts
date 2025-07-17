@@ -29,35 +29,35 @@ export const routes: Routes = [
     loadComponent: () => import('./offers/offers.component').then(m => m.OffersComponent),
     canActivate: [authGuard]
   },
-  { 
-    path: 'business-loan', 
-    loadComponent: () => import('./business-loan/business-loan.component').then(m => m.BusinessLoanComponent),
-    canActivate: [authGuard]
-  },
-  { 
-    path: 'business-loan/texts', 
-    loadComponent: () => import('./texts/texts.component').then(m => m.TextsComponent),
-    canActivate: [authGuard]
-  },
-  { 
-    path: 'business-loan/images', 
-    loadComponent: () => import('./images/images.component').then(m => m.ImagesComponent),
-    canActivate: [authGuard]
-  },
-  { 
-    path: 'business-loan/structure', 
-    loadComponent: () => import('./business-loan/business-loan.component').then(m => m.BusinessLoanComponent),
-    canActivate: [authGuard]
-  },
-  { 
-    path: 'business-loan/maintenance', 
-    loadComponent: () => import('./admin-settings/admin-settings.component').then(m => m.AdminSettingsComponent),
-    canActivate: [authGuard]
-  },
-  { 
-    path: 'business-loan/stats', 
-    loadComponent: () => import('./business-loan-stats/business-loan-stats.component').then(m => m.BusinessLoanStatsComponent),
-    canActivate: [authGuard]
+  {
+    path: 'business-loan',
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./business-loan/business-loan.component').then(m => m.BusinessLoanComponent)
+      },
+      {
+        path: 'texts',
+        loadComponent: () => import('./texts/texts.component').then(m => m.TextsComponent)
+      },
+      {
+        path: 'images',
+        loadComponent: () => import('./images/images.component').then(m => m.ImagesComponent)
+      },
+      {
+        path: 'structure',
+        loadComponent: () => import('./business-loan/business-loan.component').then(m => m.BusinessLoanComponent)
+      },
+      {
+        path: 'maintenance',
+        loadComponent: () => import('./admin-settings/admin-settings.component').then(m => m.AdminSettingsComponent)
+      },
+      {
+        path: 'stats',
+        loadComponent: () => import('./business-loan-stats/business-loan-stats.component').then(m => m.BusinessLoanStatsComponent)
+      }
+    ]
   },
   { 
     path: 'admin-settings', 

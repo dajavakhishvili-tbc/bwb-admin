@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import {  AuthService } from   '../login/auth.service';
 import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
+import { LayoutService } from '../core/layout.service';
 
 @Component({
   selector: 'ib-navigation',
@@ -12,20 +13,19 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
   standalone: true
 })
 export class NavigationComponent {
-  readonly isCollapsed = signal(false);
   readonly isBusinessLoanExpanded = signal(false);
+  readonly isCollapsed = computed(() => this.layoutService.isNavigationCollapsed());
 
-  constructor(
-    public authService: AuthService,
-    private router: Router
-  ) {}
+  public authService = inject(AuthService);
+  public layoutService = inject(LayoutService);
+  private router = inject(Router);
 
   toggleCollapse(): void {
-    this.isCollapsed.set(!this.isCollapsed());
+    this.layoutService.toggleNavigation();
   }
 
   toggleBusinessLoanDropdown(): void {
-    this.isBusinessLoanExpanded.set(!this.isBusinessLoanExpanded());
+    this.isBusinessLoanExpanded.update(expanded => !expanded);
   }
 
   logout(): void {

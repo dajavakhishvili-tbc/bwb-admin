@@ -1,7 +1,8 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PageDialogComponent, type PageConfig, type DialogForm, type DialogType } from './page-dialog.component';
+import { PageDialogComponent } from './business-loan-page-dialog/page-dialog.component';
+import { PageConfig, DialogForm, DialogType } from './business-loan-page-dialog/page-dialog-model';
 
 @Component({
   selector: 'ib-business-loan',
@@ -121,7 +122,6 @@ export class BusinessLoanComponent {
     const selectedPage = this.selectedPage();
 
     if (selectedPage) {
-      // Edit existing page
       const updatedPages = this.pages().map(page => 
         page.id === selectedPage.id 
           ? { ...page, ...form }
