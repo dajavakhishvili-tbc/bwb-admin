@@ -1,0 +1,55 @@
+.theme-toggle {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 50px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px var(--shadow-color);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    border-color: var(--button-primary);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.sun-icon, .moon-icon {
+  width: 20px;
+  height: 20px;
+  transition: all 0.3s ease;
+}
+
+.sun-icon {
+  color: #fbbf24;
+}
+
+.moon-icon {
+  color: #6366f1;
+}
+
+.theme-toggle:hover .sun-icon {
+  color: #f59e0b;
+}
+
+.theme-toggle:hover .moon-icon {
+  color: #4f46e5;
+} 

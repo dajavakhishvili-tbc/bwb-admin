@@ -1,53 +1,43 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {Injectable, signal} from '@angular/core';
 
-export type Theme = 'light' | 'dark';
+export enum Theme {
+  Light = 'light',
+  Dark = 'dark'
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ThemeService {
-  private themeSubject = new BehaviorSubject<Theme>('light');
-  public theme$ = this.themeSubject.asObservable();
+  public themeMode = signal<Theme>(Theme.Light);
 
   constructor() {
     this.initializeTheme();
   }
 
   private initializeTheme(): void {
-    // Check for saved theme preference or default to light
-    const savedTheme = localStorage.getItem('theme') as Theme;
+    const savedTheme = localStorage.getItem('theme') as Theme | null;
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+    const theme = savedTheme || (prefersDark ? Theme.Dark : Theme.Light);
     this.setTheme(theme);
   }
 
   setTheme(theme: Theme): void {
-    this.themeSubject.next(theme);
+    this.themeMode.set(theme);
     localStorage.setItem('theme', theme);
-    
-    // Apply theme to document
     document.documentElement.setAttribute('data-theme', theme);
-    
-    // Update CSS custom properties
     this.updateCSSVariables(theme);
   }
 
   toggleTheme(): void {
-    const currentTheme = this.themeSubject.value;
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    const newTheme = this.themeMode() === Theme.Light ? Theme.Dark : Theme.Light;
     this.setTheme(newTheme);
-  }
-
-  getCurrentTheme(): Theme {
-    return this.themeSubject.value;
   }
 
   private updateCSSVariables(theme: Theme): void {
     const root = document.documentElement;
-    
-    if (theme === 'dark') {
+
+    if (theme === Theme.Dark) {
       root.style.setProperty('--bg-primary', '#1a1a1a');
       root.style.setProperty('--bg-secondary', '#2d2d2d');
       root.style.setProperty('--bg-tertiary', '#404040');
@@ -81,4 +71,4 @@ export class ThemeService {
       root.style.setProperty('--gradient-secondary', 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)');
     }
   }
-} 
+}
