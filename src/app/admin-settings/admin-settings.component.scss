@@ -1,7 +1,7 @@
 .admin-settings {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   background: var(--card-bg);
   border-radius: 12px;
   box-shadow: 0 4px 6px var(--shadow-color);
@@ -9,34 +9,34 @@
 
 .settings-header {
   text-align: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
   border-bottom: 2px solid var(--border-color);
 
   h1 {
     color: var(--text-primary);
-    margin-bottom: 0.5rem;
-    font-size: 2rem;
+    margin-bottom: 0.25rem;
+    font-size: 1.5rem;
     font-weight: 600;
   }
 
   p {
     color: var(--text-secondary);
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 }
 
 .settings-section {
-  margin-bottom: 2.5rem;
-  padding: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
   background: var(--bg-secondary);
   border-radius: 8px;
   border: 1px solid var(--border-color);
 
   h2 {
     color: var(--text-primary);
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
     font-weight: 600;
   }
 }
@@ -47,12 +47,12 @@
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    padding: 1rem 0;
+    padding: 0.5rem 0;
 
     span {
       color: var(--text-primary);
       font-weight: 500;
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
   }
 
@@ -102,21 +102,21 @@
 
   .toggle-description {
     color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
     font-style: italic;
   }
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 
   label {
     display: block;
     color: var(--text-primary);
     font-weight: 500;
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
   }
 
   .form-input,
@@ -143,27 +143,28 @@
 
   .form-textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 80px;
   }
 }
 
 .preview-container {
   background: var(--bg-primary);
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: 8px;
   border: 1px solid var(--border-color);
+  text-align: center;
 
   h3 {
     color: var(--text-primary);
-    margin-bottom: 0.5rem;
-    font-size: 1.3rem;
+    margin-bottom: 0.25rem;
+    font-size: 1.1rem;
     font-weight: 600;
   }
 
   p {
     color: var(--text-secondary);
-    margin-bottom: 1rem;
-    line-height: 1.6;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
   }
 
   .status-indicator {

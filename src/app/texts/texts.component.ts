@@ -170,4 +170,19 @@ export class TextsComponent {
     this.texts.set(this.texts().filter(t => t.id !== text.id));
     this.updateFilteredTexts();
   }
+
+  onKeyInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.newKey.set(target.value);
+  }
+
+  onEnglishTextInput(event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    this.newEnglishText.set(target.value);
+  }
+
+  onGeorgianTextInput(event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    this.newGeorgianText.set(target.value);
+  }
 } 

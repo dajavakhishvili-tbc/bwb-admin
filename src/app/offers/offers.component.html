@@ -1,0 +1,55 @@
+<div class="offers-container">
+  <div class="header">
+    <h1>Offers Management</h1>
+    <p>Manage offers and their configurations for the offers section.</p>
+    <button class="add-offer-btn" (click)="openAddDialog()">
+      <span class="icon">+</span>
+      Add New Offer
+    </button>
+  </div>
+
+  <div class="offers-content">
+    @if (offers().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">🎁</div>
+        <h3 class="empty-title">No offers yet</h3>
+        <p class="empty-description">Create your first offer to get started</p>
+        <button class="empty-action-btn" (click)="openAddDialog()">
+          Create First Offer
+        </button>
+      </div>
+    } @else {
+      <div class="offers-grid">
+        @for (offer of offers(); track offer.id) {
+          <div 
+            class="offer-item"
+            draggable="true"
+            (dragstart)="onDragStart($event, offer)"
+            (dragover)="onDragOver($event)"
+            (dragenter)="onDragEnter($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event, offer)"
+            (dragend)="onDragEnd($event)"
+            [class.dragging]="draggedOffer()?.id === offer.id"
+          >
+            <ib-offer-card 
+              [offer]="offer"
+              (edit)="openEditDialog(offer)"
+              (delete)="deleteOffer(offer.id)">
+            </ib-offer-card>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+@if (isDialogOpen()) {
+  <ib-offer-dialog
+    [isOpen]="isDialogOpen()"
+    [dialogType]="dialogType()"
+    [dialogForm]="dialogForm()"
+    (close)="closeDialog()"
+    (save)="saveOffer($event)">
+  </ib-offer-dialog>
+} 

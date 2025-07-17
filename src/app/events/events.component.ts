@@ -161,4 +161,14 @@ export class EventsComponent {
     this.events.set(this.events().filter(e => e.id !== event.id));
     this.updateFilteredEvents();
   }
+
+  onPosthogKeyInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.newPosthogKey.set(target.value);
+  }
+
+  onPosthogEventInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.newPosthogEvent.set(target.value);
+  }
 } 

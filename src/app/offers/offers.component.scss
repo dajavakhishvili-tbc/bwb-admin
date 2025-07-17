@@ -1,0 +1,152 @@
+.offers-container {
+  padding: 2rem;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+  
+  h1 {
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+  }
+}
+
+.add-offer-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--button-primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  
+  &:hover {
+    background: var(--button-hover);
+  }
+  
+  .icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+}
+
+
+
+.offers-content {
+  min-height: 400px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--text-secondary, #6b7280);
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary, #111827);
+}
+
+.empty-description {
+  font-size: 1rem;
+  margin: 0 0 2rem 0;
+}
+
+.empty-action-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary-color, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--primary-hover, #2563eb);
+  }
+}
+
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+  align-items: start; // Ensure cards align at the top
+}
+
+.offer-item {
+  cursor: grab;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &.dragging {
+    opacity: 0.5;
+    transform: rotate(5deg);
+    z-index: 1000;
+  }
+
+  &.drag-over {
+    border: 2px dashed var(--primary-color, #3b82f6);
+    background: rgba(59, 130, 246, 0.05);
+  }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  .offers-container {
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --border-color: #374151;
+    --primary-color: #60a5fa;
+    --primary-hover: #3b82f6;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .offers-container {
+    padding: 1rem;
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .offers-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+} 

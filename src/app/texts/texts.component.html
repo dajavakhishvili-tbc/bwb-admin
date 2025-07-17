@@ -110,7 +110,7 @@
             type="text"
             id="text-key"
             [value]="newKey()"
-            (input)="newKey.set($any($event.target).value)"
+            (input)="onKeyInput($event)"
             placeholder="Enter key..."
             class="form-input"
           />
@@ -121,7 +121,7 @@
           <textarea 
             id="english-text"
             [value]="newEnglishText()"
-            (input)="newEnglishText.set($any($event.target).value)"
+            (input)="onEnglishTextInput($event)"
             placeholder="Enter English text..."
             rows="3"
           ></textarea>
@@ -132,7 +132,7 @@
           <textarea 
             id="georgian-text"
             [value]="newGeorgianText()"
-            (input)="newGeorgianText.set($any($event.target).value)"
+            (input)="onGeorgianTextInput($event)"
             placeholder="შეიყვანეთ ქართული ტექსტი..."
             rows="3"
           ></textarea>

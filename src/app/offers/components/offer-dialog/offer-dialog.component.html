@@ -1,0 +1,90 @@
+@if (isOpen) {
+  <div class="dialog-overlay" (click)="onClose()">
+    <div class="dialog-content" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h2 class="dialog-title">{{ getDialogTitle() }}</h2>
+        <button class="close-btn" (click)="onClose()" title="Close dialog">
+          <span class="close-icon">✕</span>
+        </button>
+      </div>
+
+      <div class="dialog-body">
+        <form class="offer-form" (ngSubmit)="onSave()">
+          <div class="form-group">
+            <label for="title" class="form-label">Title *</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              class="form-input"
+              [value]="form().title"
+              (input)="onTitleChange($event)"
+              placeholder="Enter offer title"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="description" class="form-label">Description *</label>
+            <textarea
+              id="description"
+              name="description"
+              class="form-textarea"
+              [value]="form().description"
+              (input)="onDescriptionChange($event)"
+              placeholder="Enter offer description"
+              rows="4"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="imageFile" class="form-label">Image Upload *</label>
+            <div class="file-upload-container">
+              @if (!selectedFile() && !imagePreview()) {
+                <div class="file-upload-area">
+                  <input
+                    type="file"
+                    id="imageFile"
+                    name="imageFile"
+                    class="file-input"
+                    accept="image/*"
+                    (change)="onFileSelected($event)"
+                    required
+                  />
+                  <div class="upload-placeholder">
+                    <span class="upload-icon">📁</span>
+                    <span class="upload-text">Click to upload image</span>
+                    <span class="upload-hint">or drag and drop</span>
+                  </div>
+                </div>
+              } @else {
+                <div class="image-preview-container">
+                  <img [src]="imagePreview()" alt="Preview" class="preview-image" />
+                  <button type="button" class="remove-image-btn" (click)="removeSelectedFile()">
+                    <span class="remove-icon">✕</span>
+                  </button>
+                </div>
+              }
+            </div>
+            <div class="upload-info">
+              <span class="file-types">Supported: JPG, PNG, GIF (max 5MB)</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="onClose()">
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary" 
+              [disabled]="!isFormValid()">
+              {{ getSaveButtonText() }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+} 

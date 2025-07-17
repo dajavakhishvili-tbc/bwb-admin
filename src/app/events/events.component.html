@@ -105,7 +105,7 @@
             type="text"
             id="posthog-key"
             [value]="newPosthogKey()"
-            (input)="newPosthogKey.set($any($event.target).value)"
+            (input)="onPosthogKeyInput($event)"
             placeholder="Enter Posthog key..."
             class="form-input"
           />
@@ -117,7 +117,7 @@
             type="text"
             id="posthog-event"
             [value]="newPosthogEvent()"
-            (input)="newPosthogEvent.set($any($event.target).value)"
+            (input)="onPosthogEventInput($event)"
             placeholder="Enter Posthog event..."
             class="form-input"
           />

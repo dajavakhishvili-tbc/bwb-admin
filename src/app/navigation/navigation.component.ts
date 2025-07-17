@@ -13,6 +13,7 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 })
 export class NavigationComponent {
   readonly isCollapsed = signal(false);
+  readonly isBusinessLoanExpanded = signal(false);
 
   constructor(
     public authService: AuthService,
@@ -21,6 +22,10 @@ export class NavigationComponent {
 
   toggleCollapse(): void {
     this.isCollapsed.set(!this.isCollapsed());
+  }
+
+  toggleBusinessLoanDropdown(): void {
+    this.isBusinessLoanExpanded.set(!this.isBusinessLoanExpanded());
   }
 
   logout(): void {

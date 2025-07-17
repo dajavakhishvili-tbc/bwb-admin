@@ -1,0 +1,21 @@
+<div class="offer-card">
+  <div class="card-image">
+    <img [src]="offer.imageUrl" [alt]="offer.title" class="image" />
+    <div class="image-overlay">
+      <button class="edit-btn" (click)="onEdit()" title="Edit offer">
+        <span class="btn-icon">✏️</span>
+      </button>
+      <button class="delete-btn" (click)="onDelete()" title="Delete offer">
+        <span class="btn-icon">🗑️</span>
+      </button>
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <h3 class="card-title">{{ offer.title }}</h3>
+    <p class="card-description">{{ offer.description }}</p>
+    <div class="card-footer">
+      <span class="card-date">Created: {{ formatDate(offer.createdAt) }}</span>
+    </div>
+  </div>
+</div> 
