@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
-import { ThemeToggleComponent } from '../components/theme-toggle/theme-toggle.component';
+import {  AuthService } from   '../login/auth.service';
+import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'ib-navigation',
@@ -13,18 +13,18 @@ import { ThemeToggleComponent } from '../components/theme-toggle/theme-toggle.co
 })
 export class NavigationComponent {
   readonly isCollapsed = signal(false);
-  
+
   constructor(
     public authService: AuthService,
     private router: Router
   ) {}
-  
+
   toggleCollapse(): void {
     this.isCollapsed.set(!this.isCollapsed());
   }
-  
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
-} 
+}

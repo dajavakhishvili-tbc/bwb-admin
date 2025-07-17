@@ -1,1 +1,0 @@
-export { ImagePaginationComponent } from './image-pagination.component'; 

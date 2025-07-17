@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
-export interface User {
+export interface LoginUser {
   id: number;
   username: string;
   email: string;
@@ -13,7 +13,7 @@ export interface User {
 })
 export class AuthService {
   private readonly _isAuthenticated = signal(false);
-  private readonly _currentUser = signal<User | null>(null);
+  private readonly _currentUser = signal<LoginUser | null>(null);
   
   readonly isAuthenticated = this._isAuthenticated.asReadonly();
   readonly currentUser = this._currentUser.asReadonly();
@@ -44,7 +44,7 @@ export class AuthService {
       setTimeout(() => {
         // Simple validation - in real app, this would be an API call
         if (username === 'admin' && password === 'password') {
-          const user: User = {
+          const user: LoginUser = {
             id: 1,
             username: 'admin',
             email: 'admin@example.com',
@@ -86,5 +86,9 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return this.isAuthenticated();
+  }
+
+  getCurrentUser(): LoginUser | null {
+    return this._currentUser();
   }
 } 

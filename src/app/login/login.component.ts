@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'ib-login',
@@ -40,20 +40,16 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.clearError();
     
-    this.authService.login(this.username().trim(), this.password()).subscribe({
-      next: (success) => {
-        if (success) {
-          this.router.navigate(['/home']);
-        } else {
-          this.errorMessage.set('Invalid username or password');
-        }
-      },
-      error: (error) => {
-        this.errorMessage.set('An error occurred during login');
-      },
-      complete: () => {
-        this.isLoading.set(false);
+    this.authService.login(this.username().trim(), this.password()).then((success: boolean) => {
+      if (success) {
+        this.router.navigate(['/home']);
+      } else {
+        this.errorMessage.set('Invalid username or password');
       }
+      this.isLoading.set(false);
+    }).catch(() => {
+      this.errorMessage.set('An error occurred during login');
+      this.isLoading.set(false);
     });
   }
   

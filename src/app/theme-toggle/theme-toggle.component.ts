@@ -1,11 +1,11 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { ThemeService } from '../../services/theme.service';
+import { ThemeService } from './theme.service';
 
 @Component({
   selector: 'ib-theme-toggle',
   template: `
-    <button 
-      (click)="toggleTheme()" 
+    <button
+      (click)="toggleTheme()"
       class="theme-toggle"
       [attr.aria-label]="'Switch to ' + (isDarkMode() ? 'light' : 'dark') + ' mode'"
       title="Toggle theme"
@@ -44,18 +44,18 @@ import { ThemeService } from '../../services/theme.service';
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 2px 8px var(--shadow-color);
-      
+
       &:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px var(--shadow-color);
         border-color: var(--button-primary);
       }
-      
+
       &:active {
         transform: translateY(0);
       }
     }
-    
+
     .toggle-icon {
       display: flex;
       align-items: center;
@@ -65,25 +65,25 @@ import { ThemeService } from '../../services/theme.service';
       color: var(--text-primary);
       transition: all 0.3s ease;
     }
-    
+
     .sun-icon, .moon-icon {
       width: 20px;
       height: 20px;
       transition: all 0.3s ease;
     }
-    
+
     .sun-icon {
       color: #fbbf24;
     }
-    
+
     .moon-icon {
       color: #6366f1;
     }
-    
+
     .theme-toggle:hover .sun-icon {
       color: #f59e0b;
     }
-    
+
     .theme-toggle:hover .moon-icon {
       color: #4f46e5;
     }
@@ -93,14 +93,14 @@ import { ThemeService } from '../../services/theme.service';
 })
 export class ThemeToggleComponent {
   readonly isDarkMode = signal(false);
-  
+
   constructor(private themeService: ThemeService) {
     this.themeService.theme$.subscribe(theme => {
       this.isDarkMode.set(theme === 'dark');
     });
   }
-  
+
   toggleTheme(): void {
     this.themeService.toggleTheme();
   }
-} 
+}

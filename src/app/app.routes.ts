@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
-import { authGuard } from './guards/auth.guard';
+import { authGuard } from './login/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -32,6 +32,11 @@ export const routes: Routes = [
   { 
     path: 'business-loan', 
     loadComponent: () => import('./business-loan/business-loan.component').then(m => m.BusinessLoanComponent),
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'admin-settings', 
+    loadComponent: () => import('./admin-settings/admin-settings.component').then(m => m.AdminSettingsComponent),
     canActivate: [authGuard]
   },
 ];

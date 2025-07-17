@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, signal, effect } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { NavigationComponent } from './navigation/navigation.component';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './login/auth.service';
 
 @Component({
   selector: 'ib-root',

@@ -1,0 +1,69 @@
+<div class="admin-settings">
+  <div class="settings-header">
+    <h1>Admin Settings</h1>
+    <p>Manage application settings and display content</p>
+  </div>
+
+  <div class="settings-section">
+    <h2>Application Creation Control</h2>
+    <div class="toggle-container">
+      <label class="toggle-label">
+        <span>Enable Application Creation</span>
+        <div class="toggle-switch">
+          <input 
+            type="checkbox" 
+            [checked]="isApplicationCreationEnabled()"
+            (change)="toggleApplicationCreation()"
+            id="app-creation-toggle"
+          >
+          <span class="slider"></span>
+        </div>
+      </label>
+      <p class="toggle-description">
+        {{ isApplicationCreationEnabled() ? 'Applications can be created by users' : 'Application creation is disabled' }}
+      </p>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h2>Display Content Management</h2>
+    
+    <div class="form-group">
+      <label for="page-title">Page Title</label>
+      <input 
+        type="text" 
+        id="page-title"
+        [value]="pageTitle()"
+        (input)="updateTitle($event)"
+        placeholder="Enter page title"
+        class="form-input"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="page-description">Page Description</label>
+      <textarea 
+        id="page-description"
+        [value]="pageDescription()"
+        (input)="updateDescription($event)"
+        placeholder="Enter page description"
+        class="form-textarea"
+        rows="4"
+      ></textarea>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h2>Preview</h2>
+    <div class="preview-container">
+      <h3>{{ pageTitle() }}</h3>
+      <p>{{ pageDescription() }}</p>
+      <div class="status-indicator">
+        <span class="status-label">Application Creation:</span>
+        <span class="status-value" [class.enabled]="isApplicationCreationEnabled()">
+          {{ isApplicationCreationEnabled() ? 'Enabled' : 'Disabled' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div> 

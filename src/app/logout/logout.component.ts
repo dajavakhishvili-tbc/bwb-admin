@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../login/auth.service';
 
-@Component({
+@Component({  
   selector: 'ib-logout',
   template: `
     <div class="logout-container">

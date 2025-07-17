@@ -1,9 +1,9 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
 import { ImageCardComponent, type ImageItem } from './components/card';
-import { ImageFiltersComponent } from './components/filters';
-import { ImagePaginationComponent } from './components/pagination';
-import { ImageUploadComponent, type UploadedImage } from './components/upload';
+import { ImageFiltersComponent } from './components/filters/image-filters.component';
+import { ImagePaginationComponent } from './components/pagination/image-pagination.component';
+import { ImageUploadComponent, UploadedImage } from './components/upload/image-upload.component';
+
 
 @Component({
   selector: 'ib-images',
@@ -11,7 +11,7 @@ import { ImageUploadComponent, type UploadedImage } from './components/upload';
   styleUrl: './images.component.scss',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgOptimizedImage, ImageCardComponent, ImageFiltersComponent, ImagePaginationComponent, ImageUploadComponent]
+  imports: [ImageCardComponent, ImageFiltersComponent, ImagePaginationComponent, ImageUploadComponent]
 })
 export class ImagesComponent {
   readonly images = signal<ImageItem[]>([
