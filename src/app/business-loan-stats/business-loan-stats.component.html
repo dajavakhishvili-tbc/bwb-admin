@@ -125,7 +125,7 @@
       </thead>
       <tbody>
         @for (loan of paginatedLoans(); track loan.id) {
-          <tr>
+          <tr class="clickable-row" (click)="openLoanDetails(loan)" title="Click to view details">
             <td class="loan-id">#{{ loan.id }}</td>
             <td class="username">{{ loan.username }}</td>
             <td class="loan-type">{{ loan.loanType }}</td>
@@ -162,4 +162,11 @@
       </button>
     </div>
   }
+
+  <!-- Loan Detail Dialog -->
+  <ib-loan-detail-dialog
+    [loan]="selectedLoan()"
+    [isOpen]="isDialogOpen()"
+    (closeDialog)="closeLoanDetails()"
+  ></ib-loan-detail-dialog>
 </div> 

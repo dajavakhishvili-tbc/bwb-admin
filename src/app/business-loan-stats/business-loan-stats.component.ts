@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LoanDetailDialogComponent } from './loan-detail-dialog/loan-detail-dialog.component';
 
 export interface BusinessLoan {
   id: number;
@@ -17,7 +18,7 @@ export interface BusinessLoan {
   styleUrl: './business-loan-stats.component.scss',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule]
+  imports: [CommonModule, LoanDetailDialogComponent]
 })
 export class BusinessLoanStatsComponent {
   readonly loans = signal<BusinessLoan[]>([
@@ -28,7 +29,7 @@ export class BusinessLoanStatsComponent {
       currency: 'USD',
       status: 'approved',
       applicationDate: new Date('2024-01-15'),
-      loanType: 'Working Capital'
+      loanType: 'Credit Line'
     },
     {
       id: 2,
@@ -37,7 +38,7 @@ export class BusinessLoanStatsComponent {
       currency: 'EUR',
       status: 'pending',
       applicationDate: new Date('2024-01-14'),
-      loanType: 'Equipment Financing'
+      loanType: 'Business Loan'
     },
     {
       id: 3,
@@ -46,7 +47,7 @@ export class BusinessLoanStatsComponent {
       currency: 'USD',
       status: 'completed',
       applicationDate: new Date('2024-01-10'),
-      loanType: 'Commercial Real Estate'
+      loanType: 'Guarantee'
     },
     {
       id: 4,
@@ -55,7 +56,7 @@ export class BusinessLoanStatsComponent {
       currency: 'GEL',
       status: 'rejected',
       applicationDate: new Date('2024-01-12'),
-      loanType: 'Inventory Financing'
+      loanType: 'Letter of Credit'
     },
     {
       id: 5,
@@ -64,7 +65,7 @@ export class BusinessLoanStatsComponent {
       currency: 'EUR',
       status: 'approved',
       applicationDate: new Date('2024-01-13'),
-      loanType: 'Business Expansion'
+      loanType: 'Credit Line'
     },
     {
       id: 6,
@@ -73,7 +74,7 @@ export class BusinessLoanStatsComponent {
       currency: 'USD',
       status: 'pending',
       applicationDate: new Date('2024-01-11'),
-      loanType: 'Debt Consolidation'
+      loanType: 'Business Loan'
     },
     {
       id: 7,
@@ -82,7 +83,7 @@ export class BusinessLoanStatsComponent {
       currency: 'GEL',
       status: 'completed',
       applicationDate: new Date('2024-01-08'),
-      loanType: 'Commercial Real Estate'
+      loanType: 'Guarantee'
     },
     {
       id: 8,
@@ -91,7 +92,7 @@ export class BusinessLoanStatsComponent {
       currency: 'USD',
       status: 'approved',
       applicationDate: new Date('2024-01-09'),
-      loanType: 'Working Capital'
+      loanType: 'Letter of Credit'
     },
     {
       id: 9,
@@ -100,7 +101,7 @@ export class BusinessLoanStatsComponent {
       currency: 'EUR',
       status: 'pending',
       applicationDate: new Date('2024-01-07'),
-      loanType: 'Equipment Financing'
+      loanType: 'Credit Line'
     },
     {
       id: 10,
@@ -109,7 +110,7 @@ export class BusinessLoanStatsComponent {
       currency: 'GEL',
       status: 'completed',
       applicationDate: new Date('2024-01-06'),
-      loanType: 'Business Expansion'
+      loanType: 'Business Loan'
     }
   ]);
 
@@ -130,6 +131,8 @@ export class BusinessLoanStatsComponent {
 
   // UI state signals
   readonly isFiltersExpanded = signal(false);
+  readonly selectedLoan = signal<BusinessLoan | null>(null);
+  readonly isDialogOpen = signal(false);
 
   readonly filteredLoans = signal<BusinessLoan[]>([]);
   readonly totalPages = signal(1);
@@ -318,5 +321,15 @@ export class BusinessLoanStatsComponent {
     return this.loans()
       .filter(loan => loan.status === 'pending')
       .reduce((total, loan) => total + loan.amount, 0);
+  }
+
+  openLoanDetails(loan: BusinessLoan) {
+    this.selectedLoan.set(loan);
+    this.isDialogOpen.set(true);
+  }
+
+  closeLoanDetails() {
+    this.isDialogOpen.set(false);
+    this.selectedLoan.set(null);
   }
 } 

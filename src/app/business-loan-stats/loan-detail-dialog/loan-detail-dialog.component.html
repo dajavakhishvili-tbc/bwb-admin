@@ -1,0 +1,88 @@
+@if (isOpen && loan) {
+  <div class="dialog-backdrop" (click)="onBackdropClick($event)">
+    <div class="dialog-container">
+      <!-- Header -->
+      <div class="dialog-header">
+        <div class="header-content">
+          <h2>Loan Application Details</h2>
+          <p class="loan-id">#{{ loan.id }}</p>
+        </div>
+        <button class="close-btn" (click)="onClose()" aria-label="Close dialog">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="dialog-content">
+        <!-- Loan Details Section -->
+        <div class="details-section">
+          <h3>Application Information</h3>
+          <div class="details-grid">
+            <div class="detail-item">
+              <label>Applicant</label>
+              <span class="value">{{ loan.username }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Loan Type</label>
+              <span class="value">{{ loan.loanType }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Amount</label>
+              <span class="value amount">{{ formatCurrency(loan.amount, loan.currency) }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Currency</label>
+              <span class="value">{{ loan.currency }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Application Date</label>
+              <span class="value">{{ formatDateShort(loan.applicationDate) }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Current Status</label>
+              <span class="status-badge" [class]="getStatusClass(loan.status)">
+                {{ getStatusIcon(loan.status) }} {{ loan.status.charAt(0).toUpperCase() + loan.status.slice(1) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status History Section -->
+        <div class="history-section">
+          <h3>Status History</h3>
+          <div class="timeline">
+            @for (entry of statusHistory(); track entry.id) {
+              <div class="timeline-item">
+                <div class="timeline-marker" [class]="getStatusClass(entry.status)">
+                  <span class="marker-icon">{{ getStatusIcon(entry.status) }}</span>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-header">
+                    <span class="status-text" [class]="getStatusClass(entry.status)">
+                      {{ entry.status.charAt(0).toUpperCase() + entry.status.slice(1) }}
+                    </span>
+                    <span class="timeline-date">{{ formatDate(entry.changedAt) }}</span>
+                  </div>
+                  <div class="timeline-details">
+                    <span class="changed-by">Changed by: {{ entry.changedBy }}</span>
+                    @if (entry.comment) {
+                      <p class="comment">{{ entry.comment }}</p>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="dialog-footer">
+        <button class="btn btn-secondary" (click)="onClose()">Close</button>
+      </div>
+    </div>
+  </div>
+} 

@@ -32,4 +32,8 @@ export class NavigationComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  navigateToHome(): void {
+    this.router.navigate(['/home']);
+  }
 }

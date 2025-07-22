@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 
 interface TextItem {
   id: number;
@@ -15,6 +15,7 @@ interface TextItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextsComponent {
+  // Core data signals
   readonly texts = signal<TextItem[]>([
     { id: 1, key: 'welcome', english: 'Welcome to our website', georgian: 'მოგესალმებათ ჩვენი ვებსაიტი', createdAt: '2024-01-15 14:30' },
     { id: 2, key: 'about', english: 'About Us', georgian: 'ჩვენს შესახებ', createdAt: '2024-01-14 09:15' },
@@ -23,49 +24,40 @@ export class TextsComponent {
     { id: 5, key: 'home', english: 'Home', georgian: 'მთავარი', createdAt: '2024-01-11 13:55' },
   ]);
   
+  // Filter and pagination signals
   readonly searchTerm = signal('');
-  readonly sortBy = signal('createdAt');
+  readonly sortBy = signal<'key' | 'english' | 'georgian' | 'createdAt'>('createdAt');
   readonly currentPage = signal(1);
   readonly itemsPerPage = signal(5);
   
-  readonly filteredTexts = signal<TextItem[]>([]);
-  readonly totalPages = signal(1);
-  
-  // Dialog state
+  // Dialog state signals
   readonly showDialog = signal(false);
   readonly isEditing = signal(false);
   readonly editingId = signal<number | null>(null);
+  
+  // Form input signals (linked signals)
   readonly newKey = signal('');
   readonly newEnglishText = signal('');
   readonly newGeorgianText = signal('');
   
-  constructor() {
-    this.updateFilteredTexts();
-  }
-  
-  updateSearch(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.searchTerm.set(target.value);
-    this.currentPage.set(1);
-    this.updateFilteredTexts();
-  }
-  
-  updateSort(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    this.sortBy.set(target.value);
-    this.updateFilteredTexts();
-  }
-  
-  updateFilteredTexts() {
-    let filtered = this.texts().filter(text => 
-      text.key.toLowerCase().includes(this.searchTerm().toLowerCase()) ||
-      text.english.toLowerCase().includes(this.searchTerm().toLowerCase()) ||
-      text.georgian.toLowerCase().includes(this.searchTerm().toLowerCase())
-    );
+  // Computed signals for filtered and sorted texts
+  readonly filteredTexts = computed(() => {
+    const search = this.searchTerm().toLowerCase();
+    const texts = this.texts();
     
-    // Sort texts
-    filtered.sort((a, b) => {
-      switch (this.sortBy()) {
+    return texts.filter(text => 
+      text.key.toLowerCase().includes(search) ||
+      text.english.toLowerCase().includes(search) ||
+      text.georgian.toLowerCase().includes(search)
+    );
+  });
+  
+  readonly sortedTexts = computed(() => {
+    const filtered = this.filteredTexts();
+    const sortBy = this.sortBy();
+    
+    return [...filtered].sort((a, b) => {
+      switch (sortBy) {
         case 'key':
           return a.key.localeCompare(b.key);
         case 'english':
@@ -78,18 +70,68 @@ export class TextsComponent {
           return 0;
       }
     });
+  });
+  
+  // Computed signals for pagination
+  readonly totalPages = computed(() => {
+    return Math.ceil(this.sortedTexts().length / this.itemsPerPage());
+  });
+  
+  readonly paginatedTexts = computed(() => {
+    const sorted = this.sortedTexts();
+    const currentPage = this.currentPage();
+    const itemsPerPage = this.itemsPerPage();
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     
-    this.filteredTexts.set(filtered);
-    this.totalPages.set(Math.ceil(filtered.length / this.itemsPerPage()));
+    return sorted.slice(startIndex, endIndex);
+  });
+  
+  // Computed signals for pagination controls
+  readonly hasPreviousPage = computed(() => this.currentPage() > 1);
+  readonly hasNextPage = computed(() => this.currentPage() < this.totalPages());
+  
+  // Computed signals for dialog validation
+  readonly isFormValid = computed(() => {
+    return this.newKey().trim() && 
+           this.newEnglishText().trim() && 
+           this.newGeorgianText().trim();
+  });
+  
+  // Computed signal for dialog title
+  readonly dialogTitle = computed(() => {
+    return this.isEditing() ? 'Edit Text' : 'Add New Text';
+  });
+  
+  // Computed signal for submit button text
+  readonly submitButtonText = computed(() => {
+    return this.isEditing() ? 'Update' : 'Add';
+  });
+  
+  constructor() {
+    // Reset to first page when search changes
+    this.searchTerm.set('');
   }
   
+  // Event handlers
+  updateSearch(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.searchTerm.set(target.value);
+    this.currentPage.set(1);
+  }
+  
+  updateSort(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.sortBy.set(target.value as 'key' | 'english' | 'georgian' | 'createdAt');
+    this.currentPage.set(1);
+  }
+  
+  // Dialog management
   openAddDialog() {
     this.showDialog.set(true);
     this.isEditing.set(false);
     this.editingId.set(null);
-    this.newKey.set('');
-    this.newEnglishText.set('');
-    this.newGeorgianText.set('');
+    this.resetForm();
   }
   
   openEditDialog(text: TextItem) {
@@ -105,44 +147,58 @@ export class TextsComponent {
     this.showDialog.set(false);
     this.isEditing.set(false);
     this.editingId.set(null);
+    this.resetForm();
+  }
+  
+  private resetForm() {
     this.newKey.set('');
     this.newEnglishText.set('');
     this.newGeorgianText.set('');
   }
   
   submitNewText() {
-    if (this.newKey().trim() && this.newEnglishText().trim() && this.newGeorgianText().trim()) {
+    if (this.isFormValid()) {
       if (this.isEditing()) {
-        // Update existing text
-        const editingId = this.editingId();
-        if (editingId) {
-          this.texts.set(this.texts().map(text => 
-            text.id === editingId 
-              ? { ...text, key: this.newKey().trim(), english: this.newEnglishText().trim(), georgian: this.newGeorgianText().trim() }
-              : text
-          ));
-        }
+        this.updateExistingText();
       } else {
-        // Add new text
-        const now = new Date();
-        const formattedDate = now.toISOString().slice(0, 10);
-        const formattedTime = now.toTimeString().slice(0, 5);
-        const createdAt = `${formattedDate} ${formattedTime}`;
-        
-        const newText: TextItem = {
-          id: this.generateNextId(),
-          key: this.newKey().trim(),
-          english: this.newEnglishText().trim(),
-          georgian: this.newGeorgianText().trim(),
-          createdAt,
-        };
-        
-        this.texts.set([newText, ...this.texts()]);
+        this.addNewText();
       }
       
-      this.updateFilteredTexts();
       this.closeDialog();
     }
+  }
+  
+  private updateExistingText() {
+    const editingId = this.editingId();
+    if (editingId) {
+      this.texts.set(this.texts().map(text => 
+        text.id === editingId 
+          ? { 
+              ...text, 
+              key: this.newKey().trim(), 
+              english: this.newEnglishText().trim(), 
+              georgian: this.newGeorgianText().trim() 
+            }
+          : text
+      ));
+    }
+  }
+  
+  private addNewText() {
+    const now = new Date();
+    const formattedDate = now.toISOString().slice(0, 10);
+    const formattedTime = now.toTimeString().slice(0, 5);
+    const createdAt = `${formattedDate} ${formattedTime}`;
+    
+    const newText: TextItem = {
+      id: this.generateNextId(),
+      key: this.newKey().trim(),
+      english: this.newEnglishText().trim(),
+      georgian: this.newGeorgianText().trim(),
+      createdAt,
+    };
+    
+    this.texts.set([newText, ...this.texts()]);
   }
   
   private generateNextId(): number {
@@ -150,27 +206,33 @@ export class TextsComponent {
     return current.length > 0 ? Math.max(...current.map(text => text.id)) + 1 : 1;
   }
   
+  // Pagination controls
   previousPage() {
-    if (this.currentPage() > 1) {
+    if (this.hasPreviousPage()) {
       this.currentPage.set(this.currentPage() - 1);
     }
   }
   
   nextPage() {
-    if (this.currentPage() < this.totalPages()) {
+    if (this.hasNextPage()) {
       this.currentPage.set(this.currentPage() + 1);
     }
   }
   
+  // Text actions
   selectText(text: TextItem) {
     console.log('Selected text:', text);
   }
   
   deleteText(text: TextItem) {
     this.texts.set(this.texts().filter(t => t.id !== text.id));
-    this.updateFilteredTexts();
+    // Reset to first page if current page becomes empty
+    if (this.paginatedTexts().length === 0 && this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+    }
   }
 
+  // Form input handlers (linked signals)
   onKeyInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     this.newKey.set(target.value);
