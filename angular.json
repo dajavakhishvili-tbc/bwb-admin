@@ -36,6 +36,7 @@
             "styles": [
               "src/styles.scss"
             ],
+            "outputPath": "dist/bwb-admin",
             "outputHashing": "all",
             "optimization": {
               "scripts": true,
@@ -141,5 +142,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
