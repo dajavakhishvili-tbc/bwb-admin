@@ -10,19 +10,42 @@
     </button>
   </div>
 
+  <div class="tabs-container">
+    <div class="tabs">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'dashboard'"
+        (click)="setActiveTab('dashboard')">
+        Dashboard
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'offers'"
+        (click)="setActiveTab('offers')">
+        Offers
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'whats-new'"
+        (click)="setActiveTab('whats-new')">
+        What's New
+      </button>
+    </div>
+  </div>
+
   <div class="offers-content">
-    @if (offers().length === 0) {
+    @if (filteredOffers().length === 0) {
       <div class="empty-state">
         <div class="empty-icon">🎁</div>
-        <h3 class="empty-title">No offers yet</h3>
-        <p class="empty-description">Create your first offer to get started</p>
+        <h3 class="empty-title">No {{ activeTab() === 'dashboard' ? 'dashboard' : activeTab() === 'offers' ? 'offers' : 'what\'s new' }} content yet</h3>
+        <p class="empty-description">Create your first {{ activeTab() === 'dashboard' ? 'dashboard' : activeTab() === 'offers' ? 'offer' : 'what\'s new' }} content to get started</p>
         <button class="empty-action-btn" (click)="openAddDialog()">
-          Create First Offer
+          Create First {{ activeTab() === 'dashboard' ? 'Dashboard' : activeTab() === 'offers' ? 'Offer' : 'What\'s New' }} Content
         </button>
       </div>
     } @else {
       <div class="offers-grid">
-        @for (offer of offers(); track offer.id) {
+        @for (offer of filteredOffers(); track offer.id) {
           <div 
             class="offer-item"
             draggable="true"

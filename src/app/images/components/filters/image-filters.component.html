@@ -2,16 +2,16 @@
   <input 
     type="text" 
     placeholder="Search images..." 
-    [value]="searchTerm"
+    [value]="searchTerm()"
     (input)="onSearchChange($event)"
     class="search-input"
   >
-  <select [value]="sortBy" (change)="onSortByChange($event)" class="sort-select">
+  <select [value]="sortBy()" (change)="onSortByChange($event)" class="sort-select">
     <option value="name">Sort by Name</option>
     <option value="date">Sort by Date</option>
     <option value="size">Sort by Size</option>
   </select>
-  <select [value]="sortOrder" (change)="onSortOrderChange($event)" class="sort-select">
+  <select [value]="sortOrder()" (change)="onSortOrderChange($event)" class="sort-select">
     <option value="desc">Descending</option>
     <option value="asc">Ascending</option>
   </select>

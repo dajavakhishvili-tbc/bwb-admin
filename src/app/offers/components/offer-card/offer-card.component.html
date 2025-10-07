@@ -1,10 +1,23 @@
 <div class="offer-card">
   <div class="card-image">
-    <img [src]="offer.imageUrl" [alt]="offer.title" class="image" />
-    @if (offer.statsIframe) {
+    <img [src]="offer().imageUrl" [alt]="offer().title" class="image" />
+    @if (offer().statsIframe) {
       <button class="stats-btn" (click)="onShowStats()" title="View statistics">
         <span class="stats-icon">📊</span>
       </button>
+    }
+    @if (offer().startDate || offer().endDate) {
+      <div class="date-range-badge">
+        <span class="date-range-text">
+          @if (offer().startDate && offer().endDate) {
+            {{ offer().startDate | date:'MMM d' }} - {{ offer().endDate | date:'MMM d, y' }}
+          } @else if (offer().startDate) {
+            From {{ offer().startDate | date:'MMM d, y' }}
+          } @else if (offer().endDate) {
+            Until {{ offer().endDate | date:'MMM d, y' }}
+          }
+        </span>
+      </div>
     }
     <div class="image-overlay">
       <button class="edit-btn" (click)="onEdit()" title="Edit offer">
@@ -17,11 +30,11 @@
   </div>
   
   <div class="card-content">
-    <h3 class="card-title">{{ offer.title }}</h3>
-    <p class="card-description">{{ offer.description }}</p>
+    <h3 class="card-title">{{ offer().title }}</h3>
+    <p class="card-description">{{ offer().description }}</p>
     <div class="card-footer">
-      <span class="card-date">Created: {{ formatDate(offer.createdAt) }}</span>
-      <span class="card-author">{{ offer.author }}</span>
+      <span class="card-date">Created: {{ offer().createdAt | date:'MMM d, y' }}</span>
+      <span class="card-author">{{ offer().author }}</span>
     </div>
   </div>
 </div> 

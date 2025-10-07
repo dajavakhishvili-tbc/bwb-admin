@@ -1,4 +1,4 @@
-@if (isOpen && loan) {
+@if (isOpen() && loan) {
   <div class="dialog-backdrop" (click)="onBackdropClick($event)">
     <div class="dialog-container">
       <!-- Header -->
@@ -39,7 +39,7 @@
             </div>
             <div class="detail-item">
               <label>Application Date</label>
-              <span class="value">{{ formatDateShort(loan.applicationDate) }}</span>
+              <span class="value">{{ loan.applicationDate | date:'MMM d, y' }}</span>
             </div>
             <div class="detail-item">
               <label>Current Status</label>
@@ -64,7 +64,7 @@
                     <span class="status-text" [class]="getStatusClass(entry.status)">
                       {{ entry.status.charAt(0).toUpperCase() + entry.status.slice(1) }}
                     </span>
-                    <span class="timeline-date">{{ formatDate(entry.changedAt) }}</span>
+                    <span class="timeline-date">{{ entry.changedAt | date:'MMM d, y h:mm a' }}</span>
                   </div>
                   <div class="timeline-details">
                     <span class="changed-by">Changed by: {{ entry.changedBy }}</span>

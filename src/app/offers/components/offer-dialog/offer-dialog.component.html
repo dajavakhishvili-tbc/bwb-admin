@@ -1,4 +1,4 @@
-@if (isOpen) {
+@if (isOpen()) {
   <div class="dialog-overlay" (click)="onClose()">
     <div class="dialog-content" (click)="$event.stopPropagation()">
       <div class="dialog-header">
@@ -36,6 +36,61 @@
               rows="4"
               required
             ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="type" class="form-label">Type *</label>
+            <select
+              id="type"
+              name="type"
+              class="form-select"
+              [value]="form().type"
+              (change)="onTypeChange($event)"
+              required
+            >
+              <option value="dashboard">Dashboard</option>
+              <option value="offers">Offers</option>
+              <option value="whats-new">What's New</option>
+            </select>
+            <div class="field-help">
+              <span class="help-text">Select the section where this content will appear</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Date Range (Optional)</label>
+            <div class="date-range-container">
+              <div class="date-input-group">
+                <label for="startDate" class="date-label">Start Date</label>
+                <input
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  class="form-input date-input"
+                  [value]="getDateValue(form().startDate)"
+                  (change)="onStartDateChange($event)"
+                />
+              </div>
+              <div class="date-input-group">
+                <label for="endDate" class="date-label">End Date</label>
+                <input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  class="form-input date-input"
+                  [value]="getDateValue(form().endDate)"
+                  (change)="onEndDateChange($event)"
+                />
+              </div>
+            </div>
+            @if (dateValidationError()) {
+              <div class="field-error">
+                <span class="error-text">{{ dateValidationError() }}</span>
+              </div>
+            }
+            <div class="field-help">
+              <span class="help-text">Select the date range when this offer will be active</span>
+            </div>
           </div>
 
           <div class="form-group">

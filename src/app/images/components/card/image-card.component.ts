@@ -1,10 +1,12 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 export interface ImageItem {
   id: number;
   name: string;
   url: string;
   size: string;
+  resolution: string;
   uploadedAt: string;
   device: string[];
   author: string;
@@ -17,49 +19,36 @@ export interface ImageItem {
   templateUrl: './image-card.component.html',
   styleUrl: './image-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [DatePipe],
+  standalone: true
 })
 export class ImageCardComponent {
-  @Input() image!: ImageItem;
-  @Output() imageLoad = new EventEmitter<ImageItem>();
-  @Output() imageError = new EventEmitter<ImageItem>();
-  @Output() imageSelect = new EventEmitter<ImageItem>();
+  readonly image = input.required<ImageItem>();
+  readonly imageLoad = output<ImageItem>();
+  readonly imageError = output<ImageItem>();
+  readonly imageSelect = output<ImageItem>();
+  readonly imageDelete = output<number>();
 
   onImageLoad() {
-    this.image.loaded = true;
-    this.image.error = false;
-    this.imageLoad.emit(this.image);
+    const currentImage = { ...this.image(), loaded: true, error: false };
+    this.imageLoad.emit(currentImage);
   }
 
   onImageError() {
-    this.image.error = true;
-    this.image.loaded = false;
-    this.imageError.emit(this.image);
+    const currentImage = { ...this.image(), error: true, loaded: false };
+    this.imageError.emit(currentImage);
   }
 
   onImageSelect() {
-    this.imageSelect.emit(this.image);
+    this.imageSelect.emit(this.image());
+  }
+
+  onImageDelete(event: Event) {
+    event.stopPropagation(); // Prevent card click when deleting
+    this.imageDelete.emit(this.image().id);
   }
 
   isBase64Image(url: string): boolean {
     return url.startsWith('data:image/');
-  }
-
-  formatDateTime(dateTimeString: string): string {
-    // Handle both formats: YYYY-MM-DDTHH:mm and YYYY-MM-DD
-    const date = new Date(dateTimeString.includes('T') ? dateTimeString + ':00' : dateTimeString + 'T00:00:00');
-    
-    if (isNaN(date.getTime())) {
-      return dateTimeString; // Return original if parsing fails
-    }
-    
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    };
-    
-    return date.toLocaleDateString('en-US', options);
   }
 } 

@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { LoanDetailDialogComponent } from './loan-detail-dialog/loan-detail-dialog.component';
 
 export interface BusinessLoan {
@@ -16,7 +17,8 @@ export interface BusinessLoan {
   templateUrl: './business-loan-stats.component.html',
   styleUrl: './business-loan-stats.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LoanDetailDialogComponent]
+  imports: [LoanDetailDialogComponent, DatePipe],
+  standalone: true
 })
 export class BusinessLoanStatsComponent {
   readonly loans = signal<BusinessLoan[]>([
@@ -297,13 +299,6 @@ export class BusinessLoanStatsComponent {
     }).format(amount);
   }
 
-  formatDate(date: Date): string {
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    }).format(date);
-  }
 
   getTotalAmount(): number {
     return this.loans().reduce((total, loan) => total + loan.amount, 0);

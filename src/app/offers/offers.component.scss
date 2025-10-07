@@ -48,7 +48,50 @@
   }
 }
 
+.tabs-container {
+  margin-bottom: 2rem;
+}
 
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--bg-quaternary);
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-secondary, #6b7280);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover {
+    color: var(--text-primary, #111827);
+    background: var(--bg-quaternary);
+  }
+
+  &.active {
+    color: var(--text-accent);
+    background: var(--bg-primary);
+    box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.10), 0 1px 2px 0 rgba(16, 24, 40, 0.06);
+  }
+
+  &:focus {
+    outline: 0;
+  }
+}
 
 .offers-content {
   min-height: 400px;
@@ -83,7 +126,7 @@
 
 .empty-action-btn {
   padding: 0.75rem 1.5rem;
-  background: var(--primary-color, #3b82f6);
+  background: var(--primary-color, #00adee);
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -92,16 +135,15 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background: var(--primary-hover, #2563eb);
+    background: var(--primary-hover, #8dcbf8);
   }
 }
 
 .offers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, 350px);
   gap: 1.5rem;
   padding: 1rem 0;
-  align-items: start; // Ensure cards align at the top
 }
 
 .offer-item {
@@ -123,7 +165,7 @@
   }
 
   &.drag-over {
-    border: 2px dashed var(--primary-color, #3b82f6);
+    border: 2px dashed var(--primary-color, #00adee);
     background: rgba(59, 130, 246, 0.05);
   }
 }

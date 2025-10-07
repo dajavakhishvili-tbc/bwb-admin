@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed, output } from '@angular/core';
 import { ImageItem } from '../card/image-card.component';
 
 @Component({
@@ -8,8 +8,8 @@ import { ImageItem } from '../card/image-card.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageUploadDialogComponent {
-  @Output() imageUploaded = new EventEmitter<ImageItem>();
-  @Output() dialogClosed = new EventEmitter<void>();
+  readonly imageUploaded = output<ImageItem>();
+  readonly dialogClosed = output<void>();
 
   readonly currentUser = signal<string>('admin');
   readonly showDialog = signal(false);
@@ -34,6 +34,7 @@ export class ImageUploadDialogComponent {
   closeDialog() {
     this.showDialog.set(false);
     this.resetForm();
+    // TODO: The 'emit' function requires a mandatory void argument
     this.dialogClosed.emit();
   }
 
@@ -62,7 +63,7 @@ export class ImageUploadDialogComponent {
       this.imageName.set(nameWithoutExt);
     }
     
-    // Create preview
+    // Create preview and extract resolution
     const reader = new FileReader();
     reader.onload = () => {
       this.previewUrl.set(reader.result as string);
@@ -78,18 +79,21 @@ export class ImageUploadDialogComponent {
     return this.selectedDevice() === device;
   }
 
-  uploadImage() {
+  async uploadImage() {
     if (!this.isFormValid() || !this.selectedFile()) return;
 
     const file = this.selectedFile()!;
     const now = new Date();
     const uploadedAt = now.toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm format
     
+    const resolution = await this.getImageResolution(this.previewUrl());
+    
     const newImage: ImageItem = {
       id: Date.now(),
       name: this.imageName().trim(),
       url: this.previewUrl(),
       size: this.formatFileSize(file.size),
+      resolution,
       uploadedAt,
       device: [this.selectedDevice()],
       author: this.currentUser()
@@ -114,5 +118,18 @@ export class ImageUploadDialogComponent {
     } else {
       return bytes + ' B';
     }
+  }
+
+  private getImageResolution(imageUrl: string): Promise<string> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        resolve(`${img.width} × ${img.height}`);
+      };
+      img.onerror = () => {
+        resolve('Unknown');
+      };
+      img.src = imageUrl;
+    });
   }
 }

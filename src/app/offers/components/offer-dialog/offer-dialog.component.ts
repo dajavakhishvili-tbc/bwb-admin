@@ -1,11 +1,14 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 export interface OfferForm {
   title: string;
   description: string;
   imageUrl: string;
+  startDate?: Date;
+  endDate?: Date;
   statsIframe?: string;
+  type: 'dashboard' | 'offers' | 'whats-new';
 }
 
 export type DialogType = 'add' | 'edit';
@@ -18,27 +21,30 @@ export type DialogType = 'add' | 'edit';
   imports: [FormsModule]
 })
 export class OfferDialogComponent {
-  @Input() isOpen = false;
-  @Input() dialogType: DialogType = 'add';
-  @Input() dialogForm: OfferForm = { title: '', description: '', imageUrl: '', statsIframe: '' };
+  readonly isOpen = input(false);
+  readonly dialogType = input<DialogType>('add');
+  readonly dialogForm = input<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard' });
   
-  @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<OfferForm>();
+  readonly close = output<void>();
+  readonly save = output<OfferForm>();
 
-  readonly form = signal<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '' });
+  readonly form = signal<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard' });
   readonly isFormValid = signal(false);
   readonly selectedFile = signal<File | null>(null);
   readonly imagePreview = signal<string>('');
+  readonly dateValidationError = signal<string>('');
 
   constructor() {
     this.updateFormValidation();
   }
 
   ngOnChanges(): void {
-    if (this.isOpen) {
-      this.form.set({ ...this.dialogForm });
+    if (this.isOpen()) {
+      const dialogForm = this.dialogForm();
+      this.form.set({ ...dialogForm });
       this.selectedFile.set(null);
-      this.imagePreview.set(this.dialogForm.imageUrl || '');
+      this.imagePreview.set(dialogForm.imageUrl || '');
+      this.validateDates();
       this.updateFormValidation();
     }
   }
@@ -51,11 +57,13 @@ export class OfferDialogComponent {
     const currentForm = this.form();
     const isValid = currentForm.title.trim().length > 0 && 
                    currentForm.description.trim().length > 0 && 
-                   (currentForm.imageUrl.trim().length > 0 || this.selectedFile() !== null);
+                   (currentForm.imageUrl.trim().length > 0 || this.selectedFile() !== null) &&
+                   this.dateValidationError().length === 0;
     this.isFormValid.set(isValid);
   }
 
   onClose(): void {
+    // TODO: The 'emit' function requires a mandatory void argument
     this.close.emit();
   }
 
@@ -126,6 +134,43 @@ export class OfferDialogComponent {
     this.updateFormValidation();
   }
 
+  onTypeChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.form.set({ ...this.form(), type: select.value as 'dashboard' | 'offers' | 'whats-new' });
+    this.updateFormValidation();
+  }
+
+  onStartDateChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const startDate = input.value ? new Date(input.value) : undefined;
+    this.form.set({ ...this.form(), startDate });
+    this.validateDates();
+    this.updateFormValidation();
+  }
+
+  onEndDateChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const endDate = input.value ? new Date(input.value) : undefined;
+    this.form.set({ ...this.form(), endDate });
+    this.validateDates();
+    this.updateFormValidation();
+  }
+
+  private validateDates(): void {
+    const { startDate, endDate } = this.form();
+    
+    if (startDate && endDate && startDate > endDate) {
+      this.dateValidationError.set('Start date cannot be newer than end date');
+    } else {
+      this.dateValidationError.set('');
+    }
+  }
+
+  getDateValue(date: Date | undefined): string {
+    if (!date) return '';
+    return date.toISOString().split('T')[0];
+  }
+
   removeSelectedFile(): void {
     this.selectedFile.set(null);
     this.imagePreview.set('');
@@ -133,10 +178,10 @@ export class OfferDialogComponent {
   }
 
   getDialogTitle(): string {
-    return this.dialogType === 'add' ? 'Add New Offer' : 'Edit Offer';
+    return this.dialogType() === 'add' ? 'Add New Offer' : 'Edit Offer';
   }
 
   getSaveButtonText(): string {
-    return this.dialogType === 'add' ? 'Create Offer' : 'Update Offer';
+    return this.dialogType() === 'add' ? 'Create Offer' : 'Update Offer';
   }
 } 

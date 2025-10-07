@@ -1,31 +1,41 @@
 <div class="image-card" (click)="onImageSelect()">
   <div class="image-preview">
       <img 
-        [src]="image.url"
-        [alt]="image.name"
+        [src]="image().url"
+        [alt]="image().name"
         (load)="onImageLoad()"
         (error)="onImageError()"
         class="image-content"
       >
    
-    @if (image.error) {
+    @if (image().error) {
       <div class="image-error-placeholder">
         <div class="error-icon">⚠️</div>
         <span>Failed to load</span>
       </div>
     }
+    
+    <div class="image-overlay">
+      <button class="delete-btn" (click)="onImageDelete($event)" title="Delete image">
+        <span class="btn-icon">🗑️</span>
+      </button>
+    </div>
   </div>
   <div class="image-info">
-    <h3>{{ image.name }}</h3>
+    <h3>{{ image().name }}</h3>
     <div class="image-meta">
       <div class="meta-row">
         <span class="label">Size:</span>
-        <span class="value">{{ image.size }}</span>
+        <span class="value">{{ image().size }}</span>
+      </div>
+      <div class="meta-row">
+        <span class="label">Resolution:</span>
+        <span class="value">{{ image().resolution }}</span>
       </div>
       <div class="meta-row">
         <span class="label">Device:</span>
         <div class="device-chips">
-          @for (device of image.device; track device) {
+          @for (device of image().device; track device) {
             <span class="device-chip" [class.device-web]="device === 'web'" [class.device-mobile]="device === 'mobile'">
               {{ device }}
             </span>
@@ -34,11 +44,11 @@
       </div>
       <div class="meta-row">
         <span class="label">Author:</span>
-        <span class="author">{{ image.author }}</span>
+        <span class="author">{{ image().author }}</span>
       </div>
       <div class="meta-row">
         <span class="label">Date:</span>
-        <span class="date">{{ formatDateTime(image.uploadedAt) }}</span>
+        <span class="date">{{ image().uploadedAt | date:'MMM d, y' }}</span>
       </div>
     </div>
   </div>

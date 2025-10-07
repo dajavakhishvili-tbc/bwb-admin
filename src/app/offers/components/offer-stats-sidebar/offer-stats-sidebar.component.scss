@@ -12,8 +12,16 @@
 }
 
 .stats-sidebar {
+  --card-bg: var(--card-bg);
+  --bg-primary: var(--bg-primary);
+  --bg-secondary: var(--bg-secondary);
+  --text-primary: var(--text-primary);
+  --text-secondary: var(--text-secondary);
+  --text-tertiary: var(--text-muted);
+  --border-color: var(--border-color);
+  
   height: 100vh;
-  background: var(--card-bg, #ffffff);
+  background: var(--card-bg);
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
@@ -87,15 +95,12 @@
   max-width: 300px;
 }
 
-// Dark theme support
-@media (prefers-color-scheme: dark) {
-  .stats-sidebar {
-    --card-bg: #1f2937;
-    --bg-primary: #111827;
-    --bg-secondary: #374151;
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --text-tertiary: #9ca3af;
-    --border-color: #4b5563;
-  }
+[data-theme="dark"] .stats-sidebar {
+  --card-bg: var(--card-bg);
+  --bg-primary: var(--bg-primary);
+  --bg-secondary: var(--bg-secondary);
+  --text-primary: var(--text-primary);
+  --text-secondary: var(--text-secondary);
+  --text-tertiary: var(--text-muted);
+  --border-color: var(--border-color);
 }

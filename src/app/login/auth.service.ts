@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 export interface LoginUser {
@@ -12,13 +12,15 @@ export interface LoginUser {
   providedIn: 'root'
 })
 export class AuthService {
+  private router = inject(Router);
+
   private readonly _isAuthenticated = signal(false);
   private readonly _currentUser = signal<LoginUser | null>(null);
   
   readonly isAuthenticated = this._isAuthenticated.asReadonly();
   readonly currentUser = this._currentUser.asReadonly();
 
-  constructor(private router: Router) {
+  constructor() {
     // Check if user is already logged in (from localStorage)
     this.checkAuthStatus();
   }

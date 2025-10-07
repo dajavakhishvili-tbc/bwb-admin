@@ -6,16 +6,26 @@
   --bg-primary: #ffffff;
   --bg-secondary: #f8f9fa;
   --bg-tertiary: #e9ecef;
+  --bg-quaternary: #f9fafb;
   --text-primary: #333333;
   --text-secondary: #6c757d;
-  --text-muted: #adb5bd;
+  --text-muted: #cbd5e1;
+  --text-accent: #344054;
+  --status-success-bg: #dcfce7;
+  --status-success-text: #166534;
+  --status-warning-bg: #fef3c7;
+  --status-warning-text: #92400e;
+  --status-error-bg: #fee2e2;
+  --status-error-text: #991b1b;
+  --status-info-bg: #dbeafe;
+  --status-info-text: #1e40af;
   --border-color: #e1e5e9;
   --shadow-color: rgba(0, 0, 0, 0.1);
   --card-bg: #ffffff;
   --input-bg: #ffffff;
   --input-border: #e1e5e9;
-  --button-primary: #667eea;
-  --button-hover: #5a6fd8;
+  --button-primary: #00ADEE;
+  --button-hover: #8dcbf8;
   --gradient-primary: #00ADEE;
   --gradient-secondary: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
@@ -24,16 +34,26 @@
   --bg-primary: #1a1a1a;
   --bg-secondary: #2d2d2d;
   --bg-tertiary: #404040;
+  --bg-quaternary: #2a2a2a;
   --text-primary: #ffffff;
   --text-secondary: #b3b3b3;
-  --text-muted: #808080;
+  --text-muted: #9ca3af;
+  --text-accent: #e5e7eb;
+  --status-success-bg: #1f2937;
+  --status-success-text: #10b981;
+  --status-warning-bg: #1f2937;
+  --status-warning-text: #f59e0b;
+  --status-error-bg: #1f2937;
+  --status-error-text: #ef4444;
+  --status-info-bg: #1f2937;
+  --status-info-text: #3b82f6;
   --border-color: #404040;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --card-bg: #2d2d2d;
   --input-bg: #404040;
   --input-border: #555555;
-  --button-primary: #667eea;
-  --button-hover: #5a6fd8;
+  --button-primary: #00adee;
+  --button-hover: #8dcbf8;
   --gradient-primary: #00ADEE;
   --gradient-secondary: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
 }
@@ -52,12 +72,10 @@ body {
   line-height: 1.6;
 }
 
-/* Smooth transitions for theme changes */
 * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -75,13 +93,11 @@ body {
   background: var(--text-muted);
 }
 
-/* Focus styles for accessibility */
 *:focus {
   outline: 2px solid var(--button-primary);
   outline-offset: 2px;
 }
 
-/* Button reset */
 button {
   font-family: inherit;
   border: none;
@@ -89,20 +105,17 @@ button {
   cursor: pointer;
 }
 
-/* Input reset */
 input, textarea, select {
   font-family: inherit;
   border: none;
   outline: none;
 }
 
-/* Link reset */
 a {
   color: inherit;
   text-decoration: none;
 }
 
-/* Image reset */
 img {
   max-width: 100%;
   height: auto;

@@ -11,15 +11,21 @@ export interface Offer {
   description: string;
   imageUrl: string;
   createdAt: Date;
+  startDate?: Date;
+  endDate?: Date;
   author: string;
   statsIframe?: string;
+  type: 'dashboard' | 'offers' | 'whats-new';
 }
 
 export interface OfferForm {
   title: string;
   description: string;
   imageUrl: string;
+  startDate?: Date;
+  endDate?: Date;
   statsIframe?: string;
+  type: 'dashboard' | 'offers' | 'whats-new';
 }
 
 @Component({
@@ -32,12 +38,13 @@ export interface OfferForm {
 export class OffersComponent {
   readonly offers = signal<Offer[]>([]);
   readonly isDialogOpen = signal(false);
-  readonly dialogForm = signal<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '' });
+  readonly dialogForm = signal<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard' });
   readonly dialogType = signal<'add' | 'edit'>('add');
   readonly editingOfferId = signal<number | null>(null);
   readonly draggedOffer = signal<Offer | null>(null);
   readonly isStatsSidebarOpen = signal(false);
   readonly selectedOfferForStats = signal<Offer | null>(null);
+  readonly activeTab = signal<'dashboard' | 'offers' | 'whats-new'>('dashboard');
 
   private authService = inject(AuthService);
 
@@ -49,8 +56,11 @@ export class OffersComponent {
         description: 'Get 20% off on all products this week!',
         imageUrl: 'https://picsum.photos/300/200?random=1',
         createdAt: new Date('2024-01-15'),
+        startDate: new Date('2024-01-15'),
+        endDate: new Date('2024-01-22'),
         author: 'admin',
         statsIframe: 'https://eu.posthog.com/shared/OvTht1LV7gDaz-Ca5X4UFimMF1qsfQ',
+        type: 'dashboard'
       },
       {
         id: 2,
@@ -58,7 +68,8 @@ export class OffersComponent {
         description: 'Free shipping on orders over $50',
         imageUrl: 'https://picsum.photos/300/200?random=2',
         createdAt: new Date('2024-01-14'),
-        author: 'admin'
+        author: 'admin',
+        type: 'offers'
       },
       {
         id: 3,
@@ -66,7 +77,10 @@ export class OffersComponent {
         description: 'Flash sale! 50% off selected items for the next 24 hours only.',
         imageUrl: 'https://picsum.photos/300/200?random=3',
         createdAt: new Date('2024-01-13'),
-        author: 'admin'
+        startDate: new Date('2024-01-13'),
+        endDate: new Date('2024-01-14'),
+        author: 'admin',
+        type: 'offers'
       },
       {
         id: 4,
@@ -74,7 +88,8 @@ export class OffersComponent {
         description: 'Buy any item and get a second one absolutely free!',
         imageUrl: 'https://picsum.photos/300/200?random=4',
         createdAt: new Date('2024-01-12'),
-        author: 'admin'
+        author: 'admin',
+        type: 'offers'
       },
       {
         id: 5,
@@ -82,7 +97,8 @@ export class OffersComponent {
         description: 'Students get 15% off with valid student ID. Valid on all purchases.',
         imageUrl: 'https://picsum.photos/300/200?random=5',
         createdAt: new Date('2024-01-11'),
-        author: 'admin'
+        author: 'admin',
+        type: 'whats-new'
       },
       {
         id: 6,
@@ -90,7 +106,8 @@ export class OffersComponent {
         description: 'Earn points on every purchase and redeem for exclusive rewards.',
         imageUrl: 'https://picsum.photos/300/200?random=6',
         createdAt: new Date('2024-01-10'),
-        author: 'admin'
+        author: 'admin',
+        type: 'whats-new'
       },
       {
         id: 7,
@@ -98,14 +115,15 @@ export class OffersComponent {
         description: 'Up to 70% off on seasonal items. Limited quantities available.',
         imageUrl: 'https://picsum.photos/300/200?random=7',
         createdAt: new Date('2024-01-09'),
-        author: 'admin'
+        author: 'admin',
+        type: 'dashboard'
       }
     ]);
   }
 
   openAddDialog(): void {
     this.dialogType.set('add');
-    this.dialogForm.set({ title: '', description: '', imageUrl: '', statsIframe: '' });
+    this.dialogForm.set({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard' });
     this.editingOfferId.set(null);
     this.isDialogOpen.set(true);
   }
@@ -116,7 +134,10 @@ export class OffersComponent {
       title: offer.title,
       description: offer.description,
       imageUrl: offer.imageUrl,
-      statsIframe: offer.statsIframe || ''
+      startDate: offer.startDate,
+      endDate: offer.endDate,
+      statsIframe: offer.statsIframe || '',
+      type: offer.type
     });
     this.editingOfferId.set(offer.id);
     this.isDialogOpen.set(true);
@@ -136,15 +157,18 @@ export class OffersComponent {
         description: form.description,
         imageUrl: form.imageUrl,
         createdAt: new Date(),
+        startDate: form.startDate,
+        endDate: form.endDate,
         author: currentUser?.username || 'admin',
-        statsIframe: form.statsIframe?.trim() || undefined
+        statsIframe: form.statsIframe?.trim() || undefined,
+        type: form.type
       };
       this.offers.set([newOffer, ...this.offers()]);
     } else {
       const currentOffers = this.offers();
       const updatedOffers = currentOffers.map(offer => 
         offer.id === this.editingOfferId() 
-          ? { ...offer, title: form.title, description: form.description, imageUrl: form.imageUrl, statsIframe: form.statsIframe?.trim() || undefined }
+          ? { ...offer, title: form.title, description: form.description, imageUrl: form.imageUrl, startDate: form.startDate, endDate: form.endDate, statsIframe: form.statsIframe?.trim() || undefined, type: form.type }
           : offer
       );
       this.offers.set(updatedOffers);
@@ -221,6 +245,14 @@ export class OffersComponent {
   closeStatsSidebar(): void {
     this.isStatsSidebarOpen.set(false);
     this.selectedOfferForStats.set(null);
+  }
+
+  setActiveTab(tab: 'dashboard' | 'offers' | 'whats-new'): void {
+    this.activeTab.set(tab);
+  }
+
+  filteredOffers(): Offer[] {
+    return this.offers().filter(offer => offer.type === this.activeTab());
   }
 
   private generateNextId(): number {

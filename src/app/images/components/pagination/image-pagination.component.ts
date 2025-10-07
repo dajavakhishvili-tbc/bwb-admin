@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 
 @Component({
   selector: 'ib-image-pagination',
@@ -7,17 +7,19 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImagePaginationComponent {
-  @Input() currentPage = 1;
-  @Input() totalPages = 1;
+  readonly currentPage = input(1);
+  readonly totalPages = input(1);
   
-  @Output() previousPage = new EventEmitter<void>();
-  @Output() nextPage = new EventEmitter<void>();
+  readonly previousPage = output<void>();
+  readonly nextPage = output<void>();
 
   onPreviousPage() {
+    // TODO: The 'emit' function requires a mandatory void argument
     this.previousPage.emit();
   }
 
   onNextPage() {
+    // TODO: The 'emit' function requires a mandatory void argument
     this.nextPage.emit();
   }
 } 

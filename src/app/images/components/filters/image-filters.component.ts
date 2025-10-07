@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 
 export interface FilterState {
   searchTerm: string;
@@ -13,13 +13,13 @@ export interface FilterState {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageFiltersComponent {
-  @Input() searchTerm = '';
-  @Input() sortBy = 'name';
-  @Input() sortOrder = 'desc';
+  readonly searchTerm = input('');
+  readonly sortBy = input('name');
+  readonly sortOrder = input('desc');
   
-  @Output() searchChange = new EventEmitter<string>();
-  @Output() sortByChange = new EventEmitter<string>();
-  @Output() sortOrderChange = new EventEmitter<string>();
+  readonly searchChange = output<string>();
+  readonly sortByChange = output<string>();
+  readonly sortOrderChange = output<string>();
 
   onSearchChange(event: Event) {
     const target = event.target as HTMLInputElement;

@@ -18,10 +18,8 @@ interface TextItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextsComponent {
-  // Current user signal
   readonly currentUser = signal<string>('admin');
 
-  // Core data signals
   readonly texts = signal<TextItem[]>([
     { id: 1, key: 'welcome', english: 'Welcome to our website', georgian: 'მოგესალმებათ ჩვენი ვებსაიტი', channels: ['BWB', 'BMB'], labels: ['navigation', 'header'], author: 'admin', createdAt: '2024-01-15 14:30' },
     { id: 2, key: 'about', english: 'About Us', georgian: 'ჩვენს შესახებ', channels: ['BWB'], labels: ['company', 'info'], author: 'admin', createdAt: '2024-01-14 09:15' },
@@ -30,19 +28,16 @@ export class TextsComponent {
     { id: 5, key: 'home', english: 'Home', georgian: 'მთავარი', channels: ['BWB'], labels: ['navigation'], author: 'editor', createdAt: '2024-01-11 13:55' },
   ]);
   
-  // Filter and pagination signals
   readonly searchTerm = signal('');
   readonly sortBy = signal<'createdAt-asc' | 'createdAt-desc'>('createdAt-desc');
   readonly currentPage = signal(1);
   readonly itemsPerPage = signal(5);
   readonly selectedChannelFilters = signal<string[]>([]);
   
-  // Dialog state signals
   readonly showDialog = signal(false);
   readonly isEditing = signal(false);
   readonly editingId = signal<number | null>(null);
   
-  // Form input signals (linked signals)
   readonly newKey = signal('');
   readonly newEnglishText = signal('');
   readonly newGeorgianText = signal('');
@@ -50,14 +45,12 @@ export class TextsComponent {
   readonly newLabels = signal<string[]>([]);
   readonly newLabelInput = signal('');
   
-  // Computed signals for filtered and sorted texts
   readonly filteredTexts = computed(() => {
     const search = this.searchTerm().toLowerCase();
     const channelFilters = this.selectedChannelFilters();
     const texts = this.texts();
     
     return texts.filter(text => {
-      // Text search filter
       const matchesSearch = !search || 
         text.key.toLowerCase().includes(search) ||
         text.english.toLowerCase().includes(search) ||
@@ -65,7 +58,6 @@ export class TextsComponent {
         text.author.toLowerCase().includes(search) ||
         text.labels.some(label => label.toLowerCase().includes(search));
       
-      // Channel filter - show texts that have ALL selected channels
       const matchesChannel = channelFilters.length === 0 || 
         channelFilters.every(filterChannel => text.channels.includes(filterChannel));
       
@@ -96,7 +88,6 @@ export class TextsComponent {
     });
   });
   
-  // Computed signals for pagination
   readonly totalPages = computed(() => {
     return Math.ceil(this.sortedTexts().length / this.itemsPerPage());
   });
@@ -111,16 +102,13 @@ export class TextsComponent {
     return sorted.slice(startIndex, endIndex);
   });
   
-  // Computed signals for pagination controls
   readonly hasPreviousPage = computed(() => this.currentPage() > 1);
   readonly hasNextPage = computed(() => this.currentPage() < this.totalPages());
   
-  // Computed signals for dialog validation
   readonly isKeyValid = computed(() => {
     const key = this.newKey().trim();
     if (!key) return false;
     
-    // Allow trailing dots for user convenience while typing
     const cleanKey = key.replace(/\.+$/, '');
     if (!cleanKey) return false;
     
@@ -135,22 +123,18 @@ export class TextsComponent {
            this.selectedChannels().length > 0;
   });
   
-  // Computed signal for dialog title
   readonly dialogTitle = computed(() => {
     return this.isEditing() ? 'Edit Text' : 'Add New Text';
   });
   
-  // Computed signal for submit button text
   readonly submitButtonText = computed(() => {
     return this.isEditing() ? 'Update' : 'Add';
   });
   
   constructor() {
-    // Reset to first page when search changes
     this.searchTerm.set('');
   }
   
-  // Event handlers
   updateSearch(event: Event) {
     const target = event.target as HTMLInputElement;
     this.searchTerm.set(target.value);
@@ -200,7 +184,6 @@ export class TextsComponent {
     return this.selectedChannelFilters().includes(channel);
   }
   
-  // Dialog management
   openAddDialog() {
     this.showDialog.set(true);
     this.isEditing.set(false);
@@ -304,7 +287,6 @@ export class TextsComponent {
     return current.length > 0 ? Math.max(...current.map(text => text.id)) + 1 : 1;
   }
   
-  // Pagination controls
   previousPage() {
     if (this.hasPreviousPage()) {
       this.currentPage.set(this.currentPage() - 1);
@@ -317,35 +299,28 @@ export class TextsComponent {
     }
   }
   
-  // Text actions
   selectText(text: TextItem) {
     console.log('Selected text:', text);
   }
   
   deleteText(text: TextItem) {
     this.texts.set(this.texts().filter(t => t.id !== text.id));
-    // Reset to first page if current page becomes empty
     if (this.paginatedTexts().length === 0 && this.currentPage() > 1) {
       this.currentPage.set(this.currentPage() - 1);
     }
   }
 
-  // Form input handlers (linked signals)
   onKeyInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     let value = target.value;
     
-    // Remove spaces and convert to lowercase
     value = value.replace(/\s+/g, '');
     value = value.toLowerCase();
     
-    // Only allow letters, numbers, and dots
     value = value.replace(/[^a-z0-9.]/g, '');
     
-    // Replace consecutive dots with single dot
     value = value.replace(/\.{2,}/g, '.');
     
-    // Only remove leading dots, allow trailing dots for user to continue typing
     value = value.replace(/^\.+/, '');
     
     this.newKey.set(value);

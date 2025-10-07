@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter, signal, computed, inject } from '@angular/core';
+import { Component, Input, signal, computed, inject, input, output } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { BusinessLoan } from '../business-loan-stats.component';
 
 export interface StatusHistoryEntry {
@@ -13,11 +14,13 @@ export interface StatusHistoryEntry {
   selector: 'ib-loan-detail-dialog',
   templateUrl: './loan-detail-dialog.component.html',
   styleUrl: './loan-detail-dialog.component.scss',
+  imports: [DatePipe],
+  standalone: true
 })
 export class LoanDetailDialogComponent {
   @Input() loan: BusinessLoan | null = null;
-  @Input() isOpen = false;
-  @Output() closeDialog = new EventEmitter<void>();
+  readonly isOpen = input(false);
+  readonly closeDialog = output<void>();
 
   readonly statusHistory = signal<StatusHistoryEntry[]>([
     {
@@ -44,6 +47,7 @@ export class LoanDetailDialogComponent {
   ]);
 
   onClose() {
+    // TODO: The 'emit' function requires a mandatory void argument
     this.closeDialog.emit();
   }
 
@@ -75,23 +79,6 @@ export class LoanDetailDialogComponent {
     }).format(amount);
   }
 
-  formatDate(date: Date): string {
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
-  }
-
-  formatDateShort(date: Date): string {
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    }).format(date);
-  }
 
   getStatusIcon(status: string): string {
     switch (status) {

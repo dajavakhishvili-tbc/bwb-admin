@@ -1,14 +1,14 @@
 <div class="pagination">
   <button 
-    [disabled]="currentPage === 1"
+    [disabled]="currentPage() === 1"
     (click)="onPreviousPage()"
     class="page-btn"
   >
     Previous
   </button>
-  <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+  <span class="page-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
   <button 
-    [disabled]="currentPage === totalPages"
+    [disabled]="currentPage() === totalPages()"
     (click)="onNextPage()"
     class="page-btn"
   >

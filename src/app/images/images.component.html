@@ -36,12 +36,7 @@
   @defer (on viewport) {
     <div class="images-grid">
       @for (image of paginatedImages(); track image.id) {
-        <ib-image-card
-          [image]="image"
-          (imageLoad)="onImageLoad($event)"
-          (imageError)="onImageError($event)"
-          (imageSelect)="selectImage($event)"
-        />
+        <ib-image-card [image]="image" (imageDelete)="onImageDelete($event)"/>
       }
     </div>
   } @placeholder {

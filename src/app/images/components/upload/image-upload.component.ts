@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ViewChild, output } from '@angular/core';
 import { ImageUploadDialogComponent } from '../upload-dialog/image-upload-dialog.component';
 import { ImageItem } from '../card/image-card.component';
 
@@ -11,7 +11,7 @@ import { ImageItem } from '../card/image-card.component';
 })
 export class ImageUploadComponent {
   @ViewChild(ImageUploadDialogComponent) uploadDialog!: ImageUploadDialogComponent;
-  @Output() fileSelected = new EventEmitter<ImageItem>();
+  readonly fileSelected = output<ImageItem>();
 
   openUploadDialog() {
     this.uploadDialog.openDialog();

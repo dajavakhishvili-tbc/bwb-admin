@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, signal, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject, input, output } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Offer } from '../../offers.component';
 
@@ -10,21 +10,23 @@ import { Offer } from '../../offers.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OfferStatsSidebarComponent {
-  @Input() offer!: Offer;
-  @Input() isOpen = signal(false);
-  @Output() close = new EventEmitter<void>();
+  readonly offer = input.required<Offer>();
+  readonly isOpen = input(signal(false));
+  readonly close = output<void>();
 
   private sanitizer = inject(DomSanitizer);
 
   getSafeIframeUrl(): SafeResourceUrl | null {
-    if (!this.offer?.statsIframe) {
+    const offer = this.offer();
+    if (!offer?.statsIframe) {
       return null;
     }
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.offer.statsIframe);
+    return this.sanitizer.bypassSecurityTrustResourceUrl(offer.statsIframe);
   }
 
 
   closeSidebar(): void {
+    // TODO: The 'emit' function requires a mandatory void argument
     this.close.emit();
   }
 }
