@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { PageDialogComponent } from './business-loan-page-dialog/page-dialog.component';
 import { PageConfig, DialogForm, DialogType } from './business-loan-page-dialog/page-dialog-model';
 
@@ -8,7 +9,7 @@ import { PageConfig, DialogForm, DialogType } from './business-loan-page-dialog/
   templateUrl: './business-loan.component.html',
   styleUrl: './business-loan.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, PageDialogComponent],
+  imports: [FormsModule, DatePipe, PageDialogComponent],
 })
 export class BusinessLoanComponent {
   readonly pages = signal<PageConfig[]>([
