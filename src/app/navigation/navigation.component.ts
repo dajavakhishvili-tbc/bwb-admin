@@ -29,7 +29,6 @@ export class NavigationComponent {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
   }
 
   navigateToHome(): void {

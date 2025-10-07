@@ -19,30 +19,23 @@ export class AuthService {
   readonly currentUser = this._currentUser.asReadonly();
 
   constructor(private router: Router) {
-    // TEMPORARY: Always set user as authenticated for testing
-    this.setTemporaryAuth();
-  }
-
-  private setTemporaryAuth(): void {
-    // Set a temporary user for testing purposes
-    const tempUser: LoginUser = {
-      id: 1,
-      username: 'admin',
-      email: 'admin@example.com',
-      role: 'admin'
-    };
-    
-    this._currentUser.set(tempUser);
-    this._isAuthenticated.set(true);
-    
-    // Also set in localStorage for consistency
-    localStorage.setItem('auth_token', 'temp-jwt-token');
-    localStorage.setItem('user_data', JSON.stringify(tempUser));
+    // Check if user is already logged in (from localStorage)
+    this.checkAuthStatus();
   }
 
   private checkAuthStatus(): void {
-    // TEMPORARY: This method is bypassed for testing
-    this.setTemporaryAuth();
+    const token = localStorage.getItem('auth_token');
+    const userData = localStorage.getItem('user_data');
+    
+    if (token && userData) {
+      try {
+        const user = JSON.parse(userData);
+        this._currentUser.set(user);
+        this._isAuthenticated.set(true);
+      } catch (error) {
+        this.logout();
+      }
+    }
   }
 
   login(username: string, password: string): Promise<boolean> {
