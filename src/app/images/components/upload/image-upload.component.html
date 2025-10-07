@@ -1,5 +1,9 @@
-<label class="custom-upload-label">
+<button class="custom-upload-label" (click)="openUploadDialog()">
   <span class="icon">📁</span>
   Upload Image
-  <input type="file" accept="image/*" (change)="onFileSelected($event)" class="upload-input" />
-</label> 
+</button>
+
+<ib-image-upload-dialog 
+  (imageUploaded)="onImageUploaded($event)"
+  (dialogClosed)="onDialogClosed()"
+/> 

@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 export interface OfferForm {
   title: string;
   description: string;
   imageUrl: string;
+  statsIframe?: string;
 }
 
 export type DialogType = 'add' | 'edit';
@@ -14,19 +14,18 @@ export type DialogType = 'add' | 'edit';
   selector: 'ib-offer-dialog',
   templateUrl: './offer-dialog.component.html',
   styleUrl: './offer-dialog.component.scss',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule]
+  imports: [FormsModule]
 })
 export class OfferDialogComponent {
   @Input() isOpen = false;
   @Input() dialogType: DialogType = 'add';
-  @Input() dialogForm: OfferForm = { title: '', description: '', imageUrl: '' };
+  @Input() dialogForm: OfferForm = { title: '', description: '', imageUrl: '', statsIframe: '' };
   
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<OfferForm>();
 
-  readonly form = signal<OfferForm>({ title: '', description: '', imageUrl: '' });
+  readonly form = signal<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '' });
   readonly isFormValid = signal(false);
   readonly selectedFile = signal<File | null>(null);
   readonly imagePreview = signal<string>('');
@@ -118,6 +117,12 @@ export class OfferDialogComponent {
   onDescriptionChange(event: Event): void {
     const input = event.target as HTMLTextAreaElement;
     this.form.set({ ...this.form(), description: input.value });
+    this.updateFormValidation();
+  }
+
+  onStatsIframeChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.form.set({ ...this.form(), statsIframe: input.value });
     this.updateFormValidation();
   }
 

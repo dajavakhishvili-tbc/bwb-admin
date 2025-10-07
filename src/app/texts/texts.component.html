@@ -12,17 +12,33 @@
       (input)="updateSearch($event)"
       class="search-input"
     >
+    <div class="channel-filter-chips">
+      <div 
+        class="channel-filter-chip" 
+        [class.selected]="isChannelFilterSelected('BWB')"
+        [class.channel-bwb]="true"
+        (click)="toggleChannelFilter('BWB')"
+      >
+        BWB
+      </div>
+      <div 
+        class="channel-filter-chip" 
+        [class.selected]="isChannelFilterSelected('BMB')"
+        [class.channel-bmb]="true"
+        (click)="toggleChannelFilter('BMB')"
+      >
+        BMB
+      </div>
+    </div>
     <select [value]="sortBy()" (change)="updateSort($event)" class="sort-select">
-      <option value="createdAt">Sort by Date</option>
-      <option value="key">Sort by Key</option>
-      <option value="english">Sort by English</option>
-      <option value="georgian">Sort by Georgian</option>
+      <option value="createdAt-desc">Date (Newest First)</option>
+      <option value="createdAt-asc">Date (Oldest First)</option>
     </select>
   </div>
   
   @defer (on viewport) {
     <div class="texts-list">
-      @for (text of filteredTexts(); track text.id) {
+      @for (text of sortedTexts(); track text.id) {
         <div class="text-card">
           <div class="text-content">
             <div class="text-row">
@@ -36,6 +52,32 @@
             <div class="text-row">
               <span class="label">Georgian:</span>
               <span class="text">{{ text.georgian }}</span>
+            </div>
+            <div class="text-row">
+              <span class="label">Channels:</span>
+              <div class="channel-chips">
+                @for (channel of text.channels; track channel) {
+                  <span class="channel-chip" [class.channel-bwb]="channel === 'BWB'" [class.channel-bmb]="channel === 'BMB'">
+                    {{ channel }}
+                  </span>
+                }
+              </div>
+            </div>
+            @if (text.labels && text.labels.length > 0) {
+              <div class="text-row">
+                <span class="label">Labels:</span>
+                <div class="label-chips">
+                  @for (label of text.labels; track label) {
+                    <span class="label-chip">
+                      {{ label }}
+                    </span>
+                  }
+                </div>
+              </div>
+            }
+            <div class="text-row">
+              <span class="label">Author:</span>
+              <span class="author">{{ text.author }}</span>
             </div>
             <div class="text-row">
               <span class="label">Created:</span>
@@ -105,18 +147,6 @@
       
       <div class="dialog-body">
         <div class="form-group">
-          <label for="text-key">Key:</label>
-          <input 
-            type="text"
-            id="text-key"
-            [value]="newKey()"
-            (input)="onKeyInput($event)"
-            placeholder="Enter key..."
-            class="form-input"
-          />
-        </div>
-        
-        <div class="form-group">
           <label for="english-text">English Text:</label>
           <textarea 
             id="english-text"
@@ -137,11 +167,83 @@
             rows="3"
           ></textarea>
         </div>
+        
+        <div class="form-group">
+          <label for="text-key">Key:</label>
+          <input 
+            type="text"
+            id="text-key"
+            [value]="newKey()"
+            (input)="onKeyInput($event)"
+            placeholder="Enter key (e.g., main.header)"
+            [class.form-input]="true"
+            [class.invalid]="newKey().trim() && !isKeyValid()"
+            pattern="^[a-z0-9]+(\.[a-z0-9]+)*$"
+            title="Key must contain only lowercase letters, numbers, and dots. No spaces allowed."
+          />
+          @if (newKey().trim() && !isKeyValid()) {
+            <div class="validation-error">
+              Key must contain only lowercase letters, numbers, and dots (e.g., main.header)
+            </div>
+          }
+        </div>
+        
+        <div class="form-group">
+          <label>Channels:</label>
+          <div class="channel-selector">
+            <div 
+              class="channel-select-chip" 
+              [class.selected]="isChannelSelected('BWB')"
+              [class.channel-bwb]="true"
+              (click)="toggleChannel('BWB')"
+            >
+              BWB
+            </div>
+            <div 
+              class="channel-select-chip" 
+              [class.selected]="isChannelSelected('BMB')"
+              [class.channel-bmb]="true"
+              (click)="toggleChannel('BMB')"
+            >
+              BMB
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Labels (optional):</label>
+          <div class="labels-input-container">
+            <div class="labels-display">
+              @for (label of newLabels(); track label) {
+                <span class="label-chip editable">
+                  {{ label }}
+                  <button type="button" class="remove-label" (click)="removeLabel(label)">&times;</button>
+                </span>
+              }
+            </div>
+            <input 
+              type="text"
+              [value]="newLabelInput()"
+              (input)="onLabelInput($event)"
+              (keypress)="onLabelKeyPress($event)"
+              (blur)="addLabel()"
+              placeholder="Type label and press Enter or comma..."
+              class="label-input"
+            />
+          </div>
+        </div>
       </div>
       
       <div class="dialog-footer">
         <button class="cancel-btn" (click)="closeDialog()">Cancel</button>
-        <button class="submit-btn" (click)="submitNewText()">{{ isEditing() ? 'Update Text' : 'Add Text' }}</button>
+        <button 
+          class="submit-btn" 
+          [class.disabled]="!isFormValid()"
+          [disabled]="!isFormValid()"
+          (click)="submitNewText()"
+        >
+          {{ isEditing() ? 'Update Text' : 'Add Text' }}
+        </button>
       </div>
     </div>
   </div>

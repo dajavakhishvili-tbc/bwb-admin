@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { LoanDetailDialogComponent } from './loan-detail-dialog/loan-detail-dialog.component';
 
 export interface BusinessLoan {
@@ -16,9 +15,8 @@ export interface BusinessLoan {
   selector: 'ib-business-loan-stats',
   templateUrl: './business-loan-stats.component.html',
   styleUrl: './business-loan-stats.component.scss',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, LoanDetailDialogComponent]
+  imports: [LoanDetailDialogComponent]
 })
 export class BusinessLoanStatsComponent {
   readonly loans = signal<BusinessLoan[]>([

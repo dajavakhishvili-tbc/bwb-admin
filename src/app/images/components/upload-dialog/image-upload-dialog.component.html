@@ -1,0 +1,99 @@
+@if (showDialog()) {
+  <div class="dialog-overlay" (click)="closeDialog()">
+    <div class="dialog-content" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h2>Upload New Image</h2>
+        <button class="close-btn" (click)="closeDialog()">&times;</button>
+      </div>
+      
+      <div class="dialog-body">
+        <div class="form-group">
+          <label for="image-name">Name:</label>
+          <input 
+            type="text"
+            id="image-name"
+            [value]="imageName()"
+            (input)="onNameInput($event)"
+            placeholder="Enter image name..."
+            class="form-input"
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="image-file">Upload Image:</label>
+          <div class="file-upload-container">
+            <input 
+              type="file"
+              id="image-file"
+              accept="image/*"
+              (change)="onFileSelected($event)"
+              class="file-input"
+            />
+            @if (!selectedFile()) {
+              <label for="image-file" class="file-upload-area">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">
+                  <span class="upload-title">Choose Image File</span>
+                  <span class="upload-subtitle">Click to browse or drag and drop</span>
+                </div>
+              </label>
+            } @else {
+              <div class="file-selected">
+                <div class="file-info">
+                  <div class="file-icon">🖼️</div>
+                  <div class="file-details">
+                    <span class="file-name">{{ selectedFile()?.name }}</span>
+                    <span class="file-size">{{ formatFileSize(selectedFile()?.size || 0) }}</span>
+                  </div>
+                </div>
+                <button type="button" class="change-file-btn" (click)="changeFile()">
+                  Change File
+                </button>
+              </div>
+            }
+          </div>
+          @if (previewUrl()) {
+            <div class="image-preview">
+              <img [src]="previewUrl()" alt="Preview" />
+            </div>
+          }
+        </div>
+        
+        <div class="form-group">
+          <label>Device:</label>
+          <div class="device-selector">
+            <div 
+              class="device-select-chip" 
+              [class.selected]="isDeviceSelected('web')"
+              [class.device-web]="true"
+              (click)="selectDevice('web')"
+            >
+              Web
+            </div>
+            <div 
+              class="device-select-chip" 
+              [class.selected]="isDeviceSelected('mobile')"
+              [class.device-mobile]="true"
+              (click)="selectDevice('mobile')"
+            >
+              Mobile
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      
+      <div class="dialog-footer">
+        <button class="cancel-btn" (click)="closeDialog()">Cancel</button>
+        <button 
+          class="submit-btn" 
+          [class.disabled]="!isFormValid()"
+          [disabled]="!isFormValid()"
+          (click)="uploadImage()"
+        >
+          Upload Image
+        </button>
+      </div>
+    </div>
+  </div>
+}

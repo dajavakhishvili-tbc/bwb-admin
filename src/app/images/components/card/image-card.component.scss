@@ -58,7 +58,7 @@
   padding: 1.5rem;
   
   h3 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 1rem 0;
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--text-primary);
@@ -66,20 +66,62 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
-  p {
-    margin: 0.25rem 0;
-    font-size: 1rem;
-    color: var(--text-secondary);
-    
-    &.size {
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-    
-    &.date {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-  }
+}
+
+.image-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.meta-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  min-width: 60px;
+  flex-shrink: 0;
+}
+
+.value, .author, .date {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.author {
+  color: var(--button-primary);
+  font-weight: 500;
+}
+
+.date {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.device-chips {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.device-chip {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: white;
+}
+
+.device-web {
+  background: #1976d2;
+}
+
+.device-mobile {
+  background: #7b1fa2;
 } 

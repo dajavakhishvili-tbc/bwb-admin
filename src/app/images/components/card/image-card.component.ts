@@ -6,6 +6,8 @@ export interface ImageItem {
   url: string;
   size: string;
   uploadedAt: string;
+  device: string[];
+  author: string;
   loaded?: boolean;
   error?: boolean;
 }
@@ -40,5 +42,24 @@ export class ImageCardComponent {
 
   isBase64Image(url: string): boolean {
     return url.startsWith('data:image/');
+  }
+
+  formatDateTime(dateTimeString: string): string {
+    // Handle both formats: YYYY-MM-DDTHH:mm and YYYY-MM-DD
+    const date = new Date(dateTimeString.includes('T') ? dateTimeString + ':00' : dateTimeString + 'T00:00:00');
+    
+    if (isNaN(date.getTime())) {
+      return dateTimeString; // Return original if parsing fails
+    }
+    
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    
+    return date.toLocaleDateString('en-US', options);
   }
 } 

@@ -14,6 +14,25 @@
     (sortOrderChange)="updateSortOrder($event)"
   />
   
+  <div class="device-filter-chips">
+    <div 
+      class="device-filter-chip" 
+      [class.selected]="isDeviceFilterSelected('web')"
+      [class.device-web]="true"
+      (click)="selectDeviceFilter('web')"
+    >
+      🌐 Web
+    </div>
+    <div 
+      class="device-filter-chip" 
+      [class.selected]="isDeviceFilterSelected('mobile')"
+      [class.device-mobile]="true"
+      (click)="selectDeviceFilter('mobile')"
+    >
+      📱 Mobile
+    </div>
+  </div>
+  
   @defer (on viewport) {
     <div class="images-grid">
       @for (image of paginatedImages(); track image.id) {

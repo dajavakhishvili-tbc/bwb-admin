@@ -22,35 +22,35 @@ import { AuthService } from '../login/auth.service';
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--gradient-primary);
       padding: 20px;
     }
     
     .logout-card {
-      background: white;
+      background: var(--card-bg);
       padding: 40px;
       border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 8px 25px var(--shadow-color);
       text-align: center;
       max-width: 400px;
       width: 100%;
     }
     
     h2 {
-      color: #333;
+      color: var(--text-primary);
       margin-bottom: 20px;
       font-size: 1.8rem;
       font-weight: 600;
     }
     
     p {
-      color: #6c757d;
+      color: var(--text-secondary);
       margin-bottom: 15px;
       line-height: 1.6;
     }
     
     .login-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--gradient-primary);
       color: white;
       border: none;
       padding: 12px 30px;
@@ -67,7 +67,6 @@ import { AuthService } from '../login/auth.service';
       }
     }
   `],
-  standalone: true
 })
 export class LogoutComponent implements OnInit {
   

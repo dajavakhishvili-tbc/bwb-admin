@@ -48,6 +48,14 @@
         }
       </a>
     </li>
+    <li class="nav-item">
+      <a routerLink="/business-loan/maintenance" routerLinkActive="active" class="nav-link">
+        <span class="nav-icon">🔧</span>
+        @if (!isCollapsed()) {
+          <span class="nav-text">Maintenance</span>
+        }
+      </a>
+    </li>
     <li class="nav-item dropdown">
       <button class="nav-link dropdown-toggle" [class.expanded]="isBusinessLoanExpanded()" (click)="toggleBusinessLoanDropdown()">
         <span class="nav-icon">💰</span>
@@ -59,34 +67,10 @@
       @if (isBusinessLoanExpanded()) {
         <ul class="sub-nav" [class.collapsed]="isCollapsed()">
           <li class="sub-nav-item">
-            <a routerLink="/business-loan/texts" routerLinkActive="active" class="sub-nav-link">
-              <span class="sub-nav-icon">📝</span>
-              @if (!isCollapsed()) {
-                <span class="sub-nav-text">Texts</span>
-              }
-            </a>
-          </li>
-          <li class="sub-nav-item">
-            <a routerLink="/business-loan/images" routerLinkActive="active" class="sub-nav-link">
-              <span class="sub-nav-icon">🖼️</span>
-              @if (!isCollapsed()) {
-                <span class="sub-nav-text">Images</span>
-              }
-            </a>
-          </li>
-          <li class="sub-nav-item">
             <a routerLink="/business-loan/structure" routerLinkActive="active" class="sub-nav-link">
               <span class="sub-nav-icon">🏗️</span>
               @if (!isCollapsed()) {
                 <span class="sub-nav-text">Structure</span>
-              }
-            </a>
-          </li>
-          <li class="sub-nav-item">
-            <a routerLink="/business-loan/maintenance" routerLinkActive="active" class="sub-nav-link">
-              <span class="sub-nav-icon">🔧</span>
-              @if (!isCollapsed()) {
-                <span class="sub-nav-text">Maintenance</span>
               }
             </a>
           </li>

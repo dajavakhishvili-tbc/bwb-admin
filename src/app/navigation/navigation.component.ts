@@ -10,7 +10,6 @@ import { LayoutService } from '../core/layout.service';
   styleUrl: './navigation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ThemeToggleComponent, RouterModule],
-  standalone: true
 })
 export class NavigationComponent {
   readonly isBusinessLoanExpanded = signal(false);

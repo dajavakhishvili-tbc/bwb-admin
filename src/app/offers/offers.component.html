@@ -1,10 +1,12 @@
 <div class="offers-container">
   <div class="header">
-    <h1>Offers Management</h1>
-    <p>Manage offers and their configurations for the offers section.</p>
+    <div class="header-content">
+      <h1>Offers Management</h1>
+       <p>Manage offers and their configurations for the offers section.</p>
+    </div>
     <button class="add-offer-btn" (click)="openAddDialog()">
       <span class="icon">+</span>
-      Add New Offer
+      Add content
     </button>
   </div>
 
@@ -35,7 +37,8 @@
             <ib-offer-card 
               [offer]="offer"
               (edit)="openEditDialog(offer)"
-              (delete)="deleteOffer(offer.id)">
+              (delete)="deleteOffer(offer.id)"
+              (showStats)="showOfferStats($event)">
             </ib-offer-card>
           </div>
         }
@@ -52,4 +55,12 @@
     (close)="closeDialog()"
     (save)="saveOffer($event)">
   </ib-offer-dialog>
+}
+
+@if (isStatsSidebarOpen() && selectedOfferForStats()) {
+  <ib-offer-stats-sidebar
+    [offer]="selectedOfferForStats()!"
+    [isOpen]="isStatsSidebarOpen"
+    (close)="closeStatsSidebar()">
+  </ib-offer-stats-sidebar>
 } 

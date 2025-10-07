@@ -3,18 +3,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--gradient-primary);
+  background: #00adee;
   padding: 2rem;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('../../assets/images/pattern.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 1;
+  }
 }
 
 .login-card {
-  background: var(--card-bg);
+  background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 10px 40px var(--shadow-color);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   padding: 3rem;
   width: 100%;
   max-width: 400px;
   animation: slideUp 0.5s ease-out;
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes slideUp {
@@ -28,20 +42,24 @@
   }
 }
 
+.login-logo {
+  text-align: center;
+}
+
 .login-header {
   text-align: center;
   margin-bottom: 2rem;
 }
 
 .login-header h1 {
-  color: var(--text-primary);
+  color: #333333;
   font-size: 2rem;
   margin-bottom: 0.5rem;
   font-weight: 600;
 }
 
 .login-header p {
-  color: var(--text-secondary);
+  color: #6c757d;
   font-size: 1rem;
   margin: 0;
 }
@@ -58,30 +76,30 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #333333;
   font-size: 0.9rem;
 }
 
 .form-input {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid var(--input-border);
+  border: 2px solid #e1e5e9;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
-  background: var(--input-bg);
-  color: var(--text-primary);
+  background: #ffffff;
+  color: #333333;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--button-primary);
+  border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .form-input:disabled {
-  background-color: var(--bg-secondary);
+  background-color: #f8f9fa;
   cursor: not-allowed;
 }
 
@@ -97,7 +115,7 @@
 
 .login-btn {
   width: 100%;
-  background: var(--gradient-primary);
+  background: #00adee;
   color: white;
   border: none;
   padding: 0.875rem;
@@ -140,20 +158,21 @@
 .login-footer {
   text-align: center;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid #e1e5e9;
 }
 
 .demo-info {
-  color: var(--text-secondary);
+  color: #6c757d;
   font-size: 0.85rem;
   margin: 0;
   line-height: 1.5;
 }
 
 .demo-info code {
-  background: var(--bg-tertiary);
+  background: #e9ecef;
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 0.8rem;
+  color: #333333;
 } 

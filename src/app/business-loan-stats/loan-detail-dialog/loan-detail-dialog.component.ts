@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter, signal, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { BusinessLoan } from '../business-loan-stats.component';
 
 export interface StatusHistoryEntry {
@@ -14,8 +13,6 @@ export interface StatusHistoryEntry {
   selector: 'ib-loan-detail-dialog',
   templateUrl: './loan-detail-dialog.component.html',
   styleUrl: './loan-detail-dialog.component.scss',
-  standalone: true,
-  imports: [CommonModule]
 })
 export class LoanDetailDialogComponent {
   @Input() loan: BusinessLoan | null = null;

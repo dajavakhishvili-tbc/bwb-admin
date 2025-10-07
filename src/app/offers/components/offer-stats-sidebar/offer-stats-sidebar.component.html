@@ -1,0 +1,21 @@
+@if (isOpen()) {
+  <div class="stats-overlay" (click)="closeSidebar()">
+    <div class="stats-sidebar" (click)="$event.stopPropagation()">
+        @if (offer.statsIframe) {
+            <iframe 
+              [src]="getSafeIframeUrl()" 
+              frameborder="0" 
+              width="600px"
+              height="100%"
+              allowfullscreen>
+            </iframe>
+        } @else {
+          <div class="no-stats">
+            <div class="no-stats-icon">📊</div>
+            <h4 class="no-stats-title">No Statistics Available</h4>
+            <p class="no-stats-description">This offer doesn't have statistics tracking configured.</p>
+          </div>
+        }
+    </div>
+  </div>
+}

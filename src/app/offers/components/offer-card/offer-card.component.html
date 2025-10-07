@@ -1,6 +1,11 @@
 <div class="offer-card">
   <div class="card-image">
     <img [src]="offer.imageUrl" [alt]="offer.title" class="image" />
+    @if (offer.statsIframe) {
+      <button class="stats-btn" (click)="onShowStats()" title="View statistics">
+        <span class="stats-icon">📊</span>
+      </button>
+    }
     <div class="image-overlay">
       <button class="edit-btn" (click)="onEdit()" title="Edit offer">
         <span class="btn-icon">✏️</span>
@@ -16,6 +21,7 @@
     <p class="card-description">{{ offer.description }}</p>
     <div class="card-footer">
       <span class="card-date">Created: {{ formatDate(offer.createdAt) }}</span>
+      <span class="card-author">{{ offer.author }}</span>
     </div>
   </div>
 </div> 
