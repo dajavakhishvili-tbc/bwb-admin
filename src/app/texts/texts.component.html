@@ -1,7 +1,12 @@
 <div class="texts-container">
   <div class="header">
-    <h1>Texts Management</h1>
-    <button class="add-btn" (click)="openAddDialog()">Add New Text</button>
+    <div class="header-content">
+      <h1>Texts Management</h1>
+    </div>
+    <button class="header-action" (click)="openAddDialog()">
+      <span class="icon">+</span>
+      Add New Text
+    </button>
   </div>
   
   <div class="filters">
@@ -136,115 +141,11 @@
   }
 </div>
 
-<!-- Add/Edit Text Dialog -->
-@if (showDialog()) {
-  <div class="dialog-overlay" (click)="closeDialog()">
-    <div class="dialog-content" (click)="$event.stopPropagation()">
-      <div class="dialog-header">
-        <h2>{{ isEditing() ? 'Edit Text' : 'Add New Text' }}</h2>
-        <button class="close-btn" (click)="closeDialog()">&times;</button>
-      </div>
-      
-      <div class="dialog-body">
-        <div class="form-group">
-          <label for="english-text">English Text:</label>
-          <textarea 
-            id="english-text"
-            [value]="newEnglishText()"
-            (input)="onEnglishTextInput($event)"
-            placeholder="Enter English text..."
-            rows="3"
-          ></textarea>
-        </div>
-        
-        <div class="form-group">
-          <label for="georgian-text">Georgian Text:</label>
-          <textarea 
-            id="georgian-text"
-            [value]="newGeorgianText()"
-            (input)="onGeorgianTextInput($event)"
-            placeholder="შეიყვანეთ ქართული ტექსტი..."
-            rows="3"
-          ></textarea>
-        </div>
-        
-        <div class="form-group">
-          <label for="text-key">Key:</label>
-          <input 
-            type="text"
-            id="text-key"
-            [value]="newKey()"
-            (input)="onKeyInput($event)"
-            placeholder="Enter key (e.g., main.header)"
-            [class.form-input]="true"
-            [class.invalid]="newKey().trim() && !isKeyValid()"
-            pattern="^[a-z0-9]+(\.[a-z0-9]+)*$"
-            title="Key must contain only lowercase letters, numbers, and dots. No spaces allowed."
-          />
-          @if (newKey().trim() && !isKeyValid()) {
-            <div class="validation-error">
-              Key must contain only lowercase letters, numbers, and dots (e.g., main.header)
-            </div>
-          }
-        </div>
-        
-        <div class="form-group">
-          <label>Channels:</label>
-          <div class="channel-selector">
-            <div 
-              class="channel-select-chip" 
-              [class.selected]="isChannelSelected('BWB')"
-              [class.channel-bwb]="true"
-              (click)="toggleChannel('BWB')"
-            >
-              BWB
-            </div>
-            <div 
-              class="channel-select-chip" 
-              [class.selected]="isChannelSelected('BMB')"
-              [class.channel-bmb]="true"
-              (click)="toggleChannel('BMB')"
-            >
-              BMB
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label>Labels (optional):</label>
-          <div class="labels-input-container">
-            <div class="labels-display">
-              @for (label of newLabels(); track label) {
-                <span class="label-chip editable">
-                  {{ label }}
-                  <button type="button" class="remove-label" (click)="removeLabel(label)">&times;</button>
-                </span>
-              }
-            </div>
-            <input 
-              type="text"
-              [value]="newLabelInput()"
-              (input)="onLabelInput($event)"
-              (keypress)="onLabelKeyPress($event)"
-              (blur)="addLabel()"
-              placeholder="Type label and press Enter or comma..."
-              class="label-input"
-            />
-          </div>
-        </div>
-      </div>
-      
-      <div class="dialog-footer">
-        <button class="cancel-btn" (click)="closeDialog()">Cancel</button>
-        <button 
-          class="submit-btn" 
-          [class.disabled]="!isFormValid()"
-          [disabled]="!isFormValid()"
-          (click)="submitNewText()"
-        >
-          {{ isEditing() ? 'Update Text' : 'Add Text' }}
-        </button>
-      </div>
-    </div>
-  </div>
-} 
+<!-- Text Dialog Component -->
+<ib-text-dialog
+  [isOpen]="showDialog()"
+  [isEditing]="isEditing()"
+  [formData]="dialogFormData()"
+  (close)="closeDialog()"
+  (submit)="onDialogSubmit($event)">
+</ib-text-dialog> 

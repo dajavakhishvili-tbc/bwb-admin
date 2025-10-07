@@ -275,12 +275,78 @@
 }
 
 .field-help {
-  margin-top: 0.5rem;
-  
   .help-text {
     font-size: 0.75rem;
     color: var(--text-tertiary, #9ca3af);
     font-style: italic;
+  }
+}
+
+.device-selector {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.device-select-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 25px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  background: #f8f9fa;
+  color: #6c757d;
+  user-select: none;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &.device-web {
+    background: #e3f2fd;
+    color: #1976d2;
+    border-color: #bbdefb;
+    
+    &:hover {
+      background: #bbdefb;
+      border-color: #90caf9;
+    }
+    
+    &.selected {
+      background: #1976d2;
+      color: white;
+      border-color: #1976d2;
+      box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3);
+    }
+  }
+  
+  &.device-mobile {
+    background: #f3e5f5;
+    color: #7b1fa2;
+    border-color: #ce93d8;
+    
+    &:hover {
+      background: #ce93d8;
+      border-color: #ba68c8;
+    }
+    
+    &.selected {
+      background: #7b1fa2;
+      color: white;
+      border-color: #7b1fa2;
+      box-shadow: 0 4px 16px rgba(123, 31, 162, 0.3);
+    }
+  }
+  
+  &.selected {
+    transform: translateY(-2px);
+    font-weight: 600;
   }
 }
 
@@ -321,7 +387,7 @@
   color: white;
 
   &:hover:not(:disabled) {
-    background: var(--primary-hover, #8dcbf8);
+    background: var(--primary-hover, #0094cc);
   }
 }
 
@@ -339,30 +405,3 @@
   --upload-bg: var(--bg-quaternary);
   --upload-hover-bg: var(--bg-tertiary);
 }
-
-@media (max-width: 640px) {
-  .dialog-overlay {
-    padding: 0.5rem;
-  }
-
-  .dialog-content {
-    max-width: 100%;
-    margin: 0;
-  }
-
-  .dialog-header {
-    padding: 1rem 1rem 0 1rem;
-  }
-
-  .dialog-body {
-    padding: 1rem;
-  }
-
-  .form-actions {
-    flex-direction: column;
-  }
-
-  .btn {
-    width: 100%;
-  }
-} 

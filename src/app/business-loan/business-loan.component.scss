@@ -166,33 +166,3 @@
 }
 
 
-
-// Responsive Design
-@media (max-width: 768px) {
-  .business-loan-container {
-    padding: 1rem;
-  }
-  
-  .header h1 {
-    font-size: 2rem;
-  }
-  
-  .pages-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .dialog {
-    margin: 1rem;
-    max-width: none;
-  }
-  
-  .dialog-actions {
-    flex-direction: column;
-    
-    .btn-secondary,
-    .btn-primary {
-      width: 100%;
-    }
-  }
-} 

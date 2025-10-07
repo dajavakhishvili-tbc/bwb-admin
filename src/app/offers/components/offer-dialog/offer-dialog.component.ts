@@ -9,6 +9,7 @@ export interface OfferForm {
   endDate?: Date;
   statsIframe?: string;
   type: 'dashboard' | 'offers' | 'whats-new';
+  device: 'web' | 'mobile';
 }
 
 export type DialogType = 'add' | 'edit';
@@ -23,12 +24,12 @@ export type DialogType = 'add' | 'edit';
 export class OfferDialogComponent {
   readonly isOpen = input(false);
   readonly dialogType = input<DialogType>('add');
-  readonly dialogForm = input<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard' });
+  readonly dialogForm = input<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard', device: 'web' });
   
   readonly close = output<void>();
   readonly save = output<OfferForm>();
 
-  readonly form = signal<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard' });
+  readonly form = signal<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard', device: 'web' });
   readonly isFormValid = signal(false);
   readonly selectedFile = signal<File | null>(null);
   readonly imagePreview = signal<string>('');
@@ -58,6 +59,7 @@ export class OfferDialogComponent {
     const isValid = currentForm.title.trim().length > 0 && 
                    currentForm.description.trim().length > 0 && 
                    (currentForm.imageUrl.trim().length > 0 || this.selectedFile() !== null) &&
+                   currentForm.device.trim().length > 0 &&
                    this.dateValidationError().length === 0;
     this.isFormValid.set(isValid);
   }
@@ -158,8 +160,14 @@ export class OfferDialogComponent {
 
   private validateDates(): void {
     const { startDate, endDate } = this.form();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day for accurate comparison
     
-    if (startDate && endDate && startDate > endDate) {
+    if (startDate && startDate < today) {
+      this.dateValidationError.set('Start date cannot be in the past');
+    } else if (endDate && endDate < today) {
+      this.dateValidationError.set('End date cannot be in the past');
+    } else if (startDate && endDate && startDate > endDate) {
       this.dateValidationError.set('Start date cannot be newer than end date');
     } else {
       this.dateValidationError.set('');
@@ -169,6 +177,10 @@ export class OfferDialogComponent {
   getDateValue(date: Date | undefined): string {
     if (!date) return '';
     return date.toISOString().split('T')[0];
+  }
+
+  getTodayDate(): string {
+    return new Date().toISOString().split('T')[0];
   }
 
   removeSelectedFile(): void {
@@ -183,5 +195,14 @@ export class OfferDialogComponent {
 
   getSaveButtonText(): string {
     return this.dialogType() === 'add' ? 'Create Offer' : 'Update Offer';
+  }
+
+  onDeviceChange(device: 'web' | 'mobile'): void {
+    this.form.set({ ...this.form(), device });
+    this.updateFormValidation();
+  }
+
+  isDeviceSelected(device: 'web' | 'mobile'): boolean {
+    return this.form().device === device;
   }
 } 

@@ -1,0 +1,292 @@
+@use '../../../../styles.scss' as *;
+
+// Dialog Styles
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-content {
+  background: var(--card-bg);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+
+  h2 {
+    margin: 0;
+    color: var(--text-primary);
+  }
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
+.dialog-body {
+  padding: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  textarea, .form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+
+    &:focus {
+      outline: none;
+      border-color: var(--button-primary);
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    }
+  }
+
+  .form-input {
+    min-height: auto;
+    resize: none;
+
+    &.invalid {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+    }
+  }
+}
+
+.validation-error {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.cancel-btn, .submit-btn {
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+
+  &:hover {
+    background: #5a6268;
+  }
+}
+
+.submit-btn {
+  background: var(--button-primary);
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: var(--button-hover);
+  }
+
+  &.disabled,
+  &:disabled {
+    background: #6c757d;
+    color: #adb5bd;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &.disabled:hover,
+  &:disabled:hover {
+    background: #6c757d;
+    transform: none;
+  }
+}
+
+// Channel selector styles
+.channel-selector {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.channel-select-chip {
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  background: #f8f9fa;
+  color: #6c757d;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  &.channel-bwb {
+    background: #e3f2fd;
+    color: #1976d2;
+    border-color: #bbdefb;
+
+    &:hover {
+      background: #bbdefb;
+      border-color: #90caf9;
+    }
+
+    &.selected {
+      background: #1976d2;
+      color: white;
+      border-color: #1976d2;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+    }
+  }
+
+  &.channel-bmb {
+    background: #e8f5e8;
+    color: #388e3c;
+    border-color: #c8e6c9;
+
+    &:hover {
+      background: #c8e6c9;
+      border-color: #a5d6a7;
+    }
+
+    &.selected {
+      background: #388e3c;
+      color: white;
+      border-color: #388e3c;
+      box-shadow: 0 2px 8px rgba(56, 142, 60, 0.3);
+    }
+  }
+
+  &.selected {
+    transform: translateY(-1px);
+    font-weight: 600;
+  }
+}
+
+// Labels input styling
+.labels-input-container {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem;
+  min-height: 80px;
+  background: var(--input-bg);
+}
+
+.labels-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.label-chip.editable {
+  position: relative;
+  background: #6c757d;
+  color: white;
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  padding-right: 1.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.remove-label {
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.label-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  padding: 0.25rem 0;
+  background: transparent;
+  color: var(--text-primary);
+
+  &::placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+}

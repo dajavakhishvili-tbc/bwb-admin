@@ -1,146 +1,42 @@
 <div class="stats-container">
   <div class="header">
-    <h1>Business Loan Statistics</h1>
-    <p>Track and analyze business loan applications and their status.</p>
-  </div>
-
-  <!-- Summary Cards -->
-  <div class="summary-cards">
-    <div class="summary-card">
-      <div class="card-icon">💰</div>
-      <div class="card-content">
-        <h3>Total Loans</h3>
-        <p class="card-value">{{ formatCurrency(getTotalAmount(), 'USD') }}</p>
-        <p class="card-count">{{ loans().length }} applications</p>
-      </div>
-    </div>
-    
-    <div class="summary-card">
-      <div class="card-icon">✅</div>
-      <div class="card-content">
-        <h3>Approved/Completed</h3>
-        <p class="card-value">{{ formatCurrency(getApprovedAmount(), 'USD') }}</p>
-        <p class="card-count">{{ approvedCompletedCount() }} loans</p>
-      </div>
-    </div>
-    
-    <div class="summary-card">
-      <div class="card-icon">⏳</div>
-      <div class="card-content">
-        <h3>Pending</h3>
-        <p class="card-value">{{ formatCurrency(getPendingAmount(), 'USD') }}</p>
-        <p class="card-count">{{ pendingCount() }} loans</p>
-      </div>
+    <div class="header-content">
+      <h1>Business Loan Statistics</h1>
+      <p>Track and analyze business loan applications and their status.</p>
     </div>
   </div>
 
-  <!-- Filters -->
-  <div class="filters-container">
-    <button class="filters-toggle" (click)="toggleFilters()" [class.expanded]="isFiltersExpanded()">
-      <span class="toggle-text">Filters</span>
-      <span class="toggle-arrow" [class.expanded]="isFiltersExpanded()">▼</span>
-    </button>
-    
-    <div class="filters" [class.expanded]="isFiltersExpanded()">
-      <div class="filter-group">
-        <label for="name-search">Search by Name</label>
-        <input 
-          type="text" 
-          id="name-search"
-          placeholder="Enter full name..." 
-          [value]="searchTerm()"
-          (input)="updateSearch($event)"
-          class="search-input"
-        >
-      </div>
-      
-      <div class="filter-group">
-        <label for="status-filter">Status</label>
-        <select id="status-filter" [value]="statusFilter()" (change)="updateStatusFilter($event)" class="filter-select">
-          <option value="">All Statuses</option>
-          <option value="approved">Approved</option>
-          <option value="pending">Pending</option>
-          <option value="rejected">Rejected</option>
-          <option value="completed">Completed</option>
-        </select>
-      </div>
-      
-      <div class="filter-group">
-        <label for="currency-filter">Currency</label>
-        <select id="currency-filter" [value]="currencyFilter()" (change)="updateCurrencyFilter($event)" class="filter-select">
-          <option value="">All Currencies</option>
-          <option value="USD">USD</option>
-          <option value="EUR">EUR</option>
-          <option value="GEL">GEL</option>
-        </select>
-      </div>
-      
-      <div class="filter-group">
-        <label for="min-amount">Amount Range</label>
-        <div class="amount-range">
-          <input 
-            type="number" 
-            id="min-amount"
-            placeholder="Min amount" 
-            [value]="minAmount() || ''"
-            (input)="updateMinAmount($event)"
-            class="amount-input"
-          >
-          <span class="range-separator">to</span>
-          <input 
-            type="number" 
-            id="max-amount"
-            placeholder="Max amount" 
-            [value]="maxAmount() || ''"
-            (input)="updateMaxAmount($event)"
-            class="amount-input"
-          >
-        </div>
-      </div>
-    </div>
-  </div>
+  <ib-summary-cards
+    [totalAmount]="formatCurrency(getTotalAmount(), 'USD')"
+    [totalCount]="loans().length"
+    [approvedAmount]="formatCurrency(getApprovedAmount(), 'USD')"
+    [approvedCount]="approvedCompletedCount()"
+    [pendingAmount]="formatCurrency(getPendingAmount(), 'USD')"
+    [pendingCount]="pendingCount()">
+  </ib-summary-cards>
 
-  <!-- Loans Table -->
-  <div class="table-container">
-    <table class="loans-table">
-      <thead>
-        <tr>
-          <th class="sortable-header" (click)="sortByColumn('id')">
-            ID {{ getSortIcon('id') }}
-          </th>
-          <th class="sortable-header" (click)="sortByColumn('username')">
-            Username {{ getSortIcon('username') }}
-          </th>
-          <th>Loan Type</th>
-          <th class="sortable-header" (click)="sortByColumn('amount')">
-            Amount {{ getSortIcon('amount') }}
-          </th>
-          <th class="sortable-header" (click)="sortByColumn('status')">
-            Status {{ getSortIcon('status') }}
-          </th>
-          <th class="sortable-header" (click)="sortByColumn('applicationDate')">
-            Application Date {{ getSortIcon('applicationDate') }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (loan of paginatedLoans(); track loan.id) {
-          <tr class="clickable-row" (click)="openLoanDetails(loan)" title="Click to view details">
-            <td class="loan-id">#{{ loan.id }}</td>
-            <td class="username">{{ loan.username }}</td>
-            <td class="loan-type">{{ loan.loanType }}</td>
-            <td class="amount">{{ formatCurrency(loan.amount, loan.currency) }}</td>
-            <td>
-              <span class="status-badge" [class]="getStatusClass(loan.status)">
-                {{ loan.status.charAt(0).toUpperCase() + loan.status.slice(1) }}
-              </span>
-            </td>
-            <td class="date">{{ loan.applicationDate | date:'MMM d, y' }}</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+  <ib-loan-filters
+    [isExpanded]="isFiltersExpanded()"
+    [searchTerm]="searchTerm()"
+    [statusFilter]="statusFilter()"
+    [currencyFilter]="currencyFilter()"
+    [minAmount]="minAmount()"
+    [maxAmount]="maxAmount()"
+    (toggleFilters)="toggleFilters()"
+    (searchChange)="onSearchChange($event)"
+    (statusFilterChange)="onStatusFilterChange($event)"
+    (currencyFilterChange)="onCurrencyFilterChange($event)"
+    (minAmountChange)="onMinAmountChange($event)"
+    (maxAmountChange)="onMaxAmountChange($event)">
+  </ib-loan-filters>
+
+  <ib-loans-table
+    [loans]="paginatedLoans()"
+    [sortColumn]="sortColumn()"
+    [sortDirection]="sortDirection()"
+    (sort)="sortByColumn($event)"
+    (loanClick)="openLoanDetails($event)">
+  </ib-loans-table>
 
   <!-- Pagination -->
   @if (totalPages() > 1) {
@@ -162,8 +58,6 @@
       </button>
     </div>
   }
-
-  <!-- Loan Detail Dialog -->
   <ib-loan-detail-dialog
     [loan]="selectedLoan()"
     [isOpen]="isDialogOpen()"

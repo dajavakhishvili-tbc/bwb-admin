@@ -58,6 +58,64 @@
           </div>
 
           <div class="form-group">
+            <label class="form-label">Device *</label>
+            <div class="device-selector">
+              <div 
+                class="device-select-chip" 
+                [class.selected]="isDeviceSelected('web')"
+                [class.device-web]="true"
+                (click)="onDeviceChange('web')"
+              >
+                🌐 Web
+              </div>
+              <div 
+                class="device-select-chip" 
+                [class.selected]="isDeviceSelected('mobile')"
+                [class.device-mobile]="true"
+                (click)="onDeviceChange('mobile')"
+              >
+                📱 Mobile
+              </div>
+            </div>
+            <div class="field-help">
+              <span class="help-text">Select the device type for this offer</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Image Upload *</label>
+            <div class="file-upload-container">
+              @if (!selectedFile() && !imagePreview()) {
+                <div class="file-upload-area">
+                  <input
+                    type="file"
+                    name="imageFile"
+                    class="file-input"
+                    accept="image/*"
+                    (change)="onFileSelected($event)"
+                    required
+                  />
+                  <div class="upload-placeholder">
+                    <span class="upload-icon">📁</span>
+                    <span class="upload-text">Click to upload image</span>
+                    <span class="upload-hint">or drag and drop</span>
+                  </div>
+                </div>
+              } @else {
+                <div class="image-preview-container">
+                  <img [src]="imagePreview()" alt="Preview" class="preview-image" />
+                  <button type="button" class="remove-image-btn" (click)="removeSelectedFile()">
+                    <span class="remove-icon">✕</span>
+                  </button>
+                </div>
+              }
+            </div>
+            <div class="upload-info">
+              <span class="file-types">Supported: JPG, PNG, GIF (max 5MB)</span>
+            </div>
+          </div>
+
+          <div class="form-group">
             <label class="form-label">Date Range (Optional)</label>
             <div class="date-range-container">
               <div class="date-input-group">
@@ -79,6 +137,7 @@
                   name="endDate"
                   class="form-input date-input"
                   [value]="getDateValue(form().endDate)"
+                  [min]="getTodayDate()"
                   (change)="onEndDateChange($event)"
                 />
               </div>
@@ -106,40 +165,6 @@
             />
             <div class="field-help">
               <span class="help-text">Paste the iframe URL to enable statistics tracking for this offer</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="imageFile" class="form-label">Image Upload *</label>
-            <div class="file-upload-container">
-              @if (!selectedFile() && !imagePreview()) {
-                <div class="file-upload-area">
-                  <input
-                    type="file"
-                    id="imageFile"
-                    name="imageFile"
-                    class="file-input"
-                    accept="image/*"
-                    (change)="onFileSelected($event)"
-                    required
-                  />
-                  <div class="upload-placeholder">
-                    <span class="upload-icon">📁</span>
-                    <span class="upload-text">Click to upload image</span>
-                    <span class="upload-hint">or drag and drop</span>
-                  </div>
-                </div>
-              } @else {
-                <div class="image-preview-container">
-                  <img [src]="imagePreview()" alt="Preview" class="preview-image" />
-                  <button type="button" class="remove-image-btn" (click)="removeSelectedFile()">
-                    <span class="remove-icon">✕</span>
-                  </button>
-                </div>
-              }
-            </div>
-            <div class="upload-info">
-              <span class="file-types">Supported: JPG, PNG, GIF (max 5MB)</span>
             </div>
           </div>
 

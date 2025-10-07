@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { TextDialogComponent, TextFormData } from './components/text-dialog/text-dialog';
 
 interface TextItem {
   id: number;
@@ -13,6 +14,7 @@ interface TextItem {
 
 @Component({
   selector: 'ib-texts',
+  imports: [TextDialogComponent],
   templateUrl: './texts.component.html',
   styleUrl: './texts.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,7 +23,7 @@ export class TextsComponent {
   readonly currentUser = signal<string>('admin');
 
   readonly texts = signal<TextItem[]>([
-    { id: 1, key: 'welcome', english: 'Welcome to our website', georgian: 'მოგესალმებათ ჩვენი ვებსაიტი', channels: ['BWB', 'BMB'], labels: ['navigation', 'header'], author: 'admin', createdAt: '2024-01-15 14:30' },
+    { id: 1, key: 'welcome', english: 'Website', georgian: 'ვებსაიტი', channels: ['BWB', 'BMB'], labels: ['navigation', 'header'], author: 'admin', createdAt: '2024-01-15 14:30' },
     { id: 2, key: 'about', english: 'About Us', georgian: 'ჩვენს შესახებ', channels: ['BWB'], labels: ['company', 'info'], author: 'admin', createdAt: '2024-01-14 09:15' },
     { id: 3, key: 'contact', english: 'Contact Information', georgian: 'საკონტაქტო ინფორმაცია', channels: ['BMB'], labels: ['contact', 'support'], author: 'editor', createdAt: '2024-01-13 16:45' },
     { id: 4, key: 'services', english: 'Services', georgian: 'სერვისები', channels: ['BWB', 'BMB'], labels: ['business'], author: 'admin', createdAt: '2024-01-12 11:20' },
@@ -37,13 +39,28 @@ export class TextsComponent {
   readonly showDialog = signal(false);
   readonly isEditing = signal(false);
   readonly editingId = signal<number | null>(null);
-  
-  readonly newKey = signal('');
-  readonly newEnglishText = signal('');
-  readonly newGeorgianText = signal('');
-  readonly selectedChannels = signal<string[]>([]);
-  readonly newLabels = signal<string[]>([]);
-  readonly newLabelInput = signal('');
+
+  readonly dialogFormData = computed((): TextFormData => {
+    if (this.isEditing()) {
+      const text = this.texts().find(t => t.id === this.editingId());
+      if (text) {
+        return {
+          english: text.english,
+          georgian: text.georgian,
+          key: text.key,
+          channels: [...text.channels],
+          labels: [...text.labels]
+        };
+      }
+    }
+    return {
+      english: '',
+      georgian: '',
+      key: '',
+      channels: [],
+      labels: []
+    };
+  });
   
   readonly filteredTexts = computed(() => {
     const search = this.searchTerm().toLowerCase();
@@ -54,12 +71,10 @@ export class TextsComponent {
       const matchesSearch = !search || 
         text.key.toLowerCase().includes(search) ||
         text.english.toLowerCase().includes(search) ||
-        text.georgian.toLowerCase().includes(search) ||
-        text.author.toLowerCase().includes(search) ||
-        text.labels.some(label => label.toLowerCase().includes(search));
+        text.georgian.toLowerCase().includes(search);
       
       const matchesChannel = channelFilters.length === 0 || 
-        channelFilters.every(filterChannel => text.channels.includes(filterChannel));
+        channelFilters.some(filter => text.channels.includes(filter));
       
       return matchesSearch && matchesChannel;
     });
@@ -70,20 +85,13 @@ export class TextsComponent {
     const sortBy = this.sortBy();
     
     return [...filtered].sort((a, b) => {
-      const dateA = new Date(a.createdAt).getTime();
-      const dateB = new Date(b.createdAt).getTime();
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
       
-      if (isNaN(dateA) || isNaN(dateB)) {
-        return 0;
-      }
-      
-      switch (sortBy) {
-        case 'createdAt-desc':
-          return dateB - dateA;
-        case 'createdAt-asc':
-          return dateA - dateB;
-        default:
-          return dateB - dateA;
+      if (sortBy === 'createdAt-asc') {
+        return dateA.getTime() - dateB.getTime();
+      } else {
+        return dateB.getTime() - dateA.getTime();
       }
     });
   });
@@ -105,32 +113,6 @@ export class TextsComponent {
   readonly hasPreviousPage = computed(() => this.currentPage() > 1);
   readonly hasNextPage = computed(() => this.currentPage() < this.totalPages());
   
-  readonly isKeyValid = computed(() => {
-    const key = this.newKey().trim();
-    if (!key) return false;
-    
-    const cleanKey = key.replace(/\.+$/, '');
-    if (!cleanKey) return false;
-    
-    const pattern = /^[a-z0-9]+(\.[a-z0-9]+)*$/;
-    return pattern.test(cleanKey);
-  });
-
-  readonly isFormValid = computed(() => {
-    return this.isKeyValid() && 
-           this.newEnglishText().trim() && 
-           this.newGeorgianText().trim() &&
-           this.selectedChannels().length > 0;
-  });
-  
-  readonly dialogTitle = computed(() => {
-    return this.isEditing() ? 'Edit Text' : 'Add New Text';
-  });
-  
-  readonly submitButtonText = computed(() => {
-    return this.isEditing() ? 'Update' : 'Add';
-  });
-  
   constructor() {
     this.searchTerm.set('');
   }
@@ -146,7 +128,7 @@ export class TextsComponent {
     this.sortBy.set(target.value as 'createdAt-asc' | 'createdAt-desc');
     this.currentPage.set(1);
   }
-
+  
   toggleChannelFilter(channel: string): void {
     const currentFilters = [...this.selectedChannelFilters()];
     const index = currentFilters.indexOf(channel);
@@ -161,25 +143,6 @@ export class TextsComponent {
     this.currentPage.set(1);
   }
 
-  onChannelFilterChange(channel: string, event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const currentFilters = [...this.selectedChannelFilters()];
-    
-    if (target.checked) {
-      if (!currentFilters.includes(channel)) {
-        currentFilters.push(channel);
-      }
-    } else {
-      const index = currentFilters.indexOf(channel);
-      if (index > -1) {
-        currentFilters.splice(index, 1);
-      }
-    }
-    
-    this.selectedChannelFilters.set(currentFilters);
-    this.currentPage.set(1);
-  }
-
   isChannelFilterSelected(channel: string): boolean {
     return this.selectedChannelFilters().includes(channel);
   }
@@ -188,34 +151,27 @@ export class TextsComponent {
     this.showDialog.set(true);
     this.isEditing.set(false);
     this.editingId.set(null);
-    this.resetForm();
   }
   
   openEditDialog(text: TextItem) {
     this.showDialog.set(true);
     this.isEditing.set(true);
     this.editingId.set(text.id);
-    this.newKey.set(text.key);
-    this.newEnglishText.set(text.english);
-    this.newGeorgianText.set(text.georgian);
-    this.selectedChannels.set([...text.channels]);
-    this.newLabels.set([...text.labels]);
   }
   
   closeDialog() {
     this.showDialog.set(false);
     this.isEditing.set(false);
     this.editingId.set(null);
-    this.resetForm();
   }
-  
-  private resetForm() {
-    this.newKey.set('');
-    this.newEnglishText.set('');
-    this.newGeorgianText.set('');
-    this.selectedChannels.set([]);
-    this.newLabels.set([]);
-    this.newLabelInput.set('');
+
+  onDialogSubmit(formData: TextFormData) {
+    if (this.isEditing()) {
+      this.updateExistingText(formData);
+    } else {
+      this.addNewText(formData);
+    }
+    this.closeDialog();
   }
 
   private generateKeyFromText(text: string): string {
@@ -227,32 +183,20 @@ export class TextsComponent {
       .join('.');
   }
   
-  submitNewText() {
-    if (this.isFormValid()) {
-      if (this.isEditing()) {
-        this.updateExistingText();
-      } else {
-        this.addNewText();
-      }
-      
-      this.closeDialog();
-    }
-  }
-  
-  private updateExistingText() {
+  private updateExistingText(formData: TextFormData) {
     const editingId = this.editingId();
     if (editingId) {
-      const cleanKey = this.newKey().trim().replace(/\.+$/, '');
+      const cleanKey = formData.key.trim().replace(/\.+$/, '');
       
       this.texts.set(this.texts().map(text => 
         text.id === editingId 
           ? { 
               ...text, 
               key: cleanKey, 
-              english: this.newEnglishText().trim(), 
-              georgian: this.newGeorgianText().trim(),
-              channels: [...this.selectedChannels()],
-              labels: [...this.newLabels()],
+              english: formData.english.trim(), 
+              georgian: formData.georgian.trim(),
+              channels: [...formData.channels],
+              labels: [...formData.labels],
               author: this.currentUser()
             }
           : text
@@ -260,21 +204,21 @@ export class TextsComponent {
     }
   }
   
-  private addNewText() {
+  private addNewText(formData: TextFormData) {
     const now = new Date();
     const formattedDate = now.toISOString().slice(0, 10);
     const formattedTime = now.toTimeString().slice(0, 5);
     const createdAt = `${formattedDate} ${formattedTime}`;
     
-    const cleanKey = this.newKey().trim().replace(/\.+$/, '');
+    const cleanKey = formData.key.trim().replace(/\.+$/, '');
     
     const newText: TextItem = {
       id: this.generateNextId(),
       key: cleanKey,
-      english: this.newEnglishText().trim(),
-      georgian: this.newGeorgianText().trim(),
-      channels: [...this.selectedChannels()],
-      labels: [...this.newLabels()],
+      english: formData.english.trim(),
+      georgian: formData.georgian.trim(),
+      channels: [...formData.channels],
+      labels: [...formData.labels],
       author: this.currentUser(),
       createdAt,
     };
@@ -299,111 +243,10 @@ export class TextsComponent {
     }
   }
   
-  selectText(text: TextItem) {
-    console.log('Selected text:', text);
-  }
-  
   deleteText(text: TextItem) {
     this.texts.set(this.texts().filter(t => t.id !== text.id));
     if (this.paginatedTexts().length === 0 && this.currentPage() > 1) {
       this.currentPage.set(this.currentPage() - 1);
     }
   }
-
-  onKeyInput(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    let value = target.value;
-    
-    value = value.replace(/\s+/g, '');
-    value = value.toLowerCase();
-    
-    value = value.replace(/[^a-z0-9.]/g, '');
-    
-    value = value.replace(/\.{2,}/g, '.');
-    
-    value = value.replace(/^\.+/, '');
-    
-    this.newKey.set(value);
-    target.value = value;
-  }
-
-  onEnglishTextInput(event: Event): void {
-    const target = event.target as HTMLTextAreaElement;
-    const value = target.value;
-    this.newEnglishText.set(value);
-    
-    if (!this.isEditing() && value.trim()) {
-      const generatedKey = this.generateKeyFromText(value);
-      if (generatedKey) {
-        this.newKey.set(generatedKey);
-      }
-    }
-  }
-
-  onGeorgianTextInput(event: Event): void {
-    const target = event.target as HTMLTextAreaElement;
-    this.newGeorgianText.set(target.value);
-  }
-
-  toggleChannel(channel: string): void {
-    const currentChannels = [...this.selectedChannels()];
-    const index = currentChannels.indexOf(channel);
-    
-    if (index > -1) {
-      currentChannels.splice(index, 1);
-    } else {
-      currentChannels.push(channel);
-    }
-    
-    this.selectedChannels.set(currentChannels);
-  }
-
-  onChannelChange(channel: string, event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const currentChannels = [...this.selectedChannels()];
-    
-    if (target.checked) {
-      if (!currentChannels.includes(channel)) {
-        currentChannels.push(channel);
-      }
-    } else {
-      const index = currentChannels.indexOf(channel);
-      if (index > -1) {
-        currentChannels.splice(index, 1);
-      }
-    }
-    
-    this.selectedChannels.set(currentChannels);
-  }
-
-  isChannelSelected(channel: string): boolean {
-    return this.selectedChannels().includes(channel);
-  }
-
-  onLabelInput(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.newLabelInput.set(target.value);
-  }
-
-  onLabelKeyPress(event: KeyboardEvent): void {
-    if (event.key === 'Enter' || event.key === ',') {
-      event.preventDefault();
-      this.addLabel();
-    }
-  }
-
-  addLabel(): void {
-    const label = this.newLabelInput().trim();
-    if (label && !this.newLabels().includes(label)) {
-      const currentLabels = [...this.newLabels()];
-      currentLabels.push(label);
-      this.newLabels.set(currentLabels);
-      this.newLabelInput.set('');
-    }
-  }
-
-  removeLabel(label: string): void {
-    const currentLabels = this.newLabels().filter(l => l !== label);
-    this.newLabels.set(currentLabels);
-  }
-} 
+}

@@ -6,19 +6,16 @@
         <span class="stats-icon">📊</span>
       </button>
     }
-    @if (offer().startDate || offer().endDate) {
-      <div class="date-range-badge">
-        <span class="date-range-text">
-          @if (offer().startDate && offer().endDate) {
-            {{ offer().startDate | date:'MMM d' }} - {{ offer().endDate | date:'MMM d, y' }}
-          } @else if (offer().startDate) {
-            From {{ offer().startDate | date:'MMM d, y' }}
-          } @else if (offer().endDate) {
-            Until {{ offer().endDate | date:'MMM d, y' }}
-          }
-        </span>
-      </div>
-    }
+      @if (dateStatus()) {
+        <div class="date-range-badge" [class]="'status-' + dateStatus()?.type" [style.background-color]="dateStatus()?.backgroundColor">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M9 2H8.5V1.5C8.5 1.225 8.275 1 8 1C7.725 1 7.5 1.225 7.5 1.5V2H4.5V1.5C4.5 1.225 4.275 1 4 1C3.725 1 3.5 1.225 3.5 1.5V2H3C1.895 2 1 2.895 1 4V9C1 10.105 1.895 11 3 11H9C10.105 11 11 10.105 11 9V4C11 2.895 10.105 2 9 2ZM3 3H3.5V3.5C3.5 3.775 3.725 4 4 4C4.275 4 4.5 3.775 4.5 3.5V3H7.5V3.5C7.5 3.775 7.725 4 8 4C8.275 4 8.5 3.775 8.5 3.5V3H9C9.55 3 10 3.45 10 4V5H2V4C2 3.45 2.45 3 3 3ZM9 10H3C2.45 10 2 9.55 2 9V6H10V9C10 9.55 9.55 10 9 10ZM4.5 8C4.5 8.275 4.275 8.5 4 8.5C3.725 8.5 3.5 8.275 3.5 8C3.5 7.725 3.725 7.5 4 7.5C4.275 7.5 4.5 7.725 4.5 8ZM8.5 8C8.5 8.275 8.275 8.5 8 8.5H6C5.725 8.5 5.5 8.275 5.5 8C5.5 7.725 5.725 7.5 6 7.5H8C8.275 7.5 8.5 7.725 8.5 8Z" fill="currentColor"/>
+          </svg>
+          <span class="date-range-text">
+            {{ dateStatus()?.text }}
+          </span>
+        </div>
+      }
     <div class="image-overlay">
       <button class="edit-btn" (click)="onEdit()" title="Edit offer">
         <span class="btn-icon">✏️</span>

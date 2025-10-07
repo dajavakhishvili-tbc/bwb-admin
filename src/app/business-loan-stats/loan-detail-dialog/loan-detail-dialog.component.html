@@ -54,7 +54,7 @@
         <div class="history-section">
           <h3>Status History</h3>
           <div class="timeline">
-            @for (entry of statusHistory(); track entry.id) {
+            @for (entry of sortedStatusHistory(); track entry.id) {
               <div class="timeline-item">
                 <div class="timeline-marker" [class]="getStatusClass(entry.status)">
                   <span class="marker-icon">{{ getStatusIcon(entry.status) }}</span>

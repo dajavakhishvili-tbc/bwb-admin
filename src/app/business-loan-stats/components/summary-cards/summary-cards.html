@@ -1,0 +1,28 @@
+<div class="summary-cards">
+  <div class="summary-card">
+    <div class="card-icon">💰</div>
+    <div class="card-content">
+      <h3>Total Loans</h3>
+      <p class="card-value">{{ totalAmount() }}</p>
+      <p class="card-count">{{ totalCount() }} applications</p>
+    </div>
+  </div>
+  
+  <div class="summary-card">
+    <div class="card-icon">✅</div>
+    <div class="card-content">
+      <h3>Approved/Completed</h3>
+      <p class="card-value">{{ approvedAmount() }}</p>
+      <p class="card-count">{{ approvedCount() }} loans</p>
+    </div>
+  </div>
+  
+  <div class="summary-card">
+    <div class="card-icon">⏳</div>
+    <div class="card-content">
+      <h3>Pending</h3>
+      <p class="card-value">{{ pendingAmount() }}</p>
+      <p class="card-count">{{ pendingCount() }} loans</p>
+    </div>
+  </div>
+</div>

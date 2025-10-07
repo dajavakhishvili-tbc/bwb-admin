@@ -25,7 +25,7 @@
   --input-bg: #ffffff;
   --input-border: #e1e5e9;
   --button-primary: #00ADEE;
-  --button-hover: #8dcbf8;
+  --button-hover: #0094cc;
   --gradient-primary: #00ADEE;
   --gradient-secondary: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
@@ -53,7 +53,7 @@
   --input-bg: #404040;
   --input-border: #555555;
   --button-primary: #00adee;
-  --button-hover: #8dcbf8;
+  --button-hover: #0094cc;
   --gradient-primary: #00ADEE;
   --gradient-secondary: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
 }
@@ -121,3 +121,86 @@ img {
   height: auto;
 }
 
+@mixin secondary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  
+  &:hover:not(:disabled) {
+    background: var(--bg-tertiary);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+}
+
+@mixin page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+
+  .header-content {
+    flex: 1;
+    
+    h1 {
+      font-size: 2.5rem;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    
+    p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+  }
+}
+
+.header-action, .empty-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--button-primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  
+  &:hover {
+    background: var(--button-hover);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+}

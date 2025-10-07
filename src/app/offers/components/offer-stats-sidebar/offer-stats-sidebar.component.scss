@@ -12,14 +12,6 @@
 }
 
 .stats-sidebar {
-  --card-bg: var(--card-bg);
-  --bg-primary: var(--bg-primary);
-  --bg-secondary: var(--bg-secondary);
-  --text-primary: var(--text-primary);
-  --text-secondary: var(--text-secondary);
-  --text-tertiary: var(--text-muted);
-  --border-color: var(--border-color);
-  
   height: 100vh;
   background: var(--card-bg);
   box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
@@ -27,6 +19,40 @@
   flex-direction: column;
   animation: slideInRight 0.3s ease-out;
   overflow: hidden;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background: var(--hover-bg);
+    border-color: var(--text-primary);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    color: var(--text-primary);
+    width: 20px;
+    height: 20px;
+  }
 }
 
 @keyframes fadeIn {
@@ -45,62 +71,4 @@
   to {
     transform: translateX(0);
   }
-}
-
-.sidebar-content {
-  flex: 1;
-  padding: 1.5rem;
-  overflow-y: auto;
-}
-
-.iframe-container {
-  width: 100%;
-  height: calc(100vh - 60px);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  border: 1px solid var(--border-color, #e5e7eb);
-}
-
-
-.no-stats {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 300px;
-  text-align: center;
-  padding: 2rem;
-  background: var(--bg-secondary, #f8f9fa);
-  border-radius: 0.75rem;
-  border: 1px solid var(--border-color, #e5e7eb);
-}
-
-.no-stats-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
-.no-stats-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary, #111827);
-  margin: 0 0 0.5rem 0;
-}
-
-.no-stats-description {
-  font-size: 0.875rem;
-  color: var(--text-secondary, #6b7280);
-  margin: 0;
-  max-width: 300px;
-}
-
-[data-theme="dark"] .stats-sidebar {
-  --card-bg: var(--card-bg);
-  --bg-primary: var(--bg-primary);
-  --bg-secondary: var(--bg-secondary);
-  --text-primary: var(--text-primary);
-  --text-secondary: var(--text-secondary);
-  --text-tertiary: var(--text-muted);
-  --border-color: var(--border-color);
 }

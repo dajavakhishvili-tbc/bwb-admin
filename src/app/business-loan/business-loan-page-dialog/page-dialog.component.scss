@@ -188,20 +188,3 @@
     margin-bottom: 0;
   }
 }
-
-@media (max-width: 768px) {
-  .dialog {
-    margin: 1rem;
-    max-width: none;
-  }
-  
-  .dialog-actions {
-    flex-direction: column;
-    
-    .btn-secondary,
-    .btn-primary,
-    .btn-danger {
-      width: 100%;
-    }
-  }
-} 

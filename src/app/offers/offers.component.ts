@@ -16,6 +16,7 @@ export interface Offer {
   author: string;
   statsIframe?: string;
   type: 'dashboard' | 'offers' | 'whats-new';
+  device: 'web' | 'mobile';
 }
 
 export interface OfferForm {
@@ -26,6 +27,7 @@ export interface OfferForm {
   endDate?: Date;
   statsIframe?: string;
   type: 'dashboard' | 'offers' | 'whats-new';
+  device: 'web' | 'mobile';
 }
 
 @Component({
@@ -38,13 +40,16 @@ export interface OfferForm {
 export class OffersComponent {
   readonly offers = signal<Offer[]>([]);
   readonly isDialogOpen = signal(false);
-  readonly dialogForm = signal<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard' });
+  readonly dialogForm = signal<OfferForm>({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard', device: 'web' });
   readonly dialogType = signal<'add' | 'edit'>('add');
   readonly editingOfferId = signal<number | null>(null);
   readonly draggedOffer = signal<Offer | null>(null);
   readonly isStatsSidebarOpen = signal(false);
   readonly selectedOfferForStats = signal<Offer | null>(null);
   readonly activeTab = signal<'dashboard' | 'offers' | 'whats-new'>('dashboard');
+  readonly selectedDeviceFilter = signal<string>('');
+  readonly startDateFilter = signal<Date | null>(null);
+  readonly endDateFilter = signal<Date | null>(null);
 
   private authService = inject(AuthService);
 
@@ -56,11 +61,12 @@ export class OffersComponent {
         description: 'Get 20% off on all products this week!',
         imageUrl: 'https://picsum.photos/300/200?random=1',
         createdAt: new Date('2024-01-15'),
-        startDate: new Date('2024-01-15'),
-        endDate: new Date('2024-01-22'),
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
         author: 'admin',
         statsIframe: 'https://eu.posthog.com/shared/OvTht1LV7gDaz-Ca5X4UFimMF1qsfQ',
-        type: 'dashboard'
+        type: 'dashboard',
+        device: 'web'
       },
       {
         id: 2,
@@ -69,7 +75,8 @@ export class OffersComponent {
         imageUrl: 'https://picsum.photos/300/200?random=2',
         createdAt: new Date('2024-01-14'),
         author: 'admin',
-        type: 'offers'
+        type: 'offers',
+        device: 'mobile'
       },
       {
         id: 3,
@@ -77,10 +84,11 @@ export class OffersComponent {
         description: 'Flash sale! 50% off selected items for the next 24 hours only.',
         imageUrl: 'https://picsum.photos/300/200?random=3',
         createdAt: new Date('2024-01-13'),
-        startDate: new Date('2024-01-13'),
-        endDate: new Date('2024-01-14'),
+        startDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // Tomorrow
+        endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // Day after tomorrow
         author: 'admin',
-        type: 'offers'
+        type: 'offers',
+        device: 'web'
       },
       {
         id: 4,
@@ -89,7 +97,8 @@ export class OffersComponent {
         imageUrl: 'https://picsum.photos/300/200?random=4',
         createdAt: new Date('2024-01-12'),
         author: 'admin',
-        type: 'offers'
+        type: 'offers',
+        device: 'mobile'
       },
       {
         id: 5,
@@ -98,7 +107,8 @@ export class OffersComponent {
         imageUrl: 'https://picsum.photos/300/200?random=5',
         createdAt: new Date('2024-01-11'),
         author: 'admin',
-        type: 'whats-new'
+        type: 'whats-new',
+        device: 'web'
       },
       {
         id: 6,
@@ -107,7 +117,8 @@ export class OffersComponent {
         imageUrl: 'https://picsum.photos/300/200?random=6',
         createdAt: new Date('2024-01-10'),
         author: 'admin',
-        type: 'whats-new'
+        type: 'whats-new',
+        device: 'mobile'
       },
       {
         id: 7,
@@ -116,14 +127,15 @@ export class OffersComponent {
         imageUrl: 'https://picsum.photos/300/200?random=7',
         createdAt: new Date('2024-01-09'),
         author: 'admin',
-        type: 'dashboard'
+        type: 'dashboard',
+        device: 'web'
       }
     ]);
   }
 
   openAddDialog(): void {
     this.dialogType.set('add');
-    this.dialogForm.set({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard' });
+    this.dialogForm.set({ title: '', description: '', imageUrl: '', statsIframe: '', type: 'dashboard', device: 'web' });
     this.editingOfferId.set(null);
     this.isDialogOpen.set(true);
   }
@@ -137,7 +149,8 @@ export class OffersComponent {
       startDate: offer.startDate,
       endDate: offer.endDate,
       statsIframe: offer.statsIframe || '',
-      type: offer.type
+      type: offer.type,
+      device: offer.device
     });
     this.editingOfferId.set(offer.id);
     this.isDialogOpen.set(true);
@@ -161,14 +174,15 @@ export class OffersComponent {
         endDate: form.endDate,
         author: currentUser?.username || 'admin',
         statsIframe: form.statsIframe?.trim() || undefined,
-        type: form.type
+        type: form.type,
+        device: form.device
       };
       this.offers.set([newOffer, ...this.offers()]);
     } else {
       const currentOffers = this.offers();
       const updatedOffers = currentOffers.map(offer => 
         offer.id === this.editingOfferId() 
-          ? { ...offer, title: form.title, description: form.description, imageUrl: form.imageUrl, startDate: form.startDate, endDate: form.endDate, statsIframe: form.statsIframe?.trim() || undefined, type: form.type }
+          ? { ...offer, title: form.title, description: form.description, imageUrl: form.imageUrl, startDate: form.startDate, endDate: form.endDate, statsIframe: form.statsIframe?.trim() || undefined, type: form.type, device: form.device }
           : offer
       );
       this.offers.set(updatedOffers);
@@ -252,7 +266,81 @@ export class OffersComponent {
   }
 
   filteredOffers(): Offer[] {
-    return this.offers().filter(offer => offer.type === this.activeTab());
+    return this.offers().filter(offer => {
+      const matchesTab = offer.type === this.activeTab();
+      const deviceFilter = this.selectedDeviceFilter();
+      const matchesDevice = !deviceFilter || offer.device === deviceFilter;
+      
+      // Date filtering
+      const startDateFilter = this.startDateFilter();
+      const endDateFilter = this.endDateFilter();
+      
+      let matchesDateRange = true;
+      
+      if (startDateFilter || endDateFilter) {
+        // If offer has no start/end dates, it doesn't match date filters
+        if (!offer.startDate && !offer.endDate) {
+          matchesDateRange = false;
+        } else {
+          // Check if offer's date range overlaps with filter range
+          const offerStart = offer.startDate ? new Date(offer.startDate) : null;
+          const offerEnd = offer.endDate ? new Date(offer.endDate) : null;
+          
+          if (startDateFilter && endDateFilter) {
+            // Both start and end filters are set - check overlap
+            const filterStart = new Date(startDateFilter);
+            const filterEnd = new Date(endDateFilter);
+            
+            // Offer overlaps if: offer starts before filter ends AND offer ends after filter starts
+            matchesDateRange = (!offerStart || offerStart <= filterEnd) && 
+                              (!offerEnd || offerEnd >= filterStart);
+          } else if (startDateFilter) {
+            // Only start filter is set - offer must start on or after this date
+            const filterStart = new Date(startDateFilter);
+            matchesDateRange = !offerStart || offerStart >= filterStart;
+          } else if (endDateFilter) {
+            // Only end filter is set - offer must end on or before this date
+            const filterEnd = new Date(endDateFilter);
+            matchesDateRange = !offerEnd || offerEnd <= filterEnd;
+          }
+        }
+      }
+      
+      return matchesTab && matchesDevice && matchesDateRange;
+    });
+  }
+
+  selectDeviceFilter(device: string) {
+    if (this.selectedDeviceFilter() === device) {
+      this.selectedDeviceFilter.set('');
+    } else {
+      this.selectedDeviceFilter.set(device);
+    }
+  }
+
+  isDeviceFilterSelected(device: string): boolean {
+    return this.selectedDeviceFilter() === device;
+  }
+
+  setStartDateFilter(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const value = target.value;
+    this.startDateFilter.set(value ? new Date(value) : null);
+  }
+
+  setEndDateFilter(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const value = target.value;
+    this.endDateFilter.set(value ? new Date(value) : null);
+  }
+
+  clearDateFilters(): void {
+    this.startDateFilter.set(null);
+    this.endDateFilter.set(null);
+  }
+
+  hasActiveDateFilters(): boolean {
+    return this.startDateFilter() !== null || this.endDateFilter() !== null;
   }
 
   private generateNextId(): number {

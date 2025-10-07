@@ -44,13 +44,3 @@
 }
 
 // Responsive Design
-@media (max-width: 768px) {
-  .filters {
-    flex-direction: column;
-    
-    .search-input,
-    .sort-select {
-      width: 100%;
-    }
-  }
-} 

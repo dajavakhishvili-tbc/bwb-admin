@@ -1,0 +1,64 @@
+<div class="filters-container">
+  <button class="filters-toggle" (click)="onToggleFilters()" [class.expanded]="isExpanded()">
+    <span class="toggle-text">Filters</span>
+    <span class="toggle-arrow" [class.expanded]="isExpanded()">▼</span>
+  </button>
+  
+  <div class="filters" [class.expanded]="isExpanded()">
+    <div class="filter-group">
+      <label for="name-search">Search by Name</label>
+      <input 
+        type="text" 
+        id="name-search"
+        placeholder="Enter full name..." 
+        [value]="searchTerm()"
+        (input)="onSearchChange($event)"
+        class="search-input"
+      >
+    </div>
+    
+    <div class="filter-group">
+      <label for="status-filter">Status</label>
+      <select id="status-filter" [value]="statusFilter()" (change)="onStatusFilterChange($event)" class="filter-select">
+        <option value="">All Statuses</option>
+        <option value="approved">Approved</option>
+        <option value="pending">Pending</option>
+        <option value="rejected">Rejected</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <label for="currency-filter">Currency</label>
+      <select id="currency-filter" [value]="currencyFilter()" (change)="onCurrencyFilterChange($event)" class="filter-select">
+        <option value="">All Currencies</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="GEL">GEL</option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <label for="min-amount">Amount Range</label>
+      <div class="amount-range">
+        <input 
+          type="number" 
+          id="min-amount"
+          placeholder="Min amount" 
+          [value]="minAmount() || ''"
+          (input)="onMinAmountChange($event)"
+          class="amount-input"
+        >
+        <span class="range-separator">to</span>
+        <input 
+          type="number" 
+          id="max-amount"
+          placeholder="Max amount" 
+          [value]="maxAmount() || ''"
+          (input)="onMaxAmountChange($event)"
+          class="amount-input"
+        >
+      </div>
+    </div>
+  </div>
+</div>

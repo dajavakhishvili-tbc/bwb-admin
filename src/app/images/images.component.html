@@ -1,8 +1,10 @@
 <div class="images-container">
   <div class="header">
-    <h1>Images Management</h1>
-    <p>Manage and organize your image assets with search and filtering capabilities.</p>
-    <ib-image-upload (fileSelected)="onFileSelected($event)" />
+    <div class="header-content">
+      <h1>Images Management</h1>
+      <p>Manage and organize your image assets with search and filtering capabilities.</p>
+    </div>
+    <ib-image-upload (fileSelected)="onFileSelected($event)"/>
   </div>
   
   <ib-image-filters

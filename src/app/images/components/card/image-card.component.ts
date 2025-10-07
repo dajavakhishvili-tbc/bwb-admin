@@ -19,8 +19,7 @@ export interface ImageItem {
   templateUrl: './image-card.component.html',
   styleUrl: './image-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe],
-  standalone: true
+  imports: [DatePipe]
 })
 export class ImageCardComponent {
   readonly image = input.required<ImageItem>();

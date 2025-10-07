@@ -60,7 +60,7 @@ export class ThemeService {
       root.style.setProperty('--input-bg', '#404040');
       root.style.setProperty('--input-border', '#555555');
       root.style.setProperty('--button-primary', '#00adee');
-      root.style.setProperty('--button-hover', '#8dcbf8');
+      root.style.setProperty('--button-hover', '#0094cc');
       root.style.setProperty('--gradient-primary', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
       root.style.setProperty('--gradient-secondary', 'linear-gradient(135deg, #2d2d2d 0%, #404040 100%)');
     } else {
@@ -86,7 +86,7 @@ export class ThemeService {
       root.style.setProperty('--input-bg', '#ffffff');
       root.style.setProperty('--input-border', '#e1e5e9');
       root.style.setProperty('--button-primary', '#00adee');
-      root.style.setProperty('--button-hover', '#8dcbf8');
+      root.style.setProperty('--button-hover', '#0094cc');
       root.style.setProperty('--gradient-primary', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
       root.style.setProperty('--gradient-secondary', 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)');
     }

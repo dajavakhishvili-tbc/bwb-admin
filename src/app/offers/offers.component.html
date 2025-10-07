@@ -4,7 +4,7 @@
       <h1>Offers Management</h1>
        <p>Manage offers and their configurations for the offers section.</p>
     </div>
-    <button class="add-offer-btn" (click)="openAddDialog()">
+    <button class="header-action" (click)="openAddDialog()">
       <span class="icon">+</span>
       Add content
     </button>
@@ -30,6 +30,57 @@
         (click)="setActiveTab('whats-new')">
         What's New
       </button>
+    </div>
+  </div>
+
+  <div class="filters-container">
+    <div class="device-filter-chips">
+      <div 
+        class="device-filter-chip" 
+        [class.selected]="isDeviceFilterSelected('web')"
+        [class.device-web]="true"
+        (click)="selectDeviceFilter('web')"
+      >
+        🌐 Web
+      </div>
+      <div 
+        class="device-filter-chip" 
+        [class.selected]="isDeviceFilterSelected('mobile')"
+        [class.device-mobile]="true"
+        (click)="selectDeviceFilter('mobile')"
+      >
+        📱 Mobile
+      </div>
+    </div>
+
+    <div class="date-filters">
+      <div class="date-filter-group">
+        <label for="start-date-filter" class="date-filter-label">Start:</label>
+        <input 
+          id="start-date-filter"
+          type="date" 
+          class="date-filter-input"
+          [value]="startDateFilter() ? startDateFilter()!.toISOString().split('T')[0] : ''"
+          (change)="setStartDateFilter($event)"
+        >
+      </div>
+      
+      <div class="date-filter-group">
+        <label for="end-date-filter" class="date-filter-label">End:</label>
+        <input 
+          id="end-date-filter"
+          type="date" 
+          class="date-filter-input"
+          [value]="endDateFilter() ? endDateFilter()!.toISOString().split('T')[0] : ''"
+          (change)="setEndDateFilter($event)"
+        >
+      </div>
+
+      @if (hasActiveDateFilters()) {
+        <button class="clear-date-filters-btn" (click)="clearDateFilters()" title="Clear date filters">
+          ✕
+        </button>
+      }
     </div>
   </div>
 
@@ -83,7 +134,7 @@
 @if (isStatsSidebarOpen() && selectedOfferForStats()) {
   <ib-offer-stats-sidebar
     [offer]="selectedOfferForStats()!"
-    [isOpen]="isStatsSidebarOpen"
+    [isOpen]="isStatsSidebarOpen()"
     (close)="closeStatsSidebar()">
   </ib-offer-stats-sidebar>
 } 

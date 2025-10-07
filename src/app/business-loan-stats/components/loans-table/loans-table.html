@@ -1,0 +1,40 @@
+<div class="table-container">
+  <table class="loans-table">
+    <thead>
+      <tr>
+        <th class="sortable-header" (click)="onSort('id')">
+          ID {{ getSortIcon('id') }}
+        </th>
+        <th class="sortable-header" (click)="onSort('username')">
+          Username {{ getSortIcon('username') }}
+        </th>
+        <th>Loan Type</th>
+        <th class="sortable-header" (click)="onSort('amount')">
+          Amount {{ getSortIcon('amount') }}
+        </th>
+        <th class="sortable-header" (click)="onSort('status')">
+          Status {{ getSortIcon('status') }}
+        </th>
+        <th class="sortable-header" (click)="onSort('applicationDate')">
+          Application Date {{ getSortIcon('applicationDate') }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (loan of loans(); track loan.id) {
+        <tr class="clickable-row" (click)="onLoanClick(loan)" title="Click to view details">
+          <td class="loan-id">#{{ loan.id }}</td>
+          <td class="username">{{ loan.username }}</td>
+          <td class="loan-type">{{ loan.loanType }}</td>
+          <td class="amount">{{ formatCurrency(loan.amount, loan.currency) }}</td>
+          <td>
+            <span class="status-badge" [class]="getStatusClass(loan.status)">
+              {{ loan.status.charAt(0).toUpperCase() + loan.status.slice(1) }}
+            </span>
+          </td>
+          <td class="date">{{ loan.applicationDate | date:'MMM d, y' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

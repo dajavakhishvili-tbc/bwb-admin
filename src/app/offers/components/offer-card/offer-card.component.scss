@@ -64,17 +64,58 @@
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 0.25rem 0.5rem;
+    padding: 2px 6px;
     border-radius: 0.375rem;
-    font-size: 0.75rem;
     font-weight: 500;
     backdrop-filter: blur(4px);
+    font-size: 12px;
     z-index: 2;
+    border: 1px solid #E9D7FE;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 500;
+    background: #F9F5FF;
+
+    svg {
+      translate: 0 -1px;
+      fill: currentColor;
+    }
 
     .date-range-text {
       white-space: nowrap;
+    }
+
+    &.status-today-only {
+      color: #7c3aed;
+    }
+    
+    &.status-expires-today {
+      color: #7c3aed;
+    }
+    
+    &.status-expires-soon {
+      color: #6941C6;
+    }
+    
+    &.status-expires-week {
+      color: #6941C6;
+    }
+    
+    &.status-expires-later {
+      color: #0369a1;
+    }
+    
+    &.status-starts-soon {
+      color: #059669;
+    }
+    
+    &.status-starts-later {
+      color: #d97706;
+    }
+    
+    &.status-active {
+      color: #059669;
     }
   }
 

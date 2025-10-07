@@ -1,5 +1,5 @@
-import { Component, Input, signal, computed, inject, input, output } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { Component, computed, Input, input, output, signal } from '@angular/core';
 import { BusinessLoan } from '../business-loan-stats.component';
 
 export interface StatusHistoryEntry {
@@ -15,7 +15,6 @@ export interface StatusHistoryEntry {
   templateUrl: './loan-detail-dialog.component.html',
   styleUrl: './loan-detail-dialog.component.scss',
   imports: [DatePipe],
-  standalone: true
 })
 export class LoanDetailDialogComponent {
   @Input() loan: BusinessLoan | null = null;
@@ -46,8 +45,13 @@ export class LoanDetailDialogComponent {
     }
   ]);
 
+  readonly sortedStatusHistory = computed(() => {
+    return [...this.statusHistory()].sort((a, b) => {
+      return b.changedAt.getTime() - a.changedAt.getTime();
+    });
+  });
+
   onClose() {
-    // TODO: The 'emit' function requires a mandatory void argument
     this.closeDialog.emit();
   }
 

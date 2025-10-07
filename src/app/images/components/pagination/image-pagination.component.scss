@@ -38,13 +38,3 @@
 }
 
 // Responsive Design
-@media (max-width: 768px) {
-  .pagination {
-    flex-direction: column;
-    gap: 0.5rem;
-    
-    .page-btn {
-      width: 100%;
-    }
-  }
-} 

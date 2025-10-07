@@ -1,6 +1,8 @@
 import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { LoanDetailDialogComponent } from './loan-detail-dialog/loan-detail-dialog.component';
+import { SummaryCardsComponent } from './components/summary-cards/summary-cards';
+import { LoanFiltersComponent } from './components/loan-filters/loan-filters';
+import { LoansTableComponent } from './components/loans-table/loans-table';
 
 export interface BusinessLoan {
   id: number;
@@ -17,8 +19,7 @@ export interface BusinessLoan {
   templateUrl: './business-loan-stats.component.html',
   styleUrl: './business-loan-stats.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LoanDetailDialogComponent, DatePipe],
-  standalone: true
+  imports: [LoanDetailDialogComponent, SummaryCardsComponent, LoanFiltersComponent, LoansTableComponent],
 })
 export class BusinessLoanStatsComponent {
   readonly loans = signal<BusinessLoan[]>([
@@ -125,6 +126,9 @@ export class BusinessLoanStatsComponent {
   readonly sortBy = signal('applicationDate');
   readonly sortOrder = signal('desc');
   
+  readonly sortColumn = computed(() => this.sortBy());
+  readonly sortDirection = computed(() => this.sortOrder());
+  
   // Pagination signals
   readonly currentPage = signal(1);
   readonly itemsPerPage = signal(5);
@@ -154,38 +158,31 @@ export class BusinessLoanStatsComponent {
     this.isFiltersExpanded.set(!this.isFiltersExpanded());
   }
 
-  updateSearch(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.searchTerm.set(target.value);
+  onSearchChange(value: string) {
+    this.searchTerm.set(value);
     this.currentPage.set(1);
     this.updateFilteredLoans();
   }
 
-  updateStatusFilter(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    this.statusFilter.set(target.value);
+  onStatusFilterChange(value: string) {
+    this.statusFilter.set(value);
     this.currentPage.set(1);
     this.updateFilteredLoans();
   }
 
-  updateCurrencyFilter(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    this.currencyFilter.set(target.value);
+  onCurrencyFilterChange(value: string) {
+    this.currencyFilter.set(value);
     this.currentPage.set(1);
     this.updateFilteredLoans();
   }
 
-  updateMinAmount(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const value = target.value ? Number(target.value) : null;
+  onMinAmountChange(value: number | null) {
     this.minAmount.set(value);
     this.currentPage.set(1);
     this.updateFilteredLoans();
   }
 
-  updateMaxAmount(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const value = target.value ? Number(target.value) : null;
+  onMaxAmountChange(value: number | null) {
     this.maxAmount.set(value);
     this.currentPage.set(1);
     this.updateFilteredLoans();
@@ -277,20 +274,6 @@ export class BusinessLoanStatsComponent {
     }
   }
 
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'approved':
-        return 'status-approved';
-      case 'pending':
-        return 'status-pending';
-      case 'rejected':
-        return 'status-rejected';
-      case 'completed':
-        return 'status-completed';
-      default:
-        return '';
-    }
-  }
 
   formatCurrency(amount: number, currency: string): string {
     return new Intl.NumberFormat('en-US', {
