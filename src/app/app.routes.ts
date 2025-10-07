@@ -13,39 +13,32 @@ export const routes: Routes = [
   { 
     path: 'home', 
     loadComponent: () => import('./home/home.component').then(m => m.HomeComponent),
-    canActivate: [authGuard]
+    // canActivate: [authGuard]
   },
   { 
     path: 'images', 
     loadComponent: () => import('./images/images.component').then(m => m.ImagesComponent),
-    canActivate: [authGuard]
+    // canActivate: [authGuard]
   },
   { 
     path: 'texts', 
     loadComponent: () => import('./texts/texts.component').then(m => m.TextsComponent),
-    canActivate: [authGuard]
+    // canActivate: [authGuard]
   },
   { 
     path: 'offers', 
     loadComponent: () => import('./offers/offers.component').then(m => m.OffersComponent),
-    canActivate: [authGuard]
+    // canActivate: [authGuard]
   },
   {
     path: 'business-loan',
-    canActivate: [authGuard],
+    // canActivate: [authGuard],
     children: [
       {
         path: '',
         loadComponent: () => import('./business-loan/business-loan.component').then(m => m.BusinessLoanComponent)
       },
-      {
-        path: 'texts',
-        loadComponent: () => import('./texts/texts.component').then(m => m.TextsComponent)
-      },
-      {
-        path: 'images',
-        loadComponent: () => import('./images/images.component').then(m => m.ImagesComponent)
-      },
+    
       {
         path: 'structure',
         loadComponent: () => import('./business-loan/business-loan.component').then(m => m.BusinessLoanComponent)
@@ -63,6 +56,6 @@ export const routes: Routes = [
   { 
     path: 'admin-settings', 
     loadComponent: () => import('./admin-settings/admin-settings.component').then(m => m.AdminSettingsComponent),
-    canActivate: [authGuard]
+    // canActivate: [authGuard]
   },
 ];
